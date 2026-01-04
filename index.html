@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conferir Jogos Lotofácil - Painel de Controle</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; background-color: #f0f2f5; }
+        .container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+        h2 { color: #8b008b; text-align: center; margin-bottom: 5px; }
+        
+        .busca-concurso { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; }
+        .busca-concurso input { width: 120px; padding: 8px; border: 2px solid #ddd; border-radius: 5px; text-align: center; }
+        .btn-busca { background: #666; color: white; padding: 5px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        .concurso-info { text-align: center; font-size: 0.9em; color: #333; font-weight: bold; margin-bottom: 10px; }
+        .bolas-container { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; background: #f8f0f8; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .bola { width: 28px; height: 28px; background: #8b008b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; }
+        
+        /* NOVO: Estilo do Resumo Geral */
+        .resumo-geral { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 0.9em; color: #3730a3; }
+        .resumo-item { display: inline-block; margin-right: 10px; background: white; padding: 2px 8px; border-radius: 4px; border: 1px solid #c7d2fe; margin-top: 5px; }
+
+        .add-jogo-section { background: #eee; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .add-jogo-section input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; box-sizing: border-box; margin-bottom: 10px; font-size: 16px; }
+        
+        .btn { border: none; border-radius: 5px; cursor: pointer; font-weight: bold; padding: 10px; transition: 0.3s; }
+        .btn-add { background: #8b008b; color: white; width: 100%; }
+        .btn-limpar { background: #ff4444; color: white; margin-top: 10px; width: 100%; opacity: 0.7; }
+        
+        .card-jogo { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 10px; position: relative; }
+        .premiado { background-color: #d4edda !important; border: 2px solid #28a745 !important; }
+        .badge-premio { background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 10px; }
+
+        .remove-btn { position: absolute; top: 5px; right: 5px; color: #999; cursor: pointer; font-weight: bold; border: none; background: none; }
+        .num-acertado { color: #8b008b; font-weight: bold; background: #fdf0fd; border-radius: 3px; padding: 1px; border-bottom: 2px solid #8b008b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Lotofácil</h2>
+    
+    <div class="busca-concurso">
+        <input type="number" id="numConcurso" placeholder="Nº Concurso">
+        <button class="btn-busca" onclick="buscarResultado(document.getElementById('numConcurso').value)">Buscar</button>
+    </div>
+
+    <p id="infoConcurso" class="concurso-info">Carregando...</p>
+    <div id="dezenasSorteadas" class="bolas-container"></div>
+
+    <div id="resumoAcertos" class="resumo-geral">
+        Aguardando conferência...
+    </div>
+
+    <div class="add-jogo-section">
+        <label><b>Cadastrar Novo Jogo:</b></label>
+        <input type="text" id="inputJogo" placeholder="Digite os 15 números">
+        <button class="btn btn-add" onclick="adicionarJogo()">Salvar Jogo na Lista</button>
+    </div>
+
+    <div id="listaJogos"></div>
+
+    <button class="btn btn-limpar" onclick="limparTodos()">Apagar Todos os Jogos</button>
+</div>
+
+<script>
+    let numerosGanhadores = [];
+    let meusJogos = JSON.parse(localStorage.getItem('listaJogosLotofacil')) || [];
+
+    async function buscarResultado(concurso = 'latest') {
+        const infoMsg = document.getElementById('infoConcurso');
+        try {
+            const termo = concurso === '' ? 'latest' : concurso;
+            const response = await fetch(`https://loteriascaixa-api.herokuapp.com/api/lotofacil/${termo}`);
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            
+            numerosGanhadores = data.dezenas.map(Number);
+            infoMsg.innerText = `Concurso ${data.concurso} - Data: ${data.data}`;
+            
+            const containerBolas = document.getElementById('dezenasSorteadas');
+            containerBolas.innerHTML = '';
+            data.dezenas.forEach(num => {
+                containerBolas.innerHTML += `<div class="bola">${num}</div>`;
+            });
+            
+            renderizarJogos();
+        } catch (e) {
+            infoMsg.innerText = "Erro ao buscar concurso.";
+        }
+    }
+
+    function adicionarJogo() {
+        const input = document.getElementById('inputJogo');
+        const numeros = input.value.split(/[\s,]+/).filter(n => n !== "").map(Number);
+        if (numeros.length < 15) { alert("Mínimo 15 números."); return; }
+        meusJogos.push(numeros.sort((a,b) => a - b));
+        localStorage.setItem('listaJogosLotofacil', JSON.stringify(meusJogos));
+        input.value = '';
+        renderizarJogos();
+    }
+
+    function removerJogo(index) {
+        meusJogos.splice(index, 1);
+        localStorage.setItem('listaJogosLotofacil', JSON.stringify(meusJogos));
+        renderizarJogos();
+    }
+
+    function limparTodos() {
+        if(confirm("Apagar todos os jogos?")) {
+            meusJogos = [];
+            localStorage.removeItem('listaJogosLotofacil');
+            renderizarJogos();
+        }
+    }
+
+    // FUNÇÃO ATUALIZADA COM O RESUMO GERAL
+    function renderizarJogos() {
+        const lista = document.getElementById('listaJogos');
+        const painelResumo = document.getElementById('resumoAcertos');
+        lista.innerHTML = `<h3>Meus Jogos:</h3>`;
+
+        let estatisticas = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0, 14:0, 15:0 };
+        let totalJogos = meusJogos.length;
+
+        if (totalJogos === 0) {
+            lista.innerHTML += `<p style="color:#999; text-align:center;">Nenhum jogo salvo.</p>`;
+            painelResumo.innerHTML = "Nenhum jogo cadastrado para conferir.";
+            return;
+        }
+
+        meusJogos.forEach((jogo, index) => {
+            const acertos = jogo.filter(n => numerosGanhadores.includes(n)).length;
+            estatisticas[acertos]++;
+
+            const ehPremiado = acertos >= 11;
+            const jogoFormatado = jogo.map(n => {
+                const numStr = n.toString().padStart(2, '0');
+                return numerosGanhadores.includes(n) ? `<span class="num-acertado">${numStr}</span>` : numStr;
+            }).join(' ');
+
+            lista.innerHTML += `
+                <div class="card-jogo ${ehPremiado ? 'premiado' : ''}">
+                    <button class="remove-btn" onclick="removerJogo(${index})">X</button>
+                    <div style="font-family: monospace; font-size: 1.1em;">${jogoFormatado}</div>
+                    <span style="font-weight:bold; font-size:0.9em; color:#555;">
+                        ${acertos} ACERTOS ${ehPremiado ? '<span class="badge-premio">GANHOU!</span>' : ''}
+                    </span>
+                </div>`;
+        });
+
+        // Criar o HTML do Resumo
+        let htmlResumo = `<strong>Resumo do Concurso:</strong><br>`;
+        let premiosEncontrados = false;
+
+        // Mostra apenas acertos de 11 a 15 (premiados) ou todos se preferir
+        for (let i = 15; i >= 11; i--) {
+            if (estatisticas[i] > 0) {
+                htmlResumo += `<span class="resumo-item">${estatisticas[i]} jogo(s) com <b>${i} acertos</b></span> `;
+                premiosEncontrados = true;
+            }
+        }
+
+        if (!premiosEncontrados) {
+            htmlResumo += "Nenhum jogo premiado neste concurso.";
+        } else {
+            let totalGanhadores = 0;
+            for(let i=11; i<=15; i++) totalGanhadores += estatisticas[i];
+            htmlResumo = `<strong>🎉 ${totalGanhadores} jogo(s) premiado(s)!</strong><br>` + htmlResumo;
+        }
+
+        painelResumo.innerHTML = htmlResumo;
+    }
+
+    window.onload = () => buscarResultado();
+</script>
+
+</body>
+</html>
