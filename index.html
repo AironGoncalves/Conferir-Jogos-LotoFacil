@@ -3,197 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conferir Jogos Lotofácil - Painel de Controle</title>
+    <title>Painel de Loterias Pro - Versão 3.0</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; background-color: #f0f2f5; }
-        .container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
-        h2 { color: #8b008b; text-align: center; margin-bottom: 5px; }
+        :root {
+            --cor-lotofacil: #8b008b;
+            --cor-megasena: #209869;
+            --bg-body: #f0f2f5;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-body); display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
-        /* Ajuste na seção de busca para incluir os botões laterais */
+        .menu-loterias { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; max-width: 500px; }
+        .btn-aba { flex: 1; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 14px; color: white; transition: 0.3s; opacity: 0.6; text-transform: uppercase; }
+        .btn-aba.active { opacity: 1; transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .aba-lotofacil { background-color: var(--cor-lotofacil); }
+        .aba-megasena { background-color: var(--cor-megasena); }
+
+        .container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 500px; width: 100%; display: none; }
+        .container.active { display: block; }
+
+        h2 { text-align: center; margin-bottom: 5px; }
         .busca-concurso { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; align-items: center; }
         .busca-concurso input { width: 100px; padding: 8px; border: 2px solid #ddd; border-radius: 5px; text-align: center; font-size: 16px; font-weight: bold; }
-        .btn-nav { background: #8b008b; color: white; border: none; border-radius: 5px; width: 35px; height: 38px; cursor: pointer; font-weight: bold; font-size: 20px; }
-        .btn-nav:hover { background: #a000a0; }
+        .btn-nav { color: white; border: none; border-radius: 5px; width: 35px; height: 38px; cursor: pointer; font-weight: bold; font-size: 20px; }
         .btn-busca { background: #666; color: white; padding: 5px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; height: 38px; }
 
-        .concurso-info { text-align: center; font-size: 0.9em; color: #333; font-weight: bold; margin-bottom: 10px; }
-        .bolas-container { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; background: #f8f0f8; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
-        .bola { width: 28px; height: 28px; background: #8b008b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; }
+        .concurso-info { text-align: center; font-size: 0.95em; color: #333; font-weight: bold; margin-bottom: 10px; min-height: 20px; }
+        .erro-msg { color: #ff4444; background: #ffebeb; padding: 5px; border-radius: 5px; display: inline-block; border: 1px solid #ffcccc; }
         
-        .resumo-geral { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 0.9em; color: #3730a3; }
-        .resumo-item { display: inline-block; margin-right: 10px; background: white; padding: 2px 8px; border-radius: 4px; border: 1px solid #c7d2fe; margin-top: 5px; }
+        .bolas-container { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .bola { width: 32px; height: 32px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
+        
+        .lf-theme .bola { background: var(--cor-lotofacil); }
+        .lf-theme .bolas-container { background: #f8f0f8; }
+        .ms-theme .bola { background: var(--cor-megasena); }
+        .ms-theme .bolas-container { background: #f0f8f4; }
+        
+        .resumo-geral { border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 0.9em; text-align: center; line-height: 1.6; }
+        .lf-theme .resumo-geral { background: #eef2ff; border: 1px solid #c7d2fe; color: #3730a3; }
+        .ms-theme .resumo-geral { background: #e6fffa; border: 1px solid #b2f5ea; color: #234e52; }
 
-        .add-jogo-section { background: #eee; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-        .add-jogo-section input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; box-sizing: border-box; margin-bottom: 10px; font-size: 16px; }
+        .add-jogo-section { background: #eee; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .add-jogo-section input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
         
-        .btn { border: none; border-radius: 5px; cursor: pointer; font-weight: bold; padding: 10px; transition: 0.3s; }
-        .btn-add { background: #8b008b; color: white; width: 100%; }
-        .btn-limpar { background: #ff4444; color: white; margin-top: 10px; width: 100%; opacity: 0.7; }
+        .btn { border: none; border-radius: 5px; cursor: pointer; font-weight: bold; padding: 10px; transition: 0.3s; width: 100%; }
+        .btn-add-lf { background: var(--cor-lotofacil); color: white; }
+        .btn-add-ms { background: var(--cor-megasena); color: white; }
+        .btn-random { background: #555; color: white; font-size: 0.9em; margin-top: 5px; }
+        .btn-limpar { background: #ff4444; color: white; margin-top: 10px; opacity: 0.7; }
         
         .card-jogo { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 10px; position: relative; }
         .premiado { background-color: #d4edda !important; border: 2px solid #28a745 !important; }
         .badge-premio { background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 10px; }
 
-        .remove-btn { position: absolute; top: 5px; right: 5px; color: #999; cursor: pointer; font-weight: bold; border: none; background: none; }
-        .num-acertado { color: #8b008b; font-weight: bold; background: #fdf0fd; border-radius: 3px; padding: 1px; border-bottom: 2px solid #8b008b; }
+        .remove-btn { position: absolute; top: 5px; right: 5px; color: #999; cursor: pointer; border: none; background: none; font-weight: bold; }
+        .num-acertado-lf { color: var(--cor-lotofacil); font-weight: bold; background: #fdf0fd; border-bottom: 2px solid var(--cor-lotofacil); }
+        .num-acertado-ms { color: var(--cor-megasena); font-weight: bold; background: #f0fdf4; border-bottom: 2px solid var(--cor-megasena); }
     </style>
 </head>
-<body>
+<body class="lf-theme">
 
-<div class="container">
-    <h2>Lotofácil</h2>
-    
-    <div class="busca-concurso">
-        <button class="btn-nav" onclick="navegarConcurso(-1)">-</button>
-        <input type="number" id="numConcurso" placeholder="Nº">
-        <button class="btn-nav" onclick="navegarConcurso(1)">+</button>
-        <button class="btn-busca" onclick="buscarResultado(document.getElementById('numConcurso').value)">Buscar</button>
+    <div class="menu-loterias">
+        <button class="btn-aba aba-lotofacil active" onclick="switchTab('lotofacil')">Lotofácil</button>
+        <button class="btn-aba aba-megasena" onclick="switchTab('megasena')">Mega-Sena</button>
     </div>
 
-    <p id="infoConcurso" class="concurso-info">Carregando...</p>
-    <div id="dezenasSorteadas" class="bolas-container"></div>
+    <div id="cont-lotofacil" class="container active lf-theme">
+        <h2 style="color:var(--cor-lotofacil)">Lotofácil</h2>
+        <div class="busca-concurso">
+            <button class="btn-nav aba-lotofacil" onclick="navegarConcurso('lotofacil', -1)">-</button>
+            <input type="number" id="numLF" placeholder="Nº">
+            <button class="btn-nav aba-lotofacil" onclick="navegarConcurso('lotofacil', 1)">+</button>
+            <button class="btn-busca" onclick="buscar('lotofacil', document.getElementById('numLF').value)">Buscar</button>
+        </div>
+        <p id="infoLF" class="concurso-info">Carregando...</p>
+        <div id="bolasLF" class="bolas-container"></div>
+        <div id="resumoLF" class="resumo-geral">Aguardando...</div>
+        
+        <div class="add-jogo-section">
+            <label><b>Cadastrar Jogo:</b></label>
+            <input type="text" id="inputLF" placeholder="Digite de 15 a 20 números">
+            <button class="btn btn-add-lf" onclick="adicionarJogo('lotofacil')">Salvar Jogo na Lista</button>
+            <button class="btn btn-random" onclick="gerarSurpresinha('lotofacil')">🎲 Gerar Surpresinha (15 números)</button>
+        </div>
 
-    <div id="resumoAcertos" class="resumo-geral">
-        Aguardando conferência...
+        <div id="listaLF"></div>
+        <button class="btn btn-limpar" onclick="limpar('lotofacil')">Apagar Tudo</button>
     </div>
 
-    <div class="add-jogo-section">
-        <label><b>Cadastrar Novo Jogo:</b></label>
-        <input type="text" id="inputJogo" placeholder="Digite os 15 números">
-        <button class="btn btn-add" onclick="adicionarJogo()">Salvar Jogo na Lista</button>
+    <div id="cont-megasena" class="container ms-theme">
+        <h2 style="color:var(--cor-megasena)">Mega-Sena</h2>
+        <div class="busca-concurso">
+            <button class="btn-nav aba-megasena" onclick="navegarConcurso('megasena', -1)">-</button>
+            <input type="number" id="numMS" placeholder="Nº">
+            <button class="btn-nav aba-megasena" onclick="navegarConcurso('megasena', 1)">+</button>
+            <button class="btn-busca" onclick="buscar('megasena', document.getElementById('numMS').value)">Buscar</button>
+        </div>
+        <p id="infoMS" class="concurso-info">Carregando...</p>
+        <div id="bolasMS" class="bolas-container"></div>
+        <div id="resumoMS" class="resumo-geral">Aguardando...</div>
+        
+        <div class="add-jogo-section">
+            <label><b>Cadastrar Jogo:</b></label>
+            <input type="text" id="inputMS" placeholder="Digite de 6 a 20 números">
+            <button class="btn btn-add-ms" onclick="adicionarJogo('megasena')">Salvar Jogo na Lista</button>
+            <button class="btn btn-random" onclick="gerarSurpresinha('megasena')">🎲 Gerar Surpresinha (6 números)</button>
+        </div>
+
+        <div id="listaMS"></div>
+        <button class="btn btn-limpar" onclick="limpar('megasena')">Apagar Tudo</button>
     </div>
-
-    <div id="listaJogos"></div>
-
-    <button class="btn btn-limpar" onclick="limparTodos()">Apagar Todos os Jogos</button>
-</div>
 
 <script>
-    let numerosGanhadores = [];
-    let meusJogos = JSON.parse(localStorage.getItem('listaJogosLotofacil')) || [];
+    let dados = {
+        lotofacil: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_LF')) || [], api: 'lotofacil', min: 15, max: 20, max_bolas: 15, range: 25 },
+        megasena: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_MS')) || [], api: 'megasena', min: 6, max: 20, max_bolas: 6, range: 60 }
+    };
 
-    // Função para somar ou subtrair o concurso
-    function navegarConcurso(direcao) {
-        const input = document.getElementById('numConcurso');
-        let atual = parseInt(input.value);
-        if (isNaN(atual)) return;
-        
-        let novo = atual + direcao;
-        if (novo < 1) novo = 1;
-        
-        input.value = novo;
-        buscarResultado(novo);
+    function switchTab(tipo) {
+        document.querySelectorAll('.container, .btn-aba').forEach(el => el.classList.remove('active'));
+        document.getElementById(`cont-${tipo}`).classList.add('active');
+        document.querySelector(`.aba-${tipo}`).classList.add('active');
+        document.body.className = `${tipo === 'lotofacil' ? 'lf' : 'ms'}-theme`;
     }
 
-    async function buscarResultado(concurso = 'latest') {
-        const infoMsg = document.getElementById('infoConcurso');
-        const inputConcurso = document.getElementById('numConcurso');
+    async function buscar(tipo, concurso = 'latest') {
+        const idInfo = tipo === 'lotofacil' ? 'infoLF' : 'infoMS';
+        const idInput = tipo === 'lotofacil' ? 'numLF' : 'numMS';
+        const idBolas = tipo === 'lotofacil' ? 'bolasLF' : 'bolasMS';
+        const infoEl = document.getElementById(idInfo);
+        const bolasEl = document.getElementById(idBolas);
 
         try {
             const termo = (concurso === '' || concurso === null) ? 'latest' : concurso;
-            const response = await fetch(`https://loteriascaixa-api.herokuapp.com/api/lotofacil/${termo}`);
-            if (!response.ok) throw new Error();
+            const response = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/${termo}`);
+            
+            if (!response.ok) throw new Error("inexistente");
+            
             const data = await response.json();
+            document.getElementById(idInput).value = data.concurso;
+            dados[tipo].ganhadores = data.dezenas.map(Number);
+            infoEl.innerHTML = `Concurso ${data.concurso} - Data: ${data.data}`;
             
-            // Preenche a caixa de consulta com o número que a página trouxe
-            inputConcurso.value = data.concurso;
-            
-            numerosGanhadores = data.dezenas.map(Number);
-            infoMsg.innerText = `Concurso ${data.concurso} - Data: ${data.data}`;
-            
-            const containerBolas = document.getElementById('dezenasSorteadas');
-            containerBolas.innerHTML = '';
+            bolasEl.innerHTML = '';
             data.dezenas.forEach(num => {
-                containerBolas.innerHTML += `<div class="bola">${num}</div>`;
+                bolasEl.innerHTML += `<div class="bola">${num}</div>`;
             });
             
-            renderizarJogos();
+            renderizar(tipo);
         } catch (e) {
-            infoMsg.innerText = "Erro ao buscar concurso.";
+            infoEl.innerHTML = `<span class="erro-msg">⚠️ CONCURSO NÃO EXISTE OU NÃO SORTEADO</span>`;
+            dados[tipo].ganhadores = [];
+            bolasEl.innerHTML = '';
+            for(let i=0; i<dados[tipo].max_bolas; i++) {
+                bolasEl.innerHTML += `<div class="bola" style="opacity:0.3">--</div>`;
+            }
+            renderizar(tipo);
         }
     }
 
-    function adicionarJogo() {
-        const input = document.getElementById('inputJogo');
-        const numeros = input.value.split(/[\s,]+/).filter(n => n !== "").map(Number);
-        if (numeros.length < 15) { alert("Mínimo 15 números."); return; }
-        meusJogos.push(numeros.sort((a,b) => a - b));
-        localStorage.setItem('listaJogosLotofacil', JSON.stringify(meusJogos));
-        input.value = '';
-        renderizarJogos();
+    function navegarConcurso(tipo, direcao) {
+        const id = tipo === 'lotofacil' ? 'numLF' : 'numMS';
+        let val = parseInt(document.getElementById(id).value);
+        if(!isNaN(val)) buscar(tipo, val + direcao);
     }
 
-    function removerJogo(index) {
-        meusJogos.splice(index, 1);
-        localStorage.setItem('listaJogosLotofacil', JSON.stringify(meusJogos));
-        renderizarJogos();
-    }
+    function gerarSurpresinha(tipo) {
+        let numeros = [];
+        const qtd = dados[tipo].min;
+        const limite = dados[tipo].range;
 
-    function limparTodos() {
-        if(confirm("Apagar todos os jogos?")) {
-            meusJogos = [];
-            localStorage.removeItem('listaJogosLotofacil');
-            renderizarJogos();
+        while(numeros.length < qtd) {
+            let n = Math.floor(Math.random() * limite) + 1;
+            if(!numeros.includes(n)) numeros.push(n);
         }
-    }
-
-    function renderizarJogos() {
-        const lista = document.getElementById('listaJogos');
-        const painelResumo = document.getElementById('resumoAcertos');
-        lista.innerHTML = `<h3>Meus Jogos:</h3>`;
-
-        let estatisticas = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0, 14:0, 15:0 };
-        let totalJogos = meusJogos.length;
-
-        if (totalJogos === 0) {
-            lista.innerHTML += `<p style="color:#999; text-align:center;">Nenhum jogo salvo.</p>`;
-            painelResumo.innerHTML = "Nenhum jogo cadastrado para conferir.";
+        numeros.sort((a,b) => a - b);
+        
+        if (dados[tipo].meusJogos.some(j => j.join('-') === numeros.join('-'))) {
+            gerarSurpresinha(tipo);
             return;
         }
 
-        meusJogos.forEach((jogo, index) => {
-            const acertos = jogo.filter(n => numerosGanhadores.includes(n)).length;
-            estatisticas[acertos]++;
+        dados[tipo].meusJogos.push(numeros);
+        localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
+        renderizar(tipo);
+    }
 
-            const ehPremiado = acertos >= 11;
-            const jogoFormatado = jogo.map(n => {
-                const numStr = n.toString().padStart(2, '0');
-                return numerosGanhadores.includes(n) ? `<span class="num-acertado">${numStr}</span>` : numStr;
+    function adicionarJogo(tipo) {
+        const input = document.getElementById(tipo === 'lotofacil' ? 'inputLF' : 'inputMS');
+        let numerosBrutos = input.value.split(/[\s,]+/).filter(n => n !== "").map(Number);
+        
+        // 1. Verificar se há números repetidos no mesmo jogo
+        let numerosUnicos = [...new Set(numerosBrutos)];
+        if (numerosUnicos.length !== numerosBrutos.length) {
+            alert("⚠️ Erro: Existem números repetidos dentro do seu jogo. Verifique e tente novamente.");
+            return;
+        }
+
+        numerosUnicos.sort((a,b) => a - b);
+        
+        // 2. Verificar limites de quantidade
+        if (numerosUnicos.length < dados[tipo].min || numerosUnicos.length > dados[tipo].max) { 
+            alert(`Erro: O jogo da ${tipo} deve ter entre ${dados[tipo].min} e ${dados[tipo].max} números.`); 
+            return; 
+        }
+
+        // 3. Verificar se o jogo já existe na lista salva
+        const jaExiste = dados[tipo].meusJogos.some(j => j.join('-') === numerosUnicos.join('-'));
+        if (jaExiste) {
+            alert("⚠️ JOGO JÁ CADASTRADO NA LISTA!");
+            return;
+        }
+
+        dados[tipo].meusJogos.push(numerosUnicos);
+        localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
+        input.value = '';
+        renderizar(tipo);
+    }
+
+    function removerJogo(tipo, index) {
+        dados[tipo].meusJogos.splice(index, 1);
+        localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
+        renderizar(tipo);
+    }
+
+    function limpar(tipo) {
+        if(confirm(`Apagar todos os jogos?`)) {
+            dados[tipo].meusJogos = [];
+            localStorage.removeItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS');
+            renderizar(tipo);
+        }
+    }
+
+    function renderizar(tipo) {
+        const lista = document.getElementById(tipo === 'lotofacil' ? 'listaLF' : 'listaMS');
+        const resumo = document.getElementById(tipo === 'lotofacil' ? 'resumoLF' : 'resumoMS');
+        const classeAcerto = tipo === 'lotofacil' ? 'num-acertado-lf' : 'num-acertado-ms';
+        const minPremio = tipo === 'lotofacil' ? 11 : 4;
+
+        lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
+        let stats = {};
+        let totalPremiados = 0;
+        
+        if (dados[tipo].meusJogos.length === 0) {
+            resumo.innerHTML = "Nenhum jogo salvo.";
+            return;
+        }
+
+        dados[tipo].meusJogos.forEach((jogo, idx) => {
+            const acertos = jogo.filter(n => dados[tipo].ganhadores.includes(n)).length;
+            stats[acertos] = (stats[acertos] || 0) + 1;
+            const ganhou = acertos >= minPremio && dados[tipo].ganhadores.length > 0;
+            if(ganhou) totalPremiados++;
+
+            const htmlJogo = jogo.map(n => {
+                const s = n.toString().padStart(2, '0');
+                return (dados[tipo].ganhadores.includes(n)) ? `<span class="${classeAcerto}">${s}</span>` : s;
             }).join(' ');
 
             lista.innerHTML += `
-                <div class="card-jogo ${ehPremiado ? 'premiado' : ''}">
-                    <button class="remove-btn" onclick="removerJogo(${index})">X</button>
-                    <div style="font-family: monospace; font-size: 1.1em;">${jogoFormatado}</div>
-                    <span style="font-weight:bold; font-size:0.9em; color:#555;">
-                        ${acertos} ACERTOS ${ehPremiado ? '<span class="badge-premio">GANHOU!</span>' : ''}
-                    </span>
+                <div class="card-jogo ${ganhou ? 'premiado' : ''}">
+                    <button class="remove-btn" onclick="removerJogo('${tipo}', ${idx})">X</button>
+                    <div style="font-family: monospace; font-size: 1.1em; margin-bottom:5px; line-height: 1.4;">${htmlJogo}</div>
+                    <small><b>${acertos} ACERTOS</b> ${ganhou ? '<span class="badge-premio">GANHOU!</span>' : ''}</small>
                 </div>`;
         });
 
-        let htmlResumo = `<strong>Resumo do Concurso:</strong><br>`;
-        let premiosEncontrados = false;
+        if (dados[tipo].ganhadores.length === 0) {
+            resumo.innerHTML = "Aguardando resultado para conferir...";
+            return;
+        }
 
-        for (let i = 15; i >= 11; i--) {
-            if (estatisticas[i] > 0) {
-                htmlResumo += `<span class="resumo-item">${estatisticas[i]} jogo(s) com <b>${i} acertos</b></span> `;
-                premiosEncontrados = true;
+        let htmlRes = `<strong>Resumo do Concurso:</strong><br>`;
+        let temPremio = false;
+        const faixas = tipo === 'lotofacil' ? [15,14,13,12,11] : [6,5,4];
+        
+        faixas.forEach(f => {
+            if(stats[f]) {
+                htmlRes += `<span style="display:inline-block; margin: 5px; padding: 2px 8px; border:1px solid #ddd; background:#fff; border-radius:4px;">${stats[f]} jogo(s) de <b>${f} acertos</b></span>`;
+                temPremio = true;
             }
-        }
+        });
 
-        if (!premiosEncontrados) {
-            htmlResumo += "Nenhum jogo premiado neste concurso.";
-        } else {
-            let totalGanhadores = 0;
-            for(let i=11; i<=15; i++) totalGanhadores += estatisticas[i];
-            htmlResumo = `<strong>🎉 PARABÉNS! ${totalGanhadores} jogo(s) premiado(s)!</strong><br>` + htmlResumo;
-        }
-
-        painelResumo.innerHTML = htmlResumo;
+        resumo.innerHTML = temPremio ? `<strong>🎉 PARABÉNS! ${totalPremiados} jogo(s) premiado(s)!</strong><br>${htmlRes}` : "Nenhum jogo premiado neste concurso.";
     }
 
-    window.onload = () => buscarResultado();
+    window.onload = () => {
+        buscar('lotofacil');
+        buscar('megasena');
+    };
 </script>
-
 </body>
 </html>
