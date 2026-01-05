@@ -13,6 +13,15 @@
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-body); display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
+        /* NOVO MODAL CUSTOMIZADO */
+        #modalCustom { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; text-align: center; max-width: 320px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-btns { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+        .btn-modal { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; flex: 1; }
+        .lf-theme .btn-sim { background: var(--cor-lotofacil); color: white; }
+        .ms-theme .btn-sim { background: var(--cor-megasena); color: white; }
+        .btn-nao { background: #eee; color: #333; }
+
         .menu-loterias { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; max-width: 500px; }
         .btn-aba { flex: 1; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 14px; color: white; transition: 0.3s; opacity: 0.6; text-transform: uppercase; }
         .btn-aba.active { opacity: 1; transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
@@ -63,6 +72,16 @@
 </head>
 <body class="lf-theme">
 
+    <div id="modalCustom">
+        <div class="modal-content">
+            <p id="modalMsg" style="font-weight: bold; color: #333;"></p>
+            <div class="modal-btns">
+                <button id="btnSim" class="btn-modal btn-sim">Confirmar</button>
+                <button id="btnNao" class="btn-modal btn-nao">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="menu-loterias">
         <button class="btn-aba aba-lotofacil active" onclick="switchTab('lotofacil')">Lotofácil</button>
         <button class="btn-aba aba-megasena" onclick="switchTab('megasena')">Mega-Sena</button>
@@ -88,7 +107,7 @@
         </div>
 
         <div id="listaLF"></div>
-        <button class="btn btn-limpar" onclick="limpar('lotofacil')">Apagar Tudo</button>
+        <button class="btn btn-limpar" onclick="confirmarLimpar('lotofacil')">Apagar Tudo</button>
     </div>
 
     <div id="cont-megasena" class="container ms-theme">
@@ -111,7 +130,7 @@
         </div>
 
         <div id="listaMS"></div>
-        <button class="btn btn-limpar" onclick="limpar('megasena')">Apagar Tudo</button>
+        <button class="btn btn-limpar" onclick="confirmarLimpar('megasena')">Apagar Tudo</button>
     </div>
 
 <script>
@@ -119,6 +138,28 @@
         lotofacil: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_LF')) || [], api: 'lotofacil', min: 15, max: 20, max_bolas: 15, range: 25 },
         megasena: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_MS')) || [], api: 'megasena', min: 6, max: 20, max_bolas: 6, range: 60 }
     };
+
+    // FUNÇÃO DO MODAL CUSTOMIZADO
+    function exibirModal(msg, callback, apenasAviso = false) {
+        const modal = document.getElementById('modalCustom');
+        const msgEl = document.getElementById('modalMsg');
+        const btnSim = document.getElementById('btnSim');
+        const btnNao = document.getElementById('btnNao');
+
+        msgEl.innerText = msg;
+        modal.style.display = 'flex';
+
+        btnNao.style.display = apenasAviso ? 'none' : 'block';
+        btnSim.innerText = apenasAviso ? 'OK' : 'Confirmar';
+
+        btnSim.onclick = () => {
+            modal.style.display = 'none';
+            if (callback) callback();
+        };
+        btnNao.onclick = () => {
+            modal.style.display = 'none';
+        };
+    }
 
     function switchTab(tipo) {
         document.querySelectorAll('.container, .btn-aba').forEach(el => el.classList.remove('active'));
@@ -193,25 +234,21 @@
         const input = document.getElementById(tipo === 'lotofacil' ? 'inputLF' : 'inputMS');
         let numerosBrutos = input.value.split(/[\s,]+/).filter(n => n !== "").map(Number);
         
-        // 1. Verificar se há números repetidos no mesmo jogo
         let numerosUnicos = [...new Set(numerosBrutos)];
         if (numerosUnicos.length !== numerosBrutos.length) {
-            alert("⚠️ Erro: Existem números repetidos dentro do seu jogo. Verifique e tente novamente.");
+            exibirModal("⚠️ Erro: Existem números repetidos dentro do seu jogo.", null, true);
             return;
         }
 
         numerosUnicos.sort((a,b) => a - b);
         
-        // 2. Verificar limites de quantidade
         if (numerosUnicos.length < dados[tipo].min || numerosUnicos.length > dados[tipo].max) { 
-            alert(`Erro: O jogo da ${tipo} deve ter entre ${dados[tipo].min} e ${dados[tipo].max} números.`); 
+            exibirModal(`Erro: O jogo deve ter entre ${dados[tipo].min} e ${dados[tipo].max} números.`, null, true);
             return; 
         }
 
-        // 3. Verificar se o jogo já existe na lista salva
-        const jaExiste = dados[tipo].meusJogos.some(j => j.join('-') === numerosUnicos.join('-'));
-        if (jaExiste) {
-            alert("⚠️ JOGO JÁ CADASTRADO NA LISTA!");
+        if (dados[tipo].meusJogos.some(j => j.join('-') === numerosUnicos.join('-'))) {
+            exibirModal("⚠️ JOGO JÁ CADASTRADO NA LISTA!", null, true);
             return;
         }
 
@@ -221,18 +258,20 @@
         renderizar(tipo);
     }
 
-    function removerJogo(tipo, index) {
-        dados[tipo].meusJogos.splice(index, 1);
-        localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
-        renderizar(tipo);
+    function confirmarRemover(tipo, index) {
+        exibirModal("Deseja excluir este jogo?", () => {
+            dados[tipo].meusJogos.splice(index, 1);
+            localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
+            renderizar(tipo);
+        });
     }
 
-    function limpar(tipo) {
-        if(confirm(`Apagar todos os jogos?`)) {
+    function confirmarLimpar(tipo) {
+        exibirModal(`Apagar todos os jogos de ${tipo}?`, () => {
             dados[tipo].meusJogos = [];
             localStorage.removeItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS');
             renderizar(tipo);
-        }
+        });
     }
 
     function renderizar(tipo) {
@@ -263,7 +302,7 @@
 
             lista.innerHTML += `
                 <div class="card-jogo ${ganhou ? 'premiado' : ''}">
-                    <button class="remove-btn" onclick="removerJogo('${tipo}', ${idx})">X</button>
+                    <button class="remove-btn" onclick="confirmarRemover('${tipo}', ${idx})">X</button>
                     <div style="font-family: monospace; font-size: 1.1em; margin-bottom:5px; line-height: 1.4;">${htmlJogo}</div>
                     <small><b>${acertos} ACERTOS</b> ${ganhou ? '<span class="badge-premio">GANHOU!</span>' : ''}</small>
                 </div>`;
