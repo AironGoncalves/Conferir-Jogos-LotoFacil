@@ -49,7 +49,6 @@
         .lf-theme .resumo-geral { background: #eef2ff; border: 1px solid #c7d2fe; color: #3730a3; }
         .ms-theme .resumo-geral { background: #e6fffa; border: 1px solid #b2f5ea; color: #234e52; }
         
-        /* CAIXA DO RESUMO MAIS CLARA */
         .caixa-acerto { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.03); border-radius: 6px; padding: 4px 12px; display: inline-block; margin: 4px 2px; }
 
         .add-jogo-section { background: #eee; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
@@ -61,6 +60,12 @@
         .btn-random { background: #555; color: white; font-size: 0.85em; margin-top: 5px; }
         .btn-limpar { background: #ff4444; color: white; margin-top: 10px; opacity: 0.7; }
         
+        .painel-financeiro { margin-top: 15px; padding: 15px; border-radius: 10px; background: #fff; border: 1px solid #ddd; }
+        .financeiro-item { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
+        .financeiro-total { border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px; font-weight: bold; font-size: 16px; }
+        .lucro { color: #209869; }
+        .prejuizo { color: #d93025; }
+
         .aviso-legal { margin-top: 15px; font-size: 11px; color: #777; text-align: center; line-height: 1.4; padding: 10px; border-top: 1px dashed #ccc; }
 
         .card-jogo { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 10px; position: relative; }
@@ -111,6 +116,12 @@
         <div id="listaLF"></div>
         <button class="btn btn-limpar" onclick="confirmarLimpar('lotofacil')">Apagar Tudo</button>
         
+        <div class="painel-financeiro" id="finLF">
+            <div class="financeiro-item"><span>Total Investido:</span> <span id="valInvestidoLF">R$ 0,00</span></div>
+            <div class="financeiro-item"><span>Total de Ganhos:</span> <span id="valGanhoLF">R$ 0,00</span></div>
+            <div class="financeiro-total" id="statusLF">Saldo: R$ 0,00</div>
+        </div>
+        
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site é uma ferramenta independente para facilitar a conferência de jogos. Não nos responsabilizamos por eventuais inconsistências nos resultados apresentados. Este site <b>não garante prêmios</b> e não possui vínculo com a Caixa Econômica Federal. <b>Sempre confira seu bilhete oficial.</b>
         </div>
@@ -138,6 +149,12 @@
         <div id="listaMS"></div>
         <button class="btn btn-limpar" onclick="confirmarLimpar('megasena')">Apagar Tudo</button>
 
+        <div class="painel-financeiro" id="finMS">
+            <div class="financeiro-item"><span>Total Investido:</span> <span id="valInvestidoMS">R$ 0,00</span></div>
+            <div class="financeiro-item"><span>Total de Ganhos:</span> <span id="valGanhoMS">R$ 0,00</span></div>
+            <div class="financeiro-total" id="statusMS">Saldo: R$ 0,00</div>
+        </div>
+
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site é uma ferramenta independente para facilitar a conferência de jogos. Não nos responsabilizamos por eventuais inconsistências nos resultados apresentados. Este site <b>não garante prêmios</b> e não possui vínculo com a Caixa Econômica Federal. <b>Sempre confira seu bilhete oficial.</b>
         </div>
@@ -145,8 +162,14 @@
 
 <script>
     let dados = {
-        lotofacil: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_LF')) || [], api: 'lotofacil', min: 15, max: 20, max_bolas: 15, range: 25 },
-        megasena: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_MS')) || [], api: 'megasena', min: 6, max: 20, max_bolas: 6, range: 60 }
+        lotofacil: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_LF')) || [], api: 'lotofacil', min: 15, max: 20, max_bolas: 15, range: 25, custo: 3.50 },
+        megasena: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_MS')) || [], api: 'megasena', min: 6, max: 20, max_bolas: 6, range: 60, custo: 6.00 }
+    };
+
+    // Histórico financeiro da SESSÃO (Zera ao atualizar a página)
+    let financeiroH = { 
+        lotofacil: { investido: 0, ganho: 0, concursos_vistos: [] }, 
+        megasena: { investido: 0, ganho: 0, concursos_vistos: [] } 
     };
 
     function exibirModal(msg, callback, apenasAviso = false) {
@@ -173,20 +196,29 @@
         const idInfo = tipo === 'lotofacil' ? 'infoLF' : 'infoMS';
         const idInput = tipo === 'lotofacil' ? 'numLF' : 'numMS';
         const idBolas = tipo === 'lotofacil' ? 'bolasLF' : 'bolasMS';
+        const bolasEl = document.getElementById(idBolas);
+
         try {
             const termo = (concurso === '' || concurso === null) ? 'latest' : concurso;
             const response = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/${termo}`);
             if (!response.ok) throw new Error();
             const data = await response.json();
+            
+            dados[tipo].concursoAtual = data.concurso;
+            
             document.getElementById(idInput).value = data.concurso;
             dados[tipo].ganhadores = data.dezenas.map(Number);
             document.getElementById(idInfo).innerHTML = `Concurso ${data.concurso} - Data: ${data.data}`;
-            const bolasEl = document.getElementById(idBolas);
             bolasEl.innerHTML = '';
             data.dezenas.forEach(num => { bolasEl.innerHTML += `<div class="bola">${num}</div>`; });
             renderizar(tipo);
         } catch (e) {
-            document.getElementById(idInfo).innerHTML = `<span style="color:#d93025">⚠️ CONCURSO NÃO ENCONTRADO OU NÃO SORTEADO</span>`;
+            document.getElementById(idInfo).innerHTML = `<span style="color:#d93025">⚠️ CONCURSO NÃO ENCONTRADO</span>`;
+            bolasEl.innerHTML = '';
+            for(let i=0; i < dados[tipo].max_bolas; i++) {
+                bolasEl.innerHTML += `<div class="bola" style="background:#ccc; color:#666">- -</div>`;
+            }
+            dados[tipo].ganhadores = [];
             renderizar(tipo);
         }
     }
@@ -212,9 +244,15 @@
     function adicionarJogo(tipo) {
         const input = document.getElementById(tipo === 'lotofacil' ? 'inputLF' : 'inputMS');
         let nums = input.value.split(/[\s,]+/).filter(n => n !== "").map(Number);
+        const limiteMaximo = dados[tipo].range;
+        const numerosInvalidos = nums.filter(n => n < 1 || n > limiteMaximo);
+        if (numerosInvalidos.length > 0) {
+            exibirModal(`⚠️ Números fora do intervalo (01 a ${limiteMaximo})`, null, true);
+            return;
+        }
         let unicos = [...new Set(nums)];
-        if (unicos.length !== nums.length) { exibirModal("⚠️ Atenção: Números repetidos detectados no jogo!", null, true); return; }
-        if (unicos.length < dados[tipo].min || unicos.length > dados[tipo].max) { exibirModal(`Aviso: Digite entre ${dados[tipo].min} e ${dados[tipo].max} números.`, null, true); return; }
+        if (unicos.length !== nums.length) { exibirModal("⚠️ Números repetidos detectados!", null, true); return; }
+        if (unicos.length < dados[tipo].min || unicos.length > dados[tipo].max) { exibirModal(`Digite entre ${dados[tipo].min} e ${dados[tipo].max} números.`, null, true); return; }
         unicos.sort((a,b) => a-b);
         dados[tipo].meusJogos.push(unicos);
         localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
@@ -234,6 +272,8 @@
         exibirModal(`Deseja apagar todos os jogos de ${tipo}?`, () => {
             dados[tipo].meusJogos = [];
             localStorage.removeItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS');
+            // Zera o financeiro também ao limpar tudo
+            financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
             renderizar(tipo);
         });
     }
@@ -242,18 +282,30 @@
         const lista = document.getElementById(tipo === 'lotofacil' ? 'listaLF' : 'listaMS');
         const resumo = document.getElementById(tipo === 'lotofacil' ? 'resumoLF' : 'resumoMS');
         const classeAcerto = tipo === 'lotofacil' ? 'num-acertado-lf' : 'num-acertado-ms';
+        
+        let totalInvestidoConcurso = dados[tipo].meusJogos.length * dados[tipo].custo;
+        let totalGanhoConcurso = 0;
+
         lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
         let stats = {};
         let totalPremiados = 0;
         
         if (dados[tipo].meusJogos.length === 0) { 
             resumo.innerHTML = "Nenhum jogo salvo."; 
+            atualizarPainelFinanceiro(tipo);
             return; 
         }
 
         dados[tipo].meusJogos.forEach((jogo, idx) => {
             const acertos = jogo.filter(n => dados[tipo].ganhadores.includes(n)).length;
             stats[acertos] = (stats[acertos] || 0) + 1;
+            
+            if(tipo === 'lotofacil' && dados[tipo].ganhadores.length > 0) {
+                if(acertos === 11) totalGanhoConcurso += 7.00;
+                if(acertos === 12) totalGanhoConcurso += 14.00;
+                if(acertos === 13) totalGanhoConcurso += 35.00;
+            }
+
             const ganhou = acertos >= (tipo === 'lotofacil' ? 11 : 4) && dados[tipo].ganhadores.length > 0;
             if(ganhou) totalPremiados++;
             
@@ -269,16 +321,15 @@
             </div>`;
         });
 
+        // ACUMULAR NO HISTÓRICO DA SESSÃO
+        processarAcumulo(tipo, totalInvestidoConcurso, totalGanhoConcurso);
+
         if (dados[tipo].ganhadores.length > 0) {
             if (totalPremiados > 0) {
                 let resumoHtml = `<strong>🎉 PARABÉNS! ${totalPremiados} jogo(s) premiado(s)!</strong><br>`;
-                resumoHtml += `<strong>Resumo do Concurso:</strong><br>`;
-                
                 const faixas = tipo === 'lotofacil' ? [15,14,13,12,11] : [6,5,4];
                 faixas.forEach(f => {
-                    if (stats[f]) {
-                        resumoHtml += `<div class="caixa-acerto">${stats[f]} jogo(s) de <b>${f} acertos</b></div><br>`;
-                    }
+                    if (stats[f]) resumoHtml += `<div class="caixa-acerto">${stats[f]} jogo(s) de <b>${f} acertos</b></div><br>`;
                 });
                 resumo.innerHTML = resumoHtml;
             } else {
@@ -287,6 +338,35 @@
         } else {
             resumo.innerHTML = "Aguardando resultado...";
         }
+
+        atualizarPainelFinanceiro(tipo);
+    }
+
+    function processarAcumulo(tipo, custo, premio) {
+        const conc = dados[tipo].concursoAtual;
+        // Só acumula se houver resultado válido e se o concurso ainda não foi contabilizado nesta sessão
+        if (conc && !financeiroH[tipo].concursos_vistos.includes(conc) && dados[tipo].ganhadores.length > 0) {
+            financeiroH[tipo].investido += custo;
+            financeiroH[tipo].ganho += premio;
+            financeiroH[tipo].concursos_vistos.push(conc);
+        }
+    }
+
+    function atualizarPainelFinanceiro(tipo) {
+        const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
+        const totalInvestidoH = financeiroH[tipo].investido;
+        const totalGanhoH = financeiroH[tipo].ganho;
+        const saldoTotal = totalGanhoH - totalInvestidoH;
+        
+        document.getElementById(`valInvestido${sufixo}`).innerText = `R$ ${totalInvestidoH.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        document.getElementById(`valGanho${sufixo}`).innerText = `R$ ${totalGanhoH.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        
+        const elStatus = document.getElementById(`status${sufixo}`);
+        elStatus.innerText = `Saldo: R$ ${saldoTotal.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        
+        if(saldoTotal > 0) elStatus.className = 'financeiro-total lucro';
+        else if(saldoTotal < 0) elStatus.className = 'financeiro-total prejuizo';
+        else elStatus.className = 'financeiro-total';
     }
 
     window.onload = () => { buscar('lotofacil'); buscar('megasena'); };
