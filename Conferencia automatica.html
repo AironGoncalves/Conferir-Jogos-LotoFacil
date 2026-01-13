@@ -344,7 +344,7 @@
             renderizar(tipo);
             return data.concurso;
         } catch (e) {
-            document.getElementById(idInfo).innerHTML = `<span style="color:#d93025">⚠️ CONCURSO NÃO ENCONTRADO</span>`;
+            document.getElementById(idInfo).innerHTML = `<span style="color:#d93025">⚠️ CONCURSO NÃO ENCONTRADO  OU NÃO SORTEADO</span>`;
             bolasEl.innerHTML = '';
             for(let i=0; i < dados[tipo].max_bolas; i++) bolasEl.innerHTML += `<div class="bola" style="background:#ccc; color:#666">- -</div>`;
             dados[tipo].ganhadores = [];
@@ -629,3 +629,4 @@
 </script>
 </body>
 </html>
+
