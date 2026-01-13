@@ -96,10 +96,6 @@
         .remove-btn { position: absolute; top: 5px; right: 5px; color: #999; cursor: pointer; border: none; background: none; font-weight: bold; }
         .num-acertado-lf { color: var(--cor-lotofacil); font-weight: bold; background: #fdf0fd; border-bottom: 2px solid var(--cor-lotofacil); }
         .num-acertado-ms { color: var(--cor-megasena); font-weight: bold; background: #f0fdf4; border-bottom: 2px solid var(--cor-megasena); }
-
-        /* Estilo da Barra de Progresso */
-        .progress-container { width: 100%; background-color: #ddd; border-radius: 10px; margin-top: 8px; display: none; height: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background-color: #f39c12; width: 0%; transition: width 0.1s; }
     </style>
 </head>
 <body class="lf-theme">
@@ -344,7 +340,7 @@
             renderizar(tipo);
             return data.concurso;
         } catch (e) {
-            document.getElementById(idInfo).innerHTML = `<span style="color:#d93025">⚠️ CONCURSO NÃO ENCONTRADO  OU NÃO SORTEADO</span>`;
+            document.getElementById(idInfo).innerHTML = `<span style="color:#d93025">⚠️ CONCURSO NÃO ENCONTRADO</span>`;
             bolasEl.innerHTML = '';
             for(let i=0; i < dados[tipo].max_bolas; i++) bolasEl.innerHTML += `<div class="bola" style="background:#ccc; color:#666">- -</div>`;
             dados[tipo].ganhadores = [];
@@ -355,9 +351,6 @@
 
     async function conferirMassa(tipo) {
         const inputMassa = document.getElementById(`massa_${tipo}`);
-        const progContainer = document.getElementById(`progContainer_${tipo}`);
-        const progBar = document.getElementById(`progBar_${tipo}`);
-        
         let inicio = parseInt(inputMassa.value);
         if (isNaN(inicio) || inicio <= 0) { exibirModal("Digite um concurso inicial válido.", null, true); return; }
         
@@ -365,26 +358,17 @@
         const originalText = btnMassa.innerText;
         btnMassa.disabled = true;
         btnMassa.innerText = "⏳ Processando...";
-        
-        progContainer.style.display = 'block';
-        progBar.style.width = '0%';
 
         try {
             const respLatest = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/latest`);
             const dataLatest = await respLatest.json();
             const fim = dataLatest.concurso;
 
-            if (inicio > fim) { exibirModal("Concurso inicial maior que o atual.", null, true); return; }
-
             zerarFinanceiro(tipo);
             contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] };
 
-            const total = fim - inicio + 1;
-
             for (let c = inicio; c <= fim; c++) {
-                const percent = (((c - inicio + 1) / total) * 100).toFixed(0);
-                progBar.style.width = percent + '%';
-                btnMassa.innerText = `⏳ Conc. ${c} (${percent}%)`;
+                btnMassa.innerText = `⏳ Conc. ${c}...`;
                 await buscar(tipo, c);
             }
             exibirModal(`Conferência finalizada do ${inicio} ao ${fim}!`, null, true);
@@ -393,7 +377,6 @@
         } finally {
             btnMassa.disabled = false;
             btnMassa.innerText = originalText;
-            setTimeout(() => { progContainer.style.display = 'none'; }, 2000);
         }
     }
 
@@ -605,17 +588,9 @@
                 btn50.onclick = () => { for(let i=0; i<50; i++) gerarSurpresinha(tipo); exibirModal("50 jogos gerados com sucesso!", null, true); };
                 container.appendChild(btn50);
 
+                // INCLUSÃO DA CONFERÊNCIA EM MASSA
                 const divMassa = document.createElement('div');
-                divMassa.innerHTML = `
-                    <label style="font-size:12px"><b>Conferência em Massa:</b></label>
-                    <div style="display:flex; gap:5px; margin-top:5px">
-                        <input type="number" id="massa_${tipo}" placeholder="Conc. Inicial" style="flex:1; padding:8px; font-size:12px">
-                        <button id="btnMassa_${tipo}" class="btn" style="flex:1; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button>
-                    </div>
-                    <div id="progContainer_${tipo}" class="progress-container">
-                        <div id="progBar_${tipo}" class="progress-bar"></div>
-                    </div>
-                `;
+                divMassa.innerHTML = `<label style="font-size:12px"><b>Conferência em Massa:</b></label><div style="display:flex; gap:5px; margin-top:5px"><input type="number" id="massa_${tipo}" placeholder="Conc. Inicial" style="flex:1; padding:8px; font-size:12px"><button id="btnMassa_${tipo}" class="btn" style="flex:1; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button></div>`;
                 container.appendChild(divMassa);
             }
         });
@@ -629,4 +604,3 @@
 </script>
 </body>
 </html>
-
