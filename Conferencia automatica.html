@@ -78,6 +78,7 @@
         .badge-vitorias { background: #ffd700; color: #000; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 5px; border: 1px solid #daa520; font-weight: 900; }
         .badge-doze { background: #00c3ff; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 5px; border: 1px solid #0096c7; font-weight: 900; }
         .badge-treze { background: #3730a3; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 5px; border: 1px solid #1e1b4b; font-weight: 900; }
+        .badge-dinheiro { background: #209869; color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 5px; font-weight: 900; }
         
         .painel-financeiro { margin-top: 15px; padding: 15px; border-radius: 10px; background: #fff; border: 1px solid #ddd; }
         .financeiro-item { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
@@ -85,12 +86,13 @@
         .lucro { color: #209869; }
         .prejuizo { color: #d93025; }
 
+        .contagem-especial { margin-top: 10px; padding: 12px; background: #fffde7; border: 1px solid #fbc02d; border-radius: 10px; font-size: 14px; color: #5d4037; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
         .aviso-legal { margin-top: 15px; font-size: 11px; color: #777; text-align: center; line-height: 1.4; padding: 10px; border-top: 1px dashed #ccc; }
 
         .card-jogo { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 10px; position: relative; }
         .premiado { background-color: #d4edda !important; border: 2px solid #28a745 !important; }
-        .badge-premio { background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 10px; }
-
+        
         .remove-btn { position: absolute; top: 5px; right: 5px; color: #999; cursor: pointer; border: none; background: none; font-weight: bold; }
         .num-acertado-lf { color: var(--cor-lotofacil); font-weight: bold; background: #fdf0fd; border-bottom: 2px solid var(--cor-lotofacil); }
         .num-acertado-ms { color: var(--cor-megasena); font-weight: bold; background: #f0fdf4; border-bottom: 2px solid var(--cor-megasena); }
@@ -151,6 +153,12 @@
             <div class="financeiro-item"><span>Total de Ganhos:</span> <span id="valGanhoLF">R$ 0,00</span></div>
             <div class="financeiro-total" id="statusLF">Saldo: R$ 0,00</div>
         </div>
+
+        <div id="contagemEspecialLF" class="contagem-especial">
+            <strong>🏆 Prêmios de Elite Acumulados:</strong>
+            <div id="count14LF">14 Acertos: 0x</div>
+            <div id="count15LF">15 Acertos: 0x</div>
+        </div>
         
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site é uma ferramenta independente para facilitar a conferência de jogos. Não nos responsabilizamos por eventuais inconsistências nos resultados apresentados. Este site <b>não garante prêmios</b> e não possui vínculo com a Caixa Econômica Federal. <b>Sempre confira seu bilhete oficial.</b>
@@ -196,6 +204,12 @@
             <div class="financeiro-total" id="statusMS">Saldo: R$ 0,00</div>
         </div>
 
+        <div id="contagemEspecialMS" class="contagem-especial">
+            <strong>🏆 Prêmios de Elite Acumulados:</strong>
+            <div id="count14MS">Quina: 0x</div>
+            <div id="count15MS">Sena: 0x</div>
+        </div>
+
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site é uma ferramenta independente para facilitar a conferência de jogos. Não nos responsabilizamos por eventuais inconsistências nos resultados apresentados. Este site <b>não garante prêmios</b> e não possui vínculo com a Caixa Econômica Federal. <b>Sempre confira seu bilhete oficial.</b>
         </div>
@@ -205,9 +219,11 @@
     function carregarJogos(tipo) {
         let storage = JSON.parse(localStorage.getItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS')) || [];
         return storage.map(j => {
-            if (Array.isArray(j)) return { numeros: j, vitorias: 0, vitorias12: 0, vitorias13: 0, concursosVistos: [] };
+            if (Array.isArray(j)) return { numeros: j, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] };
             if (!j.vitorias12) j.vitorias12 = 0;
             if (!j.vitorias13) j.vitorias13 = 0;
+            if (!j.ganhoAcumulado) j.ganhoAcumulado = 0;
+            if (!j.concursosVistos) j.concursosVistos = [];
             return j;
         });
     }
@@ -222,6 +238,12 @@
         megasena: { investido: 0, ganho: 0, concursos_vistos: [] } 
     };
 
+    // Objeto para contagem de elite (acumulativa durante a navegação)
+    let contagemElite = {
+        lotofacil: { c14: 0, c15: 0, concursos_processados: [] },
+        megasena: { c14: 0, c15: 0, concursos_processados: [] }
+    };
+
     function salvarSlot(tipo) {
         if (dados[tipo].meusJogos.length === 0) {
             exibirModal("Não há jogos na tela para salvar.", null, true);
@@ -230,7 +252,7 @@
         const slot = prompt("Em qual slot deseja guardar? (A, B, C, D ou E)").toUpperCase();
         const slotsValidos = ['A', 'B', 'C', 'D', 'E'];
         if (slotsValidos.includes(slot)) {
-            const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({ ...j, vitorias: 0, vitorias12: 0, vitorias13: 0, concursosVistos: [] }));
+            const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({ ...j, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] }));
             const key = `slot_${tipo}_${slot}`;
             localStorage.setItem(key, JSON.stringify(jogosParaSalvar));
             exibirModal(`Jogos guardados com sucesso no Jogo ${slot} (Contagens zeradas)!`, null, true);
@@ -310,7 +332,7 @@
             if(!numeros.includes(n)) numeros.push(n);
         }
         numeros.sort((a,b) => a - b);
-        dados[tipo].meusJogos.push({ numeros: numeros, vitorias: 0, vitorias12: 0, vitorias13: 0, concursosVistos: [] });
+        dados[tipo].meusJogos.push({ numeros: numeros, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] });
         salvarNoLocalStorage(tipo);
         renderizar(tipo);
     }
@@ -324,7 +346,7 @@
         if (unicos.length !== nums.length) { exibirModal("⚠️ Números repetidos detectados!", null, true); return; }
         if (unicos.length < dados[tipo].min || unicos.length > dados[tipo].max) { exibirModal(`Digite entre ${dados[tipo].min} e ${dados[tipo].max} números.`, null, true); return; }
         unicos.sort((a,b) => a-b);
-        dados[tipo].meusJogos.push({ numeros: unicos, vitorias: 0, vitorias12: 0, vitorias13: 0, concursosVistos: [] });
+        dados[tipo].meusJogos.push({ numeros: unicos, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] });
         salvarNoLocalStorage(tipo);
         input.value = '';
         renderizar(tipo);
@@ -334,58 +356,105 @@
 
     function confirmarRemover(tipo, index) { exibirModal("Deseja excluir este jogo?", () => { dados[tipo].meusJogos.splice(index, 1); salvarNoLocalStorage(tipo); renderizar(tipo); }); }
 
-    function confirmarLimpar(tipo) { exibirModal(`Deseja apagar todos os jogos de ${tipo}?`, () => { dados[tipo].meusJogos = []; localStorage.removeItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS'); financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] }; renderizar(tipo); }); }
+    function confirmarLimpar(tipo) { 
+        exibirModal(`Deseja apagar todos os jogos de ${tipo}?`, () => { 
+            dados[tipo].meusJogos = []; 
+            localStorage.removeItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS'); 
+            financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] }; 
+            contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] };
+            renderizar(tipo); 
+        }); 
+    }
 
     function renderizar(tipo) {
         const lista = document.getElementById(tipo === 'lotofacil' ? 'listaLF' : 'listaMS');
         const resumo = document.getElementById(tipo === 'lotofacil' ? 'resumoLF' : 'resumoMS');
         const classeAcerto = tipo === 'lotofacil' ? 'num-acertado-lf' : 'num-acertado-ms';
-        if (dados[tipo].meusJogos.length === 0) { lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>'; resumo.innerHTML = "Nenhum jogo salvo."; atualizarPainelFinanceiro(tipo); return; }
+        
+        if (dados[tipo].meusJogos.length === 0) { 
+            lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>'; 
+            resumo.innerHTML = "Nenhum jogo salvo."; 
+            atualizarPainelFinanceiro(tipo); 
+            atualizarPainelElite(tipo);
+            return; 
+        }
+
         const concursoAtual = dados[tipo].concursoAtual;
         let totalInvestidoConcurso = dados[tipo].meusJogos.length * dados[tipo].custo;
         let totalGanhoConcurso = 0;
         let totalPremiados = 0;
         let stats = {};
 
+        // Variáveis para somar a elite DESTE concurso específico
+        let elite14Neste = 0;
+        let elite15Neste = 0;
+
         dados[tipo].meusJogos.forEach(jogo => {
             const acertos = jogo.numeros.filter(n => dados[tipo].ganhadores.includes(n)).length;
             const minimoParaGanhar = (tipo === 'lotofacil' ? 11 : 4);
             const ganhou = acertos >= minimoParaGanhar && dados[tipo].ganhadores.length > 0;
+            
+            // Verifica se é elite (14 ou 15 na Lotofácil | 5 ou 6 na Mega)
+            if (dados[tipo].ganhadores.length > 0) {
+                if (tipo === 'lotofacil') {
+                    if (acertos === 14) elite14Neste++;
+                    if (acertos === 15) elite15Neste++;
+                } else {
+                    if (acertos === 5) elite14Neste++;
+                    if (acertos === 6) elite15Neste++;
+                }
+            }
+
+            let valorGanhoNeste = 0;
+            if(ganhou && tipo === 'lotofacil') {
+                if(acertos === 11) valorGanhoNeste = 7.00;
+                if(acertos === 12) valorGanhoNeste = 14.00;
+                if(acertos === 13) valorGanhoNeste = 35.00;
+            }
+
             if (ganhou) {
                 if (concursoAtual && !jogo.concursosVistos.includes(concursoAtual)) {
                     jogo.vitorias = (jogo.vitorias || 0) + 1;
                     if(tipo === 'lotofacil' && acertos === 12) jogo.vitorias12 = (jogo.vitorias12 || 0) + 1;
                     if(tipo === 'lotofacil' && acertos === 13) jogo.vitorias13 = (jogo.vitorias13 || 0) + 1;
+                    jogo.ganhoAcumulado = (jogo.ganhoAcumulado || 0) + valorGanhoNeste;
                     jogo.concursosVistos.push(concursoAtual);
                     salvarNoLocalStorage(tipo);
                 }
                 totalPremiados++;
                 stats[acertos] = (stats[acertos] || 0) + 1;
-                if(tipo === 'lotofacil') {
-                    if(acertos === 11) totalGanhoConcurso += 7.00;
-                    if(acertos === 12) totalGanhoConcurso += 14.00;
-                    if(acertos === 13) totalGanhoConcurso += 35.00;
-                }
+                totalGanhoConcurso += valorGanhoNeste;
             }
+            jogo.ultimoAcertoTemp = acertos; 
         });
 
-        // Mantém o ranking priorizando 12 pontos
+        // Lógica de Acúmulo de Elite (Não reseta ao buscar novos concursos)
+        if (concursoAtual && !contagemElite[tipo].concursos_processados.includes(concursoAtual) && dados[tipo].ganhadores.length > 0) {
+            contagemElite[tipo].c14 += elite14Neste;
+            contagemElite[tipo].c15 += elite15Neste;
+            contagemElite[tipo].concursos_processados.push(concursoAtual);
+        }
+
         dados[tipo].meusJogos.sort((a, b) => (b.vitorias12 || 0) !== (a.vitorias12 || 0) ? (b.vitorias12 || 0) - (a.vitorias12 || 0) : (b.vitorias || 0) - (a.vitorias || 0));
         
-        lista.innerHTML = '<h3>Ranking Top 12 (Mais Vitórias de 12 pts):</h3>';
+        lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
         dados[tipo].meusJogos.forEach((jogo, idx) => {
-            const acertos = jogo.numeros.filter(n => dados[tipo].ganhadores.includes(n)).length;
+            const acertos = jogo.ultimoAcertoTemp;
             const ganhou = acertos >= (tipo === 'lotofacil' ? 11 : 4) && dados[tipo].ganhadores.length > 0;
-            const htmlJogo = jogo.numeros.map(n => { const s = n.toString().padStart(2, '0'); return (dados[tipo].ganhadores.includes(n)) ? `<span class="${classeAcerto}">${s}</span>` : s; }).join(' ');
+            const htmlJogo = jogo.numeros.map(n => { 
+                const s = n.toString().padStart(2, '0'); 
+                return (dados[tipo].ganhadores.includes(n)) ? `<span class="${classeAcerto}">${s}</span>` : s; 
+            }).join(' ');
             
             lista.innerHTML += `
                 <div class="card-jogo ${ganhou ? 'premiado' : ''}"> 
                     <button class="remove-btn" onclick="confirmarRemover('${tipo}', ${idx})">X</button> 
                     <div style="font-family: monospace; font-size: 1.1em; margin-bottom:5px;">${htmlJogo}</div> 
-                    <small><b>${acertos} ACERTOS</b> ${ganhou ? '<span class="badge-premio">GANHOU!</span>' : ''}</small> 
+                    <small><b>${acertos} ACERTOS</b></small> 
                     ${jogo.vitorias > 0 ? `<span class="badge-vitorias">🏆 ${jogo.vitorias}x Premiado</span>` : ''} 
                     ${tipo === 'lotofacil' && jogo.vitorias12 > 0 ? `<span class="badge-doze">✨ 12 pts: ${jogo.vitorias12}x</span>` : ''}
                     ${tipo === 'lotofacil' && jogo.vitorias13 > 0 ? `<span class="badge-treze">🔥 13 pts: ${jogo.vitorias13}x</span>` : ''} 
+                    ${jogo.ganhoAcumulado > 0 ? `<span class="badge-dinheiro">💰 Total: R$ ${jogo.ganhoAcumulado.toFixed(2)}</span>` : ''}
                 </div>`;
         });
 
@@ -398,7 +467,18 @@
                 resumo.innerHTML = resumoHtml;
             } else { resumo.innerHTML = "Nenhum jogo premiado neste concurso."; }
         } else { resumo.innerHTML = "Aguardando resultado..."; }
+        
         atualizarPainelFinanceiro(tipo);
+        atualizarPainelElite(tipo);
+    }
+
+    function atualizarPainelElite(tipo) {
+        const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
+        const label14 = tipo === 'lotofacil' ? '14 Acertos' : 'Quina';
+        const label15 = tipo === 'lotofacil' ? '15 Acertos' : 'Sena';
+        
+        document.getElementById(`count14${sufixo}`).innerHTML = `${label14}: <b>${contagemElite[tipo].c14}x</b>`;
+        document.getElementById(`count15${sufixo}`).innerHTML = `${label15}: <b>${contagemElite[tipo].c15}x</b>`;
     }
 
     function processarAcumulo(tipo, custo, premio) {
@@ -426,11 +506,13 @@
 
     function zerarFinanceiro(tipo) {
         financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
+        // Opcional: zerar elite ao zerar financeiro? Mantive separado conforme pedido
         atualizarPainelFinanceiro(tipo);
     }
 
     function resetarEBuscar(tipo, conc) {
         zerarFinanceiro(tipo);
+        contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] }; // Reinicia contagem ao clicar em Buscar
         buscar(tipo, conc);
     }
 
@@ -440,15 +522,15 @@
             if (container) {
                 const hr = document.createElement('hr');
                 hr.style.margin = "10px 0"; hr.style.opacity = "0.3";
-                const btn46 = document.createElement('button');
-                btn46.className = "btn btn-random";
-                btn46.style.backgroundColor = "#2c3e50";
-                btn46.innerHTML = "🎰 Gerar 46 Jogos (Surpresinha)";
-                btn46.onclick = () => { for(let i=0; i<46; i++) gerarSurpresinha(tipo); exibirModal("46 jogos gerados com sucesso!", null, true); };
+                const btn50 = document.createElement('button');
+                btn50.className = "btn btn-random";
+                btn50.style.backgroundColor = "#2c3e50";
+                btn50.innerHTML = "🎰 Gerar 50 Jogos (Surpresinha)";
+                btn50.onclick = () => { for(let i=0; i<50; i++) gerarSurpresinha(tipo); exibirModal("50 jogos gerados com sucesso!", null, true); };
                 const divMassa = document.createElement('div');
                 divMassa.style.marginTop = "10px";
                 divMassa.innerHTML = `<label style="font-size:12px"><b>Conferência em Massa:</b></label><div style="display:flex; gap:5px; margin-top:5px"><input type="number" id="massa_${tipo}" placeholder="Conc. Inicial" style="flex:1; padding:8px; font-size:12px"><button id="btnMassa_${tipo}" class="btn" style="flex:1; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button></div>`;
-                container.appendChild(hr); container.appendChild(btn46); container.appendChild(divMassa);
+                container.appendChild(hr); container.appendChild(btn50); container.appendChild(divMassa);
             }
         });
     }
@@ -460,6 +542,7 @@
         if (isNaN(inicio) || inicio <= 0) { exibirModal("Digite um concurso inicial válido.", null, true); return; }
         
         zerarFinanceiro(tipo);
+        contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] };
         
         btn.disabled = true;
         btn.innerText = "Processando...";
@@ -472,8 +555,8 @@
                 await buscar(tipo, c);
                 await new Promise(r => setTimeout(r, 150));
             }
-            exibirModal(`Conferência finalizada! Saldo atualizado do concurso ${inicio} ao ${ultimo}.`, null, true);
-        } catch (e) { exibirModal("Erro na conferência automática.", null, true); } finally { btn.disabled = false; btn.innerText = "🔍 Conferir até o Fim"; }
+            exibirModal(`Conferência finalizada!`, null, true);
+        } catch (e) { exibirModal("Erro na conferência.", null, true); } finally { btn.disabled = false; btn.innerText = "🔍 Conferir até o Fim"; }
     }
 </script>
 </body>
