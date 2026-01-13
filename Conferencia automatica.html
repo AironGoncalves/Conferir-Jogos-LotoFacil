@@ -15,8 +15,8 @@
         
         #modalCustom { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 20px; border-radius: 12px; text-align: center; max-width: 320px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .modal-btns { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-        .btn-modal { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; flex: 1; }
+        .modal-btns { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+        .btn-modal { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; flex: 1; min-width: 80px; }
         .lf-theme .btn-sim { background: var(--cor-lotofacil); color: white; }
         .ms-theme .btn-sim { background: var(--cor-megasena); color: white; }
         .btn-nao { background: #eee; color: #333; }
@@ -103,7 +103,7 @@
     <div id="modalCustom">
         <div class="modal-content">
             <p id="modalMsg" style="font-weight: bold; color: #333;"></p>
-            <div class="modal-btns">
+            <div id="modalContainerBotoes" class="modal-btns">
                 <button id="btnSim" class="btn-modal btn-sim">Confirmar</button>
                 <button id="btnNao" class="btn-modal btn-nao">Cancelar</button>
             </div>
@@ -135,7 +135,7 @@
         </div>
 
         <div class="secao-memoria">
-            <button class="btn-guardar" onclick="salvarSlot('lotofacil')">💾 Guardar Lista Atual em um Slot</button>
+            <button class="btn-guardar" onclick="prepararSalvamentoSlot('lotofacil')">💾 Guardar Lista Atual em um Slot</button>
             <div class="grid-memoria">
                 <button class="btn-memoria btn-memoria-lf-A" onclick="carregarSlot('lotofacil', 'A')">Jogo A</button>
                 <button class="btn-memoria btn-memoria-lf-B" onclick="carregarSlot('lotofacil', 'B')">Jogo B</button>
@@ -185,7 +185,7 @@
         </div>
 
         <div class="secao-memoria">
-            <button class="btn-guardar" onclick="salvarSlot('megasena')">💾 Guardar Lista Atual em um Slot</button>
+            <button class="btn-guardar" onclick="prepararSalvamentoSlot('megasena')">💾 Guardar Lista Atual em um Slot</button>
             <div class="grid-memoria">
                 <button class="btn-memoria btn-memoria-ms-A" onclick="carregarSlot('megasena', 'A')">Jogo A</button>
                 <button class="btn-memoria btn-memoria-ms-B" onclick="carregarSlot('megasena', 'B')">Jogo B</button>
@@ -238,42 +238,70 @@
         megasena: { investido: 0, ganho: 0, concursos_vistos: [] } 
     };
 
-    // Objeto para contagem de elite (acumulativa durante a navegação)
     let contagemElite = {
         lotofacil: { c14: 0, c15: 0, concursos_processados: [] },
         megasena: { c14: 0, c15: 0, concursos_processados: [] }
     };
 
-    function salvarSlot(tipo) {
+    function prepararSalvamentoSlot(tipo) {
         if (dados[tipo].meusJogos.length === 0) {
             exibirModal("Não há jogos na tela para salvar.", null, true);
             return;
         }
-        const slot = prompt("Em qual slot deseja guardar? (A, B, C, D ou E)").toUpperCase();
-        const slotsValidos = ['A', 'B', 'C', 'D', 'E'];
-        if (slotsValidos.includes(slot)) {
-            const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({ ...j, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] }));
-            const key = `slot_${tipo}_${slot}`;
-            localStorage.setItem(key, JSON.stringify(jogosParaSalvar));
-            exibirModal(`Jogos guardados com sucesso no Jogo ${slot} (Contagens zeradas)!`, null, true);
-        } else { exibirModal("Slot inválido. Escolha de A a E.", null, true); }
+        const modal = document.getElementById('modalCustom');
+        const msgEl = document.getElementById('modalMsg');
+        const containerBotoes = document.getElementById('modalContainerBotoes');
+        msgEl.innerText = "Em qual Slot deseja guardar?";
+        containerBotoes.innerHTML = '';
+        ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-modal btn-sim';
+            btn.innerText = `Jogo ${slot}`;
+            btn.onclick = () => { executarSalvarSlot(tipo, slot); restaurarBotoesModal(); modal.style.display = 'none'; };
+            containerBotoes.appendChild(btn);
+        });
+        const btnCanc = document.createElement('button');
+        btnCanc.className = 'btn-modal btn-nao';
+        btnCanc.innerText = 'Cancelar';
+        btnCanc.onclick = () => { restaurarBotoesModal(); modal.style.display = 'none'; };
+        containerBotoes.appendChild(btnCanc);
+        modal.style.display = 'flex';
+    }
+
+    function executarSalvarSlot(tipo, slot) {
+        const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({ ...j, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] }));
+        const key = `slot_${tipo}_${slot}`;
+        localStorage.setItem(key, JSON.stringify(jogosParaSalvar));
+        exibirModal(`Jogos guardados com sucesso no Jogo ${slot}!`, null, true);
+    }
+
+    function restaurarBotoesModal() {
+        const container = document.getElementById('modalContainerBotoes');
+        container.innerHTML = `
+            <button id="btnSim" class="btn-modal btn-sim">Confirmar</button>
+            <button id="btnNao" class="btn-modal btn-nao">Cancelar</button>
+        `;
     }
 
     function carregarSlot(tipo, slot) {
         const key = `slot_${tipo}_${slot}`;
         const salvo = localStorage.getItem(key);
         if (salvo) {
+            financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
+            contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] };
             dados[tipo].meusJogos = JSON.parse(salvo);
             salvarNoLocalStorage(tipo);
             renderizar(tipo);
             const prefixo = tipo === 'lotofacil' ? 'lf' : 'ms';
             document.querySelectorAll(`.btn-memoria`).forEach(btn => { if(btn.className.includes(`btn-memoria-${prefixo}`)) btn.classList.remove('slot-active'); });
-            document.querySelector(`.btn-memoria-${prefixo}-${slot}`).classList.add('slot-active');
+            const btnSel = document.querySelector(`.btn-memoria-${prefixo}-${slot}`);
+            if(btnSel) btnSel.classList.add('slot-active');
             exibirModal(`Jogo ${slot} carregado para conferência!`, null, true);
         } else { exibirModal(`O Jogo ${slot} está vazio.`, null, true); }
     }
 
     function exibirModal(msg, callback, apenasAviso = false) {
+        restaurarBotoesModal();
         const modal = document.getElementById('modalCustom');
         const msgEl = document.getElementById('modalMsg');
         const btnSim = document.getElementById('btnSim');
@@ -310,12 +338,45 @@
             bolasEl.innerHTML = '';
             data.dezenas.forEach(num => { bolasEl.innerHTML += `<div class="bola">${num}</div>`; });
             renderizar(tipo);
+            return data.concurso;
         } catch (e) {
             document.getElementById(idInfo).innerHTML = `<span style="color:#d93025">⚠️ CONCURSO NÃO ENCONTRADO</span>`;
             bolasEl.innerHTML = '';
             for(let i=0; i < dados[tipo].max_bolas; i++) bolasEl.innerHTML += `<div class="bola" style="background:#ccc; color:#666">- -</div>`;
             dados[tipo].ganhadores = [];
             renderizar(tipo);
+            return null;
+        }
+    }
+
+    async function conferirMassa(tipo) {
+        const inputMassa = document.getElementById(`massa_${tipo}`);
+        let inicio = parseInt(inputMassa.value);
+        if (isNaN(inicio) || inicio <= 0) { exibirModal("Digite um concurso inicial válido.", null, true); return; }
+        
+        const btnMassa = document.getElementById(`btnMassa_${tipo}`);
+        const originalText = btnMassa.innerText;
+        btnMassa.disabled = true;
+        btnMassa.innerText = "⏳ Processando...";
+
+        try {
+            const respLatest = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/latest`);
+            const dataLatest = await respLatest.json();
+            const fim = dataLatest.concurso;
+
+            zerarFinanceiro(tipo);
+            contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] };
+
+            for (let c = inicio; c <= fim; c++) {
+                btnMassa.innerText = `⏳ Conc. ${c}...`;
+                await buscar(tipo, c);
+            }
+            exibirModal(`Conferência finalizada do ${inicio} ao ${fim}!`, null, true);
+        } catch (err) {
+            exibirModal("Erro na conferência em massa.", null, true);
+        } finally {
+            btnMassa.disabled = false;
+            btnMassa.innerText = originalText;
         }
     }
 
@@ -384,8 +445,6 @@
         let totalGanhoConcurso = 0;
         let totalPremiados = 0;
         let stats = {};
-
-        // Variáveis para somar a elite DESTE concurso específico
         let elite14Neste = 0;
         let elite15Neste = 0;
 
@@ -394,7 +453,6 @@
             const minimoParaGanhar = (tipo === 'lotofacil' ? 11 : 4);
             const ganhou = acertos >= minimoParaGanhar && dados[tipo].ganhadores.length > 0;
             
-            // Verifica se é elite (14 ou 15 na Lotofácil | 5 ou 6 na Mega)
             if (dados[tipo].ganhadores.length > 0) {
                 if (tipo === 'lotofacil') {
                     if (acertos === 14) elite14Neste++;
@@ -419,7 +477,6 @@
                     if(tipo === 'lotofacil' && acertos === 13) jogo.vitorias13 = (jogo.vitorias13 || 0) + 1;
                     jogo.ganhoAcumulado = (jogo.ganhoAcumulado || 0) + valorGanhoNeste;
                     jogo.concursosVistos.push(concursoAtual);
-                    salvarNoLocalStorage(tipo);
                 }
                 totalPremiados++;
                 stats[acertos] = (stats[acertos] || 0) + 1;
@@ -428,14 +485,19 @@
             jogo.ultimoAcertoTemp = acertos; 
         });
 
-        // Lógica de Acúmulo de Elite (Não reseta ao buscar novos concursos)
         if (concursoAtual && !contagemElite[tipo].concursos_processados.includes(concursoAtual) && dados[tipo].ganhadores.length > 0) {
             contagemElite[tipo].c14 += elite14Neste;
             contagemElite[tipo].c15 += elite15Neste;
             contagemElite[tipo].concursos_processados.push(concursoAtual);
         }
 
-        dados[tipo].meusJogos.sort((a, b) => (b.vitorias12 || 0) !== (a.vitorias12 || 0) ? (b.vitorias12 || 0) - (a.vitorias12 || 0) : (b.vitorias || 0) - (a.vitorias || 0));
+        processarAcumulo(tipo, totalInvestidoConcurso, totalGanhoConcurso);
+        salvarNoLocalStorage(tipo);
+
+        dados[tipo].meusJogos.sort((a, b) => {
+            if ((b.ganhoAcumulado || 0) !== (a.ganhoAcumulado || 0)) return (b.ganhoAcumulado || 0) - (a.ganhoAcumulado || 0);
+            return (b.vitorias || 0) - (a.vitorias || 0);
+        });
         
         lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
         dados[tipo].meusJogos.forEach((jogo, idx) => {
@@ -458,7 +520,6 @@
                 </div>`;
         });
 
-        processarAcumulo(tipo, totalInvestidoConcurso, totalGanhoConcurso);
         if (dados[tipo].ganhadores.length > 0) {
             if (totalPremiados > 0) {
                 let resumoHtml = `<strong>🎉 PARABÉNS! ${totalPremiados} jogo(s) premiado(s)!</strong><br>`;
@@ -476,7 +537,6 @@
         const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
         const label14 = tipo === 'lotofacil' ? '14 Acertos' : 'Quina';
         const label15 = tipo === 'lotofacil' ? '15 Acertos' : 'Sena';
-        
         document.getElementById(`count14${sufixo}`).innerHTML = `${label14}: <b>${contagemElite[tipo].c14}x</b>`;
         document.getElementById(`count15${sufixo}`).innerHTML = `${label15}: <b>${contagemElite[tipo].c15}x</b>`;
     }
@@ -502,17 +562,14 @@
         if(saldoTotal > 0) elStatus.className = 'financeiro-total lucro'; else if(saldoTotal < 0) elStatus.className = 'financeiro-total prejuizo'; else elStatus.className = 'financeiro-total';
     }
 
-    window.onload = () => { buscar('lotofacil'); buscar('megasena'); unificarNovosBotoes(); };
-
     function zerarFinanceiro(tipo) {
         financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
-        // Opcional: zerar elite ao zerar financeiro? Mantive separado conforme pedido
         atualizarPainelFinanceiro(tipo);
     }
 
     function resetarEBuscar(tipo, conc) {
         zerarFinanceiro(tipo);
-        contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] }; // Reinicia contagem ao clicar em Buscar
+        contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] }; 
         buscar(tipo, conc);
     }
 
@@ -522,42 +579,28 @@
             if (container) {
                 const hr = document.createElement('hr');
                 hr.style.margin = "10px 0"; hr.style.opacity = "0.3";
+                container.appendChild(hr);
+
                 const btn50 = document.createElement('button');
                 btn50.className = "btn btn-random";
                 btn50.style.backgroundColor = "#2c3e50";
-                btn50.innerHTML = "🎰 Gerar 50 Jogos (Surpresinha)";
+                btn50.innerHTML = "🎰 Gerar 50 Jogos Surpresinha";
                 btn50.onclick = () => { for(let i=0; i<50; i++) gerarSurpresinha(tipo); exibirModal("50 jogos gerados com sucesso!", null, true); };
+                container.appendChild(btn50);
+
+                // INCLUSÃO DA CONFERÊNCIA EM MASSA
                 const divMassa = document.createElement('div');
-                divMassa.style.marginTop = "10px";
                 divMassa.innerHTML = `<label style="font-size:12px"><b>Conferência em Massa:</b></label><div style="display:flex; gap:5px; margin-top:5px"><input type="number" id="massa_${tipo}" placeholder="Conc. Inicial" style="flex:1; padding:8px; font-size:12px"><button id="btnMassa_${tipo}" class="btn" style="flex:1; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button></div>`;
-                container.appendChild(hr); container.appendChild(btn50); container.appendChild(divMassa);
+                container.appendChild(divMassa);
             }
         });
     }
 
-    async function conferirMassa(tipo) {
-        const input = document.getElementById(`massa_${tipo}`);
-        const btn = document.getElementById(`btnMassa_${tipo}`);
-        let inicio = parseInt(input.value);
-        if (isNaN(inicio) || inicio <= 0) { exibirModal("Digite um concurso inicial válido.", null, true); return; }
-        
-        zerarFinanceiro(tipo);
-        contagemElite[tipo] = { c14: 0, c15: 0, concursos_processados: [] };
-        
-        btn.disabled = true;
-        btn.innerText = "Processando...";
-        try {
-            const resLatest = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/latest`);
-            const dataLatest = await resLatest.json();
-            const ultimo = dataLatest.concurso;
-            for (let c = inicio; c <= ultimo; c++) {
-                btn.innerText = `Lendo: ${c}...`;
-                await buscar(tipo, c);
-                await new Promise(r => setTimeout(r, 150));
-            }
-            exibirModal(`Conferência finalizada!`, null, true);
-        } catch (e) { exibirModal("Erro na conferência.", null, true); } finally { btn.disabled = false; btn.innerText = "🔍 Conferir até o Fim"; }
-    }
+    window.onload = () => { 
+        buscar('lotofacil'); 
+        buscar('megasena'); 
+        unificarNovosBotoes(); 
+    };
 </script>
 </body>
 </html>
