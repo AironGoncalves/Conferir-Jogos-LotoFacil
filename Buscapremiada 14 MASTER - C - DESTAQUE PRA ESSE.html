@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner Elite V4 - Ultra Hybrid</title>
+    <style>
+        :root { --primaria: #8b008b; --destaque: #f39c12; --sucesso: #209869; --erro: #e74c3c; --fundo: #f4f4f9; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--fundo); padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 750px; }
+        h2 { color: var(--primaria); text-align: center; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Painel Financeiro */
+        .painel-financeiro { background: #1a202c; color: white; border-radius: 10px; padding: 15px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; }
+        .fin-box { display: flex; flex-direction: column; border-right: 1px solid #4a5568; }
+        .fin-box:last-child { border-right: none; }
+        .fin-label { font-size: 10px; font-weight: bold; color: #a0aec0; text-transform: uppercase; }
+        .fin-val { font-size: 16px; font-weight: bold; margin-top: 5px; }
+
+        /* Dashboard de Cobertura */
+        .dashboard-cobertura { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 10px; margin-bottom: 20px; }
+        .progress-container { background: #edf2f7; border-radius: 20px; height: 12px; margin: 8px 0; overflow: hidden; border: 1px solid #e2e8f0; }
+        .progress-bar { background: linear-gradient(90deg, var(--primaria), var(--sucesso)); height: 100%; width: 0%; transition: 0.8s; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; text-align: center; font-size: 12px; font-weight: bold; color: #4a5568; }
+
+        /* Configurações */
+        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .campo { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 11px; font-weight: bold; color: #555; }
+        input { padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primaria); }
+
+        .controles { display: flex; flex-direction: column; gap: 10px; }
+        button { padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 15px; }
+        .btn-start { background: var(--primaria); color: white; }
+        .btn-start:hover { background: #6a006a; }
+        .btn-stop { background: var(--erro); color: white; display: none; }
+        
+        #statusReal { background: #fffde7; border: 1px solid #fbc02d; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; text-align: center; }
+        .contador-live { font-family: monospace; font-size: 22px; color: var(--primaria); font-weight: bold; }
+
+        /* Lista de Jogos */
+        .lista-jogos { margin-top: 25px; width: 100%; }
+        .jogo-item { background: white; border: 1px solid #eee; border-radius: 12px; padding: 18px; margin-bottom: 15px; position: relative; border-left: 6px solid var(--primaria); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .badge-slot { position: absolute; top: -10px; left: 15px; background: var(--primaria); color: white; padding: 3px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; }
+        .dezenas { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+        .bola { width: 32px; height: 32px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: var(--primaria); border: 2px solid var(--primaria); }
+        .resumo-financeiro { background: #f0fff4; padding: 12px; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; border: 1px solid #c6f6d5; }
+        .lucro-destaque { grid-column: span 2; font-size: 15px; color: var(--sucesso); font-weight: bold; text-align: center; border-bottom: 1px solid #c6f6d5; padding-bottom: 5px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Scanner Elite V4: Hybrid Max</h2>
+
+    <div class="painel-financeiro">
+        <div class="fin-box">
+            <span class="fin-label">Investimento Total</span>
+            <span id="finInvestido" class="fin-val">R$ 0,00</span>
+        </div>
+        <div class="fin-box">
+            <span class="fin-label">Retorno Bruto</span>
+            <span id="finGanho" class="fin-val" style="color: #48bb78">R$ 0,00</span>
+        </div>
+        <div class="fin-box">
+            <span class="fin-label">Balanço Líquido</span>
+            <span id="finResultado" class="fin-val">R$ 0,00</span>
+        </div>
+    </div>
+
+    <div class="dashboard-cobertura">
+        <div class="stats-grid">
+            <div>Concursos Cobertos: <span id="valCobertos">0</span></div>
+            <div>Lacunas Restantes: <span id="valLacunas">0</span></div>
+        </div>
+        <div class="progress-container">
+            <div id="progressoBarra" class="progress-bar"></div>
+        </div>
+        <center><small id="pctTexto" style="color: #718096; font-weight: bold;">Cobertura: 0%</small></center>
+    </div>
+
+    <div class="config-grid">
+        <div class="campo">
+            <label>Concurso Inicial:</label>
+            <input type="number" id="concFoco" placeholder="Ex: 3100">
+        </div>
+        <div class="campo">
+            <label>Qtd Total de Jogos:</label>
+            <input type="number" id="qtdJogos" value="6" oninput="document.getElementById('qtdLucroPuro').max = this.value">
+        </div>
+        <div class="campo">
+            <label>Tentativas Base:</label>
+            <input type="number" id="limiteTentativas" value="10000">
+        </div>
+        <div class="campo">
+            <label>Jogos Foco Lucro Puro:</label>
+            <input type="number" id="qtdLucroPuro" value="2" title="Estes jogos focarão apenas no lucro. Os seguintes buscarão lucro + cobrir lacunas.">
+        </div>
+    </div>
+
+    <div class="controles">
+        <button id="btnIniciar" class="btn-start" onclick="iniciarBusca()">🔍 Iniciar Scan de Lucro Máximo</button>
+        <button id="btnParar" class="btn-stop" onclick="pararTudo()">🛑 Interromper Processamento</button>
+    </div>
+
+    <div id="statusReal">
+        <div id="statusMsg" style="font-weight: bold; color: #555; margin-bottom: 5px;">Processando...</div>
+        <span id="contadorTentativas" class="contador-live">0</span>
+    </div>
+
+    <div id="resultadoFinal" class="lista-jogos"></div>
+</div>
+
+<script>
+    let rodando = false;
+    let concursosData = [];
+    let concPremiadosGeral = new Set();
+    let jogosSelecionadosMasks = new Set();
+    const PREMIOS = { 11: 7, 12: 14, 13: 35 };
+    const CUSTO_JOGO = 3.50;
+
+    function dezenasParaMask(dezenas) {
+        let mask = 0;
+        for (let n of dezenas) mask |= (1 << (n - 1));
+        return mask;
+    }
+
+    function gerarDezenas() {
+        let n = new Set();
+        while(n.size < 15) n.add(Math.floor(Math.random() * 25) + 1);
+        let lista = [...n].sort((a,b) => a - b);
+        return { lista: lista, mask: dezenasParaMask(lista) };
+    }
+
+    function conferir(maskA, maskB) {
+        let intersec = maskA & maskB;
+        let acertos = 0;
+        while (intersec) { intersec &= (intersec - 1); acertos++; }
+        return acertos;
+    }
+
+    function atualizarDashboard() {
+        const totalConc = concursosData.length;
+        const cobertos = concPremiadosGeral.size;
+        const pct = totalConc > 0 ? (cobertos / totalConc) * 100 : 0;
+        
+        document.getElementById('valCobertos').innerText = cobertos;
+        document.getElementById('valLacunas').innerText = totalConc - cobertos;
+        document.getElementById('progressoBarra').style.width = pct + "%";
+        document.getElementById('pctTexto').innerText = `Eficiência de Cobertura: ${pct.toFixed(1)}%`;
+
+        const qtdJogosGerados = document.querySelectorAll('.jogo-item').length;
+        const investidoTotal = (CUSTO_JOGO * totalConc) * qtdJogosGerados;
+        
+        let ganhoTotal = 0;
+        document.querySelectorAll('.retorno-valor').forEach(el => {
+            ganhoTotal += parseFloat(el.getAttribute('data-valor'));
+        });
+
+        const liquido = ganhoTotal - investidoTotal;
+
+        document.getElementById('finInvestido').innerText = `R$ ${investidoTotal.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        document.getElementById('finGanho').innerText = `R$ ${ganhoTotal.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        document.getElementById('finResultado').innerText = `R$ ${liquido.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        document.getElementById('finResultado').style.color = liquido >= 0 ? 'var(--sucesso)' : 'var(--erro)';
+    }
+
+    function pararTudo() { rodando = false; }
+
+    async function iniciarBusca() {
+        const inicioNum = parseInt(document.getElementById('concFoco').value);
+        const limiteBase = parseInt(document.getElementById('limiteTentativas').value);
+        const totalJogosDesejados = parseInt(document.getElementById('qtdJogos').value);
+        const corteLucroPuro = parseInt(document.getElementById('qtdLucroPuro').value);
+
+        if(!inicioNum) return alert("Por favor, insira o número do concurso inicial.");
+
+        rodando = true;
+        concPremiadosGeral.clear();
+        jogosSelecionadosMasks.clear();
+        document.getElementById('btnIniciar').disabled = true;
+        document.getElementById('btnParar').style.display = 'block';
+        document.getElementById('statusReal').style.display = 'block';
+        document.getElementById('resultadoFinal').innerHTML = "";
+
+        try {
+            document.getElementById('statusMsg').innerText = "Baixando resultados da API...";
+            const resp = await fetch(`https://loteriascaixa-api.herokuapp.com/api/lotofacil/`);
+            const dados = await resp.json();
+            concursosData = dados.filter(c => c.concurso >= inicioNum).map(c => ({
+                id: c.concurso, mask: dezenasParaMask(c.dezenas.map(Number))
+            }));
+
+            for (let j = 1; j <= totalJogosDesejados; j++) {
+                if (!rodando) break;
+
+                let melhorDoCiclo = { score: -1, jogo: [], mask: 0, s11:0, s12:0, s13:0, lucro: 0, ids: [], tentativasReais: 0 };
+                
+                // Lógica de Tentativas e Modo:
+                let modoHibrido = j > corteLucroPuro;
+                let limiteTentativasCiclo = modoHibrido ? (limiteBase * 2) : limiteBase;
+
+                for (let t = 1; t <= limiteTentativasCiclo; t++) {
+                    if (!rodando) break;
+
+                    let candidato = gerarDezenas();
+                    if (jogosSelecionadosMasks.has(candidato.mask)) continue;
+
+                    let stats = { 11: 0, 12: 0, 13: 0, lucro: 0, ids: [] };
+
+                    concursosData.forEach(conc => {
+                        let pts = conferir(candidato.mask, conc.mask);
+                        if (pts >= 11 && pts <= 13) {
+                            stats[pts]++;
+                            stats.lucro += PREMIOS[pts];
+                            stats.ids.push(conc.id);
+                        }
+                    });
+
+                    let score = stats.lucro; 
+                    let novosAtendidos = 0;
+
+                    if (modoHibrido) {
+                        novosAtendidos = stats.ids.filter(id => !concPremiadosGeral.has(id)).length;
+                        // No modo híbrido, priorizamos lucro MAS usamos o preenchimento como multiplicador de relevância
+                        score += (novosAtendidos * 85); 
+                    }
+
+                    if (score > melhorDoCiclo.score) {
+                        melhorDoCiclo = {
+                            score: score, jogo: candidato.lista, mask: candidato.mask, lucro: stats.lucro,
+                            s11: stats[11], s12: stats[12], s13: stats[13],
+                            novos: novosAtendidos, ids: stats.ids, tentativasReais: t, hibrido: modoHibrido
+                        };
+                    }
+
+                    if (t % 500 === 0) {
+                        document.getElementById('contadorTentativas').innerText = `${t} / ${limiteTentativasCiclo}`;
+                        document.getElementById('statusMsg').innerText = `Processando Jogo ${j} ${modoHibrido ? '(Híbrido)' : '(Lucro Puro)'}...`;
+                        await new Promise(r => setTimeout(r, 0));
+                    }
+                }
+
+                if (melhorDoCiclo.score > -1) {
+                    melhorDoCiclo.ids.forEach(id => concPremiadosGeral.add(id));
+                    jogosSelecionadosMasks.add(melhorDoCiclo.mask);
+                    exibirJogo(j, melhorDoCiclo);
+                    atualizarDashboard();
+                }
+            }
+        } catch (e) {
+            alert("Erro ao carregar dados.");
+            console.error(e);
+        } finally {
+            rodando = false;
+            document.getElementById('btnIniciar').disabled = false;
+            document.getElementById('btnParar').style.display = 'none';
+            document.getElementById('statusReal').style.display = 'none';
+        }
+    }
+
+    function exibirJogo(num, d) {
+        const container = document.getElementById('resultadoFinal');
+        const item = document.createElement('div');
+        item.className = 'jogo-item';
+        if (d.hibrido) item.style.borderLeft = "6px solid var(--destaque)";
+        
+        item.innerHTML = `
+            <div class="badge-slot">${d.hibrido ? 'HÍBRIDO (LACUNA+LUCRO)' : 'FOCO LUCRO PURO'} - JOGO ${num}</div>
+            <div class="dezenas">
+                ${d.jogo.map(n => `<div class="bola">${n.toString().padStart(2, '0')}</div>`).join('')}
+            </div>
+            <div class="resumo-financeiro">
+                <div class="lucro-destaque">RETORNO HISTÓRICO: <span class="retorno-valor" data-valor="${d.lucro}">R$ ${d.lucro.toFixed(2)}</span></div>
+                <span>🎯 13 Pontos: <b>${d.s13}x</b></span>
+                <span>🥈 12 Pontos: <b>${d.s12}x</b></span>
+                <span>🥉 11 Pontos: <b>${d.s11}x</b></span>
+                <span>✨ Novas Lacunas: <b>+${d.novos}</b></span>
+                <span style="grid-column: span 2; font-size: 9px; color: #999; text-align: center; margin-top: 5px;">Analisado em ${d.tentativasReais} tentativas</span>
+            </div>
+        `;
+        container.appendChild(item);
+    }
+</script>
+
+</body>
+</html>
