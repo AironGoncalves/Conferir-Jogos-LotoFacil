@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!DOCTYPE html versao: K--Conferencia automatica com barra -RANKING GANHOS>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Loterias Pro - Versão 3.0</title>
+    <title>Painel de Loterias Pro - Versão 3.2</title>
     <style>
         :root {
             --cor-lotofacil: #8b008b;
@@ -219,6 +219,50 @@
     </div>
 
 <script>
+    // --- LÓGICA DE BITS (BITWISE) ---
+    function dezenasParaMask(dezenas) {
+        let mask = 0n;
+        dezenas.forEach(n => { mask |= (1n << BigInt(n)); });
+        return mask;
+    }
+
+    function conferirVeloz(maskJogo, maskSorteio) {
+        let intersec = maskJogo & maskSorteio;
+        let c = 0;
+        while (intersec > 0n) {
+            intersec &= (intersec - 1n);
+            c++;
+        }
+        return c;
+    }
+
+    // --- LÓGICA DE ÁUDIO (ALERTA DE ELITE) ---
+    function tocarAlertaElite() {
+        try {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+
+            oscillator.type = 'triangle'; 
+            oscillator.frequency.setValueAtTime(880, context.currentTime); // Nota Lá (A5)
+            oscillator.frequency.exponentialRampToValueAtTime(1320, context.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.1, context.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+
+            oscillator.start();
+            oscillator.stop(context.currentTime + 0.5);
+        } catch (e) {
+            console.log("Áudio não suportado ou bloqueado pelo navegador.");
+        }
+    }
+
+    // --- VARIÁVEL GLOBAL DE CONTROLE ---
+    let abortarConsultaMassa = false;
+
     function carregarJogos(tipo) {
         let storage = JSON.parse(localStorage.getItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS')) || [];
         return storage.map(j => {
@@ -362,20 +406,20 @@
 
     async function conferirMassa(tipo) {
         const inputMassa = document.getElementById(`massa_${tipo}`);
+        const btnMassa = document.getElementById(`btnMassa_${tipo}`);
         const progContainer = document.getElementById(`progContainer_${tipo}`);
         const progBar = document.getElementById(`progBar_${tipo}`);
         
+        if (btnMassa.dataset.status === "rodando") {
+            abortarConsultaMassa = true;
+            return;
+        }
+
         let inicio = parseInt(inputMassa.value);
         if (isNaN(inicio) || inicio <= 0) { exibirModal("Digite um concurso inicial válido.", null, true); return; }
         
-        const btnMassa = document.getElementById(`btnMassa_${tipo}`);
-        const originalText = btnMassa.innerText;
-        btnMassa.disabled = true;
-        btnMassa.innerText = "⏳ Processando...";
+        const originalText = "🔍 Conferir até o Fim";
         
-        progContainer.style.display = 'block';
-        progBar.style.width = '0%';
-
         try {
             const respLatest = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/latest`);
             const dataLatest = await respLatest.json();
@@ -383,25 +427,54 @@
 
             if (inicio > fim) { exibirModal("Concurso inicial maior que o atual.", null, true); return; }
 
-            zerarFinanceiro(tipo);
-            contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
-            limparEstatisticasJogos(tipo);
-
             const total = fim - inicio + 1;
 
-            for (let c = inicio; c <= fim; c++) {
-                const percent = (((c - inicio + 1) / total) * 100).toFixed(0);
-                progBar.style.width = percent + '%';
-                btnMassa.innerText = `⏳ Conc. ${c} (${percent}%)`;
-                await buscar(tipo, c);
+            const iniciarLoop = async () => {
+                abortarConsultaMassa = false;
+                btnMassa.dataset.status = "rodando";
+                btnMassa.innerText = "🛑 Parar Consulta";
+                btnMassa.style.backgroundColor = "#ff4444";
+                
+                progContainer.style.display = 'block';
+                progBar.style.width = '0%';
+
+                zerarFinanceiro(tipo);
+                contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+                limparEstatisticasJogos(tipo);
+
+                for (let c = inicio; c <= fim; c++) {
+                    if (abortarConsultaMassa) break;
+
+                    const percent = (((c - inicio + 1) / total) * 100).toFixed(0);
+                    progBar.style.width = percent + '%';
+                    btnMassa.innerText = `🛑 Parar (Conc. ${c})`;
+                    await buscar(tipo, c);
+                }
+
+                btnMassa.dataset.status = "parado";
+                btnMassa.disabled = false;
+                btnMassa.innerText = originalText;
+                btnMassa.style.backgroundColor = "#f39c12";
+                
+                if (abortarConsultaMassa) {
+                    exibirModal("Consulta interrompida pelo usuário.", null, true);
+                } else {
+                    exibirModal(`Conferência finalizada do ${inicio} ao ${fim}!`, null, true);
+                }
+                setTimeout(() => { progContainer.style.display = 'none'; }, 2000);
+            };
+
+            if (total > 300) {
+                exibirModal(`Você está prestes a consultar ${total} concursos. Deseja continuar?`, iniciarLoop);
+            } else {
+                iniciarLoop();
             }
-            exibirModal(`Conferência finalizada do ${inicio} ao ${fim}!`, null, true);
+
         } catch (err) {
             exibirModal("Erro na conferência em massa.", null, true);
-        } finally {
-            btnMassa.disabled = false;
+            btnMassa.dataset.status = "parado";
             btnMassa.innerText = originalText;
-            setTimeout(() => { progContainer.style.display = 'none'; }, 2000);
+            btnMassa.style.backgroundColor = "#f39c12";
         }
     }
 
@@ -421,6 +494,23 @@
         dados[tipo].meusJogos.push({ numeros: numeros, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] });
         salvarNoLocalStorage(tipo);
         renderizar(tipo);
+    }
+
+    async function gerar50Jogos(tipo) {
+        const btn = document.getElementById(`btn50_${tipo}`);
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = "⏳ Gerando 50 Jogos...";
+        btn.disabled = true;
+
+        await new Promise(r => setTimeout(r, 200));
+
+        for(let i=0; i<50; i++) {
+            gerarSurpresinha(tipo);
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = textoOriginal;
+        exibirModal("50 jogos gerados com sucesso!", null, true);
     }
 
     function adicionarJogo(tipo) {
@@ -466,6 +556,8 @@
         }
 
         const concursoAtual = dados[tipo].concursoAtual;
+        const maskSorteio = dezenasParaMask(dados[tipo].ganhadores);
+
         let totalInvestidoConcurso = dados[tipo].meusJogos.length * dados[tipo].custo;
         let totalGanhoConcurso = 0;
         let totalPremiados = 0;
@@ -474,7 +566,9 @@
         let acertoElite15 = false;
 
         dados[tipo].meusJogos.forEach(jogo => {
-            const acertos = jogo.numeros.filter(n => dados[tipo].ganhadores.includes(n)).length;
+            const maskJogo = dezenasParaMask(jogo.numeros);
+            const acertos = conferirVeloz(maskJogo, maskSorteio);
+            
             const minimoParaGanhar = (tipo === 'lotofacil' ? 11 : 4);
             const ganhou = acertos >= minimoParaGanhar && dados[tipo].ganhadores.length > 0;
             
@@ -514,10 +608,12 @@
             if (acertoElite14) {
                 contagemElite[tipo].c14++;
                 contagemElite[tipo].lista14.push(concursoAtual);
+                tocarAlertaElite(); // ALERTA SONORO 14 PTS
             }
             if (acertoElite15) {
                 contagemElite[tipo].c15++;
                 contagemElite[tipo].lista15.push(concursoAtual);
+                tocarAlertaElite(); // ALERTA SONORO 15 PTS
             }
             contagemElite[tipo].concursos_processados.push(concursoAtual);
         }
@@ -618,10 +714,11 @@
                 container.appendChild(hr);
 
                 const btn50 = document.createElement('button');
+                btn50.id = `btn50_${tipo}`;
                 btn50.className = "btn btn-random";
                 btn50.style.backgroundColor = "#2c3e50";
                 btn50.innerHTML = "🎰 Gerar 50 Jogos Surpresinha";
-                btn50.onclick = () => { for(let i=0; i<50; i++) gerarSurpresinha(tipo); exibirModal("50 jogos gerados com sucesso!", null, true); };
+                btn50.onclick = () => { gerar50Jogos(tipo); };
                 container.appendChild(btn50);
 
                 const divMassa = document.createElement('div');
@@ -629,7 +726,7 @@
                     <label style="font-size:12px"><b>Conferência em Massa:</b></label>
                     <div style="display:flex; gap:5px; margin-top:5px">
                         <input type="number" id="massa_${tipo}" placeholder="Conc. Inicial" style="flex:1; padding:8px; font-size:12px">
-                        <button id="btnMassa_${tipo}" class="btn" style="flex:1; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button>
+                        <button id="btnMassa_${tipo}" class="btn" data-status="parado" style="flex:1; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button>
                     </div>
                     <div id="progContainer_${tipo}" class="progress-container">
                         <div id="progBar_${tipo}" class="progress-bar"></div>
