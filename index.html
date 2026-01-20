@@ -59,6 +59,24 @@
         .btn-add-ms { background: var(--cor-megasena); color: white; }
         .btn-random { background: #555; color: white; font-size: 0.85em; margin-top: 5px; }
         .btn-limpar { background: #ff4444; color: white; margin-top: 10px; opacity: 0.7; }
+
+        .secao-memoria { background: #f9f9f9; padding: 10px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; }
+        .grid-memoria { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 10px; }
+        
+        /* ESTILO DO BOTÃO EM DESTAQUE */
+        .btn-memoria { padding: 8px 2px; font-size: 11px; background: #fff; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-memoria:hover { background: #eee; }
+        .btn-memoria.slot-active { 
+            background: #444; 
+            color: #fff; 
+            border-color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-guardar { width: 100%; font-size: 12px; padding: 8px; background: #444; color: white; border-radius: 5px; border: none; cursor: pointer; }
+
+        .badge-vitorias { background: #ffd700; color: #000; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 5px; border: 1px solid #daa520; font-weight: 900; }
         
         .painel-financeiro { margin-top: 15px; padding: 15px; border-radius: 10px; background: #fff; border: 1px solid #ddd; }
         .financeiro-item { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
@@ -113,6 +131,17 @@
             <button class="btn btn-random" onclick="gerarSurpresinha('lotofacil')">🎲 Gerar Surpresinha (15 números)</button>
         </div>
 
+        <div class="secao-memoria">
+            <button class="btn-guardar" onclick="salvarSlot('lotofacil')">💾 Guardar Lista Atual em um Slot</button>
+            <div class="grid-memoria">
+                <button class="btn-memoria btn-memoria-lf-A" onclick="carregarSlot('lotofacil', 'A')">Jogo A</button>
+                <button class="btn-memoria btn-memoria-lf-B" onclick="carregarSlot('lotofacil', 'B')">Jogo B</button>
+                <button class="btn-memoria btn-memoria-lf-C" onclick="carregarSlot('lotofacil', 'C')">Jogo C</button>
+                <button class="btn-memoria btn-memoria-lf-D" onclick="carregarSlot('lotofacil', 'D')">Jogo D</button>
+                <button class="btn-memoria btn-memoria-lf-E" onclick="carregarSlot('lotofacil', 'E')">Jogo E</button>
+            </div>
+        </div>
+
         <div id="listaLF"></div>
         <button class="btn btn-limpar" onclick="confirmarLimpar('lotofacil')">Apagar Tudo</button>
         
@@ -146,6 +175,17 @@
             <button class="btn btn-random" onclick="gerarSurpresinha('megasena')">🎲 Gerar Surpresinha (6 números)</button>
         </div>
 
+        <div class="secao-memoria">
+            <button class="btn-guardar" onclick="salvarSlot('megasena')">💾 Guardar Lista Atual em um Slot</button>
+            <div class="grid-memoria">
+                <button class="btn-memoria btn-memoria-ms-A" onclick="carregarSlot('megasena', 'A')">Jogo A</button>
+                <button class="btn-memoria btn-memoria-ms-B" onclick="carregarSlot('megasena', 'B')">Jogo B</button>
+                <button class="btn-memoria btn-memoria-ms-C" onclick="carregarSlot('megasena', 'C')">Jogo C</button>
+                <button class="btn-memoria btn-memoria-ms-D" onclick="carregarSlot('megasena', 'D')">Jogo D</button>
+                <button class="btn-memoria btn-memoria-ms-E" onclick="carregarSlot('megasena', 'E')">Jogo E</button>
+            </div>
+        </div>
+
         <div id="listaMS"></div>
         <button class="btn btn-limpar" onclick="confirmarLimpar('megasena')">Apagar Tudo</button>
 
@@ -161,16 +201,73 @@
     </div>
 
 <script>
+    function carregarJogos(tipo) {
+        let storage = JSON.parse(localStorage.getItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS')) || [];
+        return storage.map(j => {
+            if (Array.isArray(j)) return { numeros: j, vitorias: 0, concursosVistos: [] };
+            return j;
+        });
+    }
+
     let dados = {
-        lotofacil: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_LF')) || [], api: 'lotofacil', min: 15, max: 20, max_bolas: 15, range: 25, custo: 3.50 },
-        megasena: { ganhadores: [], meusJogos: JSON.parse(localStorage.getItem('jogos_MS')) || [], api: 'megasena', min: 6, max: 20, max_bolas: 6, range: 60, custo: 6.00 }
+        lotofacil: { ganhadores: [], meusJogos: carregarJogos('lotofacil'), api: 'lotofacil', min: 15, max: 20, max_bolas: 15, range: 25, custo: 3.50 },
+        megasena: { ganhadores: [], meusJogos: carregarJogos('megasena'), api: 'megasena', min: 6, max: 20, max_bolas: 6, range: 60, custo: 6.00 }
     };
 
-    // Histórico financeiro da SESSÃO (Zera ao atualizar a página)
     let financeiroH = { 
         lotofacil: { investido: 0, ganho: 0, concursos_vistos: [] }, 
         megasena: { investido: 0, ganho: 0, concursos_vistos: [] } 
     };
+
+    function salvarSlot(tipo) {
+        if (dados[tipo].meusJogos.length === 0) {
+            exibirModal("Não há jogos na tela para salvar.", null, true);
+            return;
+        }
+        
+        const slot = prompt("Em qual slot deseja guardar? (A, B, C, D ou E)").toUpperCase();
+        const slotsValidos = ['A', 'B', 'C', 'D', 'E'];
+        
+        if (slotsValidos.includes(slot)) {
+            const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({
+                ...j,
+                vitorias: 0,
+                concursosVistos: []
+            }));
+
+            const key = `slot_${tipo}_${slot}`;
+            localStorage.setItem(key, JSON.stringify(jogosParaSalvar));
+            exibirModal(`Jogos guardados com sucesso no Jogo ${slot} (Contagem zerada)!`, null, true);
+        } else {
+            exibirModal("Slot inválido. Escolha de A a E.", null, true);
+        }
+    }
+
+    function carregarSlot(tipo, slot) {
+        const key = `slot_${tipo}_${slot}`;
+        const salvo = localStorage.getItem(key);
+        
+        if (salvo) {
+            dados[tipo].meusJogos = JSON.parse(salvo);
+            salvarNoLocalStorage(tipo);
+            renderizar(tipo);
+
+            // LOGICA DE DESTAQUE DOS BOTOES
+            const prefixo = tipo === 'lotofacil' ? 'lf' : 'ms';
+            // Remove destaque de todos os botões daquele tipo
+            document.querySelectorAll(`.btn-memoria`).forEach(btn => {
+                if(btn.className.includes(`btn-memoria-${prefixo}`)) {
+                    btn.classList.remove('slot-active');
+                }
+            });
+            // Adiciona destaque ao selecionado
+            document.querySelector(`.btn-memoria-${prefixo}-${slot}`).classList.add('slot-active');
+
+            exibirModal(`Jogo ${slot} carregado para conferência!`, null, true);
+        } else {
+            exibirModal(`O Jogo ${slot} está vazio.`, null, true);
+        }
+    }
 
     function exibirModal(msg, callback, apenasAviso = false) {
         const modal = document.getElementById('modalCustom');
@@ -205,7 +302,6 @@
             const data = await response.json();
             
             dados[tipo].concursoAtual = data.concurso;
-            
             document.getElementById(idInput).value = data.concurso;
             dados[tipo].ganhadores = data.dezenas.map(Number);
             document.getElementById(idInfo).innerHTML = `Concurso ${data.concurso} - Data: ${data.data}`;
@@ -236,8 +332,8 @@
             if(!numeros.includes(n)) numeros.push(n);
         }
         numeros.sort((a,b) => a - b);
-        dados[tipo].meusJogos.push(numeros);
-        localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
+        dados[tipo].meusJogos.push({ numeros: numeros, vitorias: 0, concursosVistos: [] });
+        salvarNoLocalStorage(tipo);
         renderizar(tipo);
     }
 
@@ -245,25 +341,30 @@
         const input = document.getElementById(tipo === 'lotofacil' ? 'inputLF' : 'inputMS');
         let nums = input.value.split(/[\s,]+/).filter(n => n !== "").map(Number);
         const limiteMaximo = dados[tipo].range;
-        const numerosInvalidos = nums.filter(n => n < 1 || n > limiteMaximo);
-        if (numerosInvalidos.length > 0) {
+        
+        if (nums.filter(n => n < 1 || n > limiteMaximo).length > 0) {
             exibirModal(`⚠️ Números fora do intervalo (01 a ${limiteMaximo})`, null, true);
             return;
         }
         let unicos = [...new Set(nums)];
         if (unicos.length !== nums.length) { exibirModal("⚠️ Números repetidos detectados!", null, true); return; }
         if (unicos.length < dados[tipo].min || unicos.length > dados[tipo].max) { exibirModal(`Digite entre ${dados[tipo].min} e ${dados[tipo].max} números.`, null, true); return; }
+        
         unicos.sort((a,b) => a-b);
-        dados[tipo].meusJogos.push(unicos);
-        localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
+        dados[tipo].meusJogos.push({ numeros: unicos, vitorias: 0, concursosVistos: [] });
+        salvarNoLocalStorage(tipo);
         input.value = '';
         renderizar(tipo);
+    }
+
+    function salvarNoLocalStorage(tipo) {
+        localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
     }
 
     function confirmarRemover(tipo, index) {
         exibirModal("Deseja excluir este jogo?", () => {
             dados[tipo].meusJogos.splice(index, 1);
-            localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
+            salvarNoLocalStorage(tipo);
             renderizar(tipo);
         });
     }
@@ -272,7 +373,6 @@
         exibirModal(`Deseja apagar todos os jogos de ${tipo}?`, () => {
             dados[tipo].meusJogos = [];
             localStorage.removeItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS');
-            // Zera o financeiro também ao limpar tudo
             financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
             renderizar(tipo);
         });
@@ -283,33 +383,50 @@
         const resumo = document.getElementById(tipo === 'lotofacil' ? 'resumoLF' : 'resumoMS');
         const classeAcerto = tipo === 'lotofacil' ? 'num-acertado-lf' : 'num-acertado-ms';
         
-        let totalInvestidoConcurso = dados[tipo].meusJogos.length * dados[tipo].custo;
-        let totalGanhoConcurso = 0;
-
-        lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
-        let stats = {};
-        let totalPremiados = 0;
-        
         if (dados[tipo].meusJogos.length === 0) { 
+            lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
             resumo.innerHTML = "Nenhum jogo salvo."; 
             atualizarPainelFinanceiro(tipo);
             return; 
         }
 
-        dados[tipo].meusJogos.forEach((jogo, idx) => {
-            const acertos = jogo.filter(n => dados[tipo].ganhadores.includes(n)).length;
-            stats[acertos] = (stats[acertos] || 0) + 1;
-            
-            if(tipo === 'lotofacil' && dados[tipo].ganhadores.length > 0) {
-                if(acertos === 11) totalGanhoConcurso += 7.00;
-                if(acertos === 12) totalGanhoConcurso += 14.00;
-                if(acertos === 13) totalGanhoConcurso += 35.00;
-            }
+        const concursoAtual = dados[tipo].concursoAtual;
+        let totalInvestidoConcurso = dados[tipo].meusJogos.length * dados[tipo].custo;
+        let totalGanhoConcurso = 0;
+        let totalPremiados = 0;
+        let stats = {};
 
+        dados[tipo].meusJogos.forEach(jogo => {
+            const acertos = jogo.numeros.filter(n => dados[tipo].ganhadores.includes(n)).length;
+            const minimoParaGanhar = (tipo === 'lotofacil' ? 11 : 4);
+            const ganhou = acertos >= minimoParaGanhar && dados[tipo].ganhadores.length > 0;
+
+            if (ganhou) {
+                if (concursoAtual && !jogo.concursosVistos.includes(concursoAtual)) {
+                    jogo.vitorias = (jogo.vitorias || 0) + 1;
+                    jogo.concursosVistos.push(concursoAtual);
+                    salvarNoLocalStorage(tipo);
+                }
+                
+                totalPremiados++;
+                stats[acertos] = (stats[acertos] || 0) + 1;
+                
+                if(tipo === 'lotofacil') {
+                    if(acertos === 11) totalGanhoConcurso += 7.00;
+                    if(acertos === 12) totalGanhoConcurso += 14.00;
+                    if(acertos === 13) totalGanhoConcurso += 35.00;
+                }
+            }
+        });
+
+        dados[tipo].meusJogos.sort((a, b) => (b.vitorias || 0) - (a.vitorias || 0));
+
+        lista.innerHTML = '<h3>Ranking de Jogos (Mais Premiados Topo):</h3>';
+        dados[tipo].meusJogos.forEach((jogo, idx) => {
+            const acertos = jogo.numeros.filter(n => dados[tipo].ganhadores.includes(n)).length;
             const ganhou = acertos >= (tipo === 'lotofacil' ? 11 : 4) && dados[tipo].ganhadores.length > 0;
-            if(ganhou) totalPremiados++;
             
-            const htmlJogo = jogo.map(n => {
+            const htmlJogo = jogo.numeros.map(n => {
                 const s = n.toString().padStart(2, '0');
                 return (dados[tipo].ganhadores.includes(n)) ? `<span class="${classeAcerto}">${s}</span>` : s;
             }).join(' ');
@@ -318,10 +435,10 @@
                 <button class="remove-btn" onclick="confirmarRemover('${tipo}', ${idx})">X</button>
                 <div style="font-family: monospace; font-size: 1.1em; margin-bottom:5px;">${htmlJogo}</div>
                 <small><b>${acertos} ACERTOS</b> ${ganhou ? '<span class="badge-premio">GANHOU!</span>' : ''}</small>
+                ${jogo.vitorias > 0 ? `<span class="badge-vitorias">🏆 ${jogo.vitorias}x Premiado</span>` : ''}
             </div>`;
         });
 
-        // ACUMULAR NO HISTÓRICO DA SESSÃO
         processarAcumulo(tipo, totalInvestidoConcurso, totalGanhoConcurso);
 
         if (dados[tipo].ganhadores.length > 0) {
@@ -344,7 +461,6 @@
 
     function processarAcumulo(tipo, custo, premio) {
         const conc = dados[tipo].concursoAtual;
-        // Só acumula se houver resultado válido e se o concurso ainda não foi contabilizado nesta sessão
         if (conc && !financeiroH[tipo].concursos_vistos.includes(conc) && dados[tipo].ganhadores.length > 0) {
             financeiroH[tipo].investido += custo;
             financeiroH[tipo].ganho += premio;
@@ -373,4 +489,3 @@
 </script>
 </body>
 </html>
-
