@@ -1,4 +1,4 @@
-<!DOCTYPE html versao: K--Conferencia automatica com barra -RANKING GANHOS>
+<!DOCTYPE html versao: L--Conferencia automatica com barra -RANKING GANHOS>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -242,25 +242,18 @@
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = context.createOscillator();
             const gainNode = context.createGain();
-
             oscillator.type = 'triangle'; 
-            oscillator.frequency.setValueAtTime(880, context.currentTime); // Nota Lá (A5)
+            oscillator.frequency.setValueAtTime(880, context.currentTime);
             oscillator.frequency.exponentialRampToValueAtTime(1320, context.currentTime + 0.1);
-            
             gainNode.gain.setValueAtTime(0.1, context.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
-
             oscillator.connect(gainNode);
             gainNode.connect(context.destination);
-
             oscillator.start();
             oscillator.stop(context.currentTime + 0.5);
-        } catch (e) {
-            console.log("Áudio não suportado ou bloqueado pelo navegador.");
-        }
+        } catch (e) {}
     }
 
-    // --- VARIÁVEL GLOBAL DE CONTROLE ---
     let abortarConsultaMassa = false;
 
     function carregarJogos(tipo) {
@@ -292,10 +285,7 @@
     };
 
     function prepararSalvamentoSlot(tipo) {
-        if (dados[tipo].meusJogos.length === 0) {
-            exibirModal("Não há jogos na tela para salvar.", null, true);
-            return;
-        }
+        if (dados[tipo].meusJogos.length === 0) { exibirModal("Não há jogos na tela para salvar.", null, true); return; }
         const modal = document.getElementById('modalCustom');
         const msgEl = document.getElementById('modalMsg');
         const containerBotoes = document.getElementById('modalContainerBotoes');
@@ -318,22 +308,19 @@
 
     function executarSalvarSlot(tipo, slot) {
         const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({ ...j, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] }));
-        const key = `slot_${tipo}_${slot}`;
-        localStorage.setItem(key, JSON.stringify(jogosParaSalvar));
+        localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify(jogosParaSalvar));
         exibirModal(`Jogos guardados com sucesso no Jogo ${slot}!`, null, true);
     }
 
     function restaurarBotoesModal() {
-        const container = document.getElementById('modalContainerBotoes');
-        container.innerHTML = `
+        document.getElementById('modalContainerBotoes').innerHTML = `
             <button id="btnSim" class="btn-modal btn-sim">Confirmar</button>
             <button id="btnNao" class="btn-modal btn-nao">Cancelar</button>
         `;
     }
 
     function carregarSlot(tipo, slot) {
-        const key = `slot_${tipo}_${slot}`;
-        const salvo = localStorage.getItem(key);
+        const salvo = localStorage.getItem(`slot_${tipo}_${slot}`);
         if (salvo) {
             financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
             contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
@@ -432,9 +419,7 @@
             const iniciarLoop = async () => {
                 abortarConsultaMassa = false;
                 btnMassa.dataset.status = "rodando";
-                btnMassa.innerText = "🛑 Parar Consulta";
                 btnMassa.style.backgroundColor = "#ff4444";
-                
                 progContainer.style.display = 'block';
                 progBar.style.width = '0%';
 
@@ -447,12 +432,14 @@
 
                     const percent = (((c - inicio + 1) / total) * 100).toFixed(0);
                     progBar.style.width = percent + '%';
-                    btnMassa.innerText = `🛑 Parar (Conc. ${c})`;
+                    
+                    // ATUALIZAÇÃO: Mostra porcentagem no botão também conforme solicitado
+                    btnMassa.innerText = `Parar - ⏳ Processando... (${percent}%)`;
+                    
                     await buscar(tipo, c);
                 }
 
                 btnMassa.dataset.status = "parado";
-                btnMassa.disabled = false;
                 btnMassa.innerText = originalText;
                 btnMassa.style.backgroundColor = "#f39c12";
                 
@@ -501,13 +488,8 @@
         const textoOriginal = btn.innerHTML;
         btn.innerHTML = "⏳ Gerando 50 Jogos...";
         btn.disabled = true;
-
         await new Promise(r => setTimeout(r, 200));
-
-        for(let i=0; i<50; i++) {
-            gerarSurpresinha(tipo);
-        }
-
+        for(let i=0; i<50; i++) { gerarSurpresinha(tipo); }
         btn.disabled = false;
         btn.innerHTML = textoOriginal;
         exibirModal("50 jogos gerados com sucesso!", null, true);
@@ -546,7 +528,6 @@
         const lista = document.getElementById(tipo === 'lotofacil' ? 'listaLF' : 'listaMS');
         const resumo = document.getElementById(tipo === 'lotofacil' ? 'resumoLF' : 'resumoMS');
         const classeAcerto = tipo === 'lotofacil' ? 'num-acertado-lf' : 'num-acertado-ms';
-        
         if (dados[tipo].meusJogos.length === 0) { 
             lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>'; 
             resumo.innerHTML = "Nenhum jogo salvo."; 
@@ -554,10 +535,8 @@
             atualizarPainelElite(tipo);
             return; 
         }
-
         const concursoAtual = dados[tipo].concursoAtual;
         const maskSorteio = dezenasParaMask(dados[tipo].ganhadores);
-
         let totalInvestidoConcurso = dados[tipo].meusJogos.length * dados[tipo].custo;
         let totalGanhoConcurso = 0;
         let totalPremiados = 0;
@@ -568,27 +547,18 @@
         dados[tipo].meusJogos.forEach(jogo => {
             const maskJogo = dezenasParaMask(jogo.numeros);
             const acertos = conferirVeloz(maskJogo, maskSorteio);
-            
             const minimoParaGanhar = (tipo === 'lotofacil' ? 11 : 4);
             const ganhou = acertos >= minimoParaGanhar && dados[tipo].ganhadores.length > 0;
-            
             if (dados[tipo].ganhadores.length > 0) {
-                if (tipo === 'lotofacil') {
-                    if (acertos === 14) acertoElite14 = true;
-                    if (acertos === 15) acertoElite15 = true;
-                } else {
-                    if (acertos === 5) acertoElite14 = true;
-                    if (acertos === 6) acertoElite15 = true;
-                }
+                if (tipo === 'lotofacil') { if (acertos === 14) acertoElite14 = true; if (acertos === 15) acertoElite15 = true; }
+                else { if (acertos === 5) acertoElite14 = true; if (acertos === 6) acertoElite15 = true; }
             }
-
             let valorGanhoNeste = 0;
             if(ganhou && tipo === 'lotofacil') {
                 if(acertos === 11) valorGanhoNeste = 7.00;
                 if(acertos === 12) valorGanhoNeste = 14.00;
                 if(acertos === 13) valorGanhoNeste = 35.00;
             }
-
             if (ganhou) {
                 if (concursoAtual && !jogo.concursosVistos.includes(concursoAtual)) {
                     jogo.vitorias = (jogo.vitorias || 0) + 1;
@@ -605,36 +575,19 @@
         });
 
         if (concursoAtual && !contagemElite[tipo].concursos_processados.includes(concursoAtual) && dados[tipo].ganhadores.length > 0) {
-            if (acertoElite14) {
-                contagemElite[tipo].c14++;
-                contagemElite[tipo].lista14.push(concursoAtual);
-                tocarAlertaElite(); // ALERTA SONORO 14 PTS
-            }
-            if (acertoElite15) {
-                contagemElite[tipo].c15++;
-                contagemElite[tipo].lista15.push(concursoAtual);
-                tocarAlertaElite(); // ALERTA SONORO 15 PTS
-            }
+            if (acertoElite14) { contagemElite[tipo].c14++; contagemElite[tipo].lista14.push(concursoAtual); tocarAlertaElite(); }
+            if (acertoElite15) { contagemElite[tipo].c15++; contagemElite[tipo].lista15.push(concursoAtual); tocarAlertaElite(); }
             contagemElite[tipo].concursos_processados.push(concursoAtual);
         }
-
         processarAcumulo(tipo, totalInvestidoConcurso, totalGanhoConcurso);
         salvarNoLocalStorage(tipo);
-
-        dados[tipo].meusJogos.sort((a, b) => {
-            if ((b.ganhoAcumulado || 0) !== (a.ganhoAcumulado || 0)) return (b.ganhoAcumulado || 0) - (a.ganhoAcumulado || 0);
-            return (b.vitorias || 0) - (a.vitorias || 0);
-        });
+        dados[tipo].meusJogos.sort((a, b) => (b.ganhoAcumulado || 0) - (a.ganhoAcumulado || 0) || (b.vitorias || 0) - (a.vitorias || 0));
 
         lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
         dados[tipo].meusJogos.forEach((jogo, idx) => {
             const acertos = jogo.ultimoAcertoTemp;
             const ganhou = acertos >= (tipo === 'lotofacil' ? 11 : 4) && dados[tipo].ganhadores.length > 0;
-            const htmlJogo = jogo.numeros.map(n => { 
-                const s = n.toString().padStart(2, '0'); 
-                return (dados[tipo].ganhadores.includes(n)) ? `<span class="${classeAcerto}">${s}</span>` : s; 
-            }).join(' ');
-            
+            const htmlJogo = jogo.numeros.map(n => (dados[tipo].ganhadores.includes(n)) ? `<span class="${classeAcerto}">${n.toString().padStart(2, '0')}</span>` : n.toString().padStart(2, '0')).join(' ');
             lista.innerHTML += `
                 <div class="card-jogo ${ganhou ? 'premiado' : ''}"> 
                     <button class="remove-btn" onclick="confirmarRemover('${tipo}', ${idx})">X</button> 
@@ -646,81 +599,55 @@
                     ${jogo.ganhoAcumulado > 0 ? `<span class="badge-dinheiro">💰 Total: R$ ${jogo.ganhoAcumulado.toFixed(2)}</span>` : ''}
                 </div>`;
         });
-
         if (dados[tipo].ganhadores.length > 0) {
             if (totalPremiados > 0) {
                 let resumoHtml = `<strong>🎉 PARABÉNS! ${totalPremiados} jogo(s) premiado(s)!</strong><br>`;
-                const faixas = tipo === 'lotofacil' ? [15,14,13,12,11] : [6,5,4];
-                faixas.forEach(f => { if (stats[f]) resumoHtml += `<div class="caixa-acerto">${stats[f]} jogo(s) de <b>${f} acertos</b></div><br>`; });
+                [15,14,13,12,11,6,5,4].forEach(f => { if (stats[f]) resumoHtml += `<div class="caixa-acerto">${stats[f]} jogo(s) de <b>${f} acertos</b></div><br>`; });
                 resumo.innerHTML = resumoHtml;
-            } else { resumo.innerHTML = "Nenhum jogo premiado neste concurso."; }
-        } else { resumo.innerHTML = "Aguardando resultado..."; }
-        
-        atualizarPainelFinanceiro(tipo);
-        atualizarPainelElite(tipo);
+            } else resumo.innerHTML = "Nenhum jogo premiado neste concurso.";
+        } else resumo.innerHTML = "Aguardando resultado...";
+        atualizarPainelFinanceiro(tipo); atualizarPainelElite(tipo);
     }
 
     function atualizarPainelElite(tipo) {
         const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
         const label14 = tipo === 'lotofacil' ? '14 Acertos' : 'Quina';
         const label15 = tipo === 'lotofacil' ? '15 Acertos' : 'Sena';
-        
-        const concursos14 = contagemElite[tipo].lista14.length > 0 ? " - " + contagemElite[tipo].lista14.join(", ") : "";
-        const concursos15 = contagemElite[tipo].lista15.length > 0 ? " - " + contagemElite[tipo].lista15.join(", ") : "";
-
-        document.getElementById(`count14${sufixo}`).innerHTML = `${label14}: <b>${contagemElite[tipo].c14}x</b> <small style="color:#666">${concursos14}</small>`;
-        document.getElementById(`count15${sufixo}`).innerHTML = `${label15}: <b>${contagemElite[tipo].c15}x</b> <small style="color:#666">${concursos15}</small>`;
+        const l14 = contagemElite[tipo].lista14.length > 0 ? " - " + contagemElite[tipo].lista14.join(", ") : "";
+        const l15 = contagemElite[tipo].lista15.length > 0 ? " - " + contagemElite[tipo].lista15.join(", ") : "";
+        document.getElementById(`count14${sufixo}`).innerHTML = `${label14}: <b>${contagemElite[tipo].c14}x</b> <small style="color:#666">${l14}</small>`;
+        document.getElementById(`count15${sufixo}`).innerHTML = `${label15}: <b>${contagemElite[tipo].c15}x</b> <small style="color:#666">${l15}</small>`;
     }
 
     function processarAcumulo(tipo, custo, premio) {
         const conc = dados[tipo].concursoAtual;
         if (conc && !financeiroH[tipo].concursos_vistos.includes(conc) && dados[tipo].ganhadores.length > 0) {
-            financeiroH[tipo].investido += custo;
-            financeiroH[tipo].ganho += premio;
-            financeiroH[tipo].concursos_vistos.push(conc);
+            financeiroH[tipo].investido += custo; financeiroH[tipo].ganho += premio; financeiroH[tipo].concursos_vistos.push(conc);
         }
     }
 
     function atualizarPainelFinanceiro(tipo) {
         const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
-        const totalInvestidoH = financeiroH[tipo].investido;
-        const totalGanhoH = financeiroH[tipo].ganho;
-        const saldoTotal = totalGanhoH - totalInvestidoH;
-        document.getElementById(`valInvestido${sufixo}`).innerText = `R$ ${totalInvestidoH.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
-        document.getElementById(`valGanho${sufixo}`).innerText = `R$ ${totalGanhoH.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
-        const elStatus = document.getElementById(`status${sufixo}`);
-        elStatus.innerText = `Saldo: R$ ${saldoTotal.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
-        if(saldoTotal > 0) elStatus.className = 'financeiro-total lucro'; else if(saldoTotal < 0) elStatus.className = 'financeiro-total prejuizo'; else elStatus.className = 'financeiro-total';
+        const saldo = financeiroH[tipo].ganho - financeiroH[tipo].investido;
+        document.getElementById(`valInvestido${sufixo}`).innerText = `R$ ${financeiroH[tipo].investido.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        document.getElementById(`valGanho${sufixo}`).innerText = `R$ ${financeiroH[tipo].ganho.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        const el = document.getElementById(`status${sufixo}`);
+        el.innerText = `Saldo: R$ ${saldo.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
+        el.className = 'financeiro-total ' + (saldo > 0 ? 'lucro' : (saldo < 0 ? 'prejuizo' : ''));
     }
 
-    function zerarFinanceiro(tipo) {
-        financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
-        atualizarPainelFinanceiro(tipo);
-    }
-
-    function resetarEBuscar(tipo, conc) {
-        zerarFinanceiro(tipo);
-        contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] }; 
-        limparEstatisticasJogos(tipo);
-        buscar(tipo, conc);
-    }
+    function zerarFinanceiro(tipo) { financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] }; atualizarPainelFinanceiro(tipo); }
+    function resetarEBuscar(tipo, conc) { zerarFinanceiro(tipo); contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] }; limparEstatisticasJogos(tipo); buscar(tipo, conc); }
 
     function unificarNovosBotoes() {
         ['lotofacil', 'megasena'].forEach(tipo => {
             const container = document.querySelector(`#cont-${tipo} .add-jogo-section`);
             if (container) {
-                const hr = document.createElement('hr');
-                hr.style.margin = "10px 0"; hr.style.opacity = "0.3";
-                container.appendChild(hr);
-
+                const hr = document.createElement('hr'); hr.style.margin = "10px 0"; hr.style.opacity = "0.3"; container.appendChild(hr);
                 const btn50 = document.createElement('button');
-                btn50.id = `btn50_${tipo}`;
-                btn50.className = "btn btn-random";
-                btn50.style.backgroundColor = "#2c3e50";
-                btn50.innerHTML = "🎰 Gerar 50 Jogos Surpresinha";
-                btn50.onclick = () => { gerar50Jogos(tipo); };
+                btn50.id = `btn50_${tipo}`; btn50.className = "btn btn-random"; btn50.style.backgroundColor = "#2c3e50";
+                btn50.innerHTML = "🎰 Gerar 50 Jogos Surpresinha"; btn50.onclick = () => { gerar50Jogos(tipo); };
                 container.appendChild(btn50);
-
                 const divMassa = document.createElement('div');
                 divMassa.innerHTML = `
                     <label style="font-size:12px"><b>Conferência em Massa:</b></label>
@@ -728,9 +655,7 @@
                         <input type="number" id="massa_${tipo}" placeholder="Conc. Inicial" style="flex:1; padding:8px; font-size:12px">
                         <button id="btnMassa_${tipo}" class="btn" data-status="parado" style="flex:1; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button>
                     </div>
-                    <div id="progContainer_${tipo}" class="progress-container">
-                        <div id="progBar_${tipo}" class="progress-bar"></div>
-                    </div>
+                    <div id="progContainer_${tipo}" class="progress-container"><div id="progBar_${tipo}" class="progress-bar"></div></div>
                 `;
                 container.appendChild(divMassa);
             }
@@ -738,17 +663,11 @@
     }
 
     window.onload = () => { 
-        zerarFinanceiro('lotofacil');
-        zerarFinanceiro('megasena');
+        zerarFinanceiro('lotofacil'); zerarFinanceiro('megasena');
         contagemElite['lotofacil'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
         contagemElite['megasena'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
-
-        limparEstatisticasJogos('lotofacil');
-        limparEstatisticasJogos('megasena');
-        
-        buscar('lotofacil', 'latest'); 
-        buscar('megasena', 'latest'); 
-        unificarNovosBotoes(); 
+        limparEstatisticasJogos('lotofacil'); limparEstatisticasJogos('megasena');
+        buscar('lotofacil', 'latest'); buscar('megasena', 'latest'); unificarNovosBotoes(); 
     };
 </script>
 </body>
