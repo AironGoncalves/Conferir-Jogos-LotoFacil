@@ -165,7 +165,8 @@
         
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site é uma ferramenta independente para facilitar a conferência de jogos. Não nos responsabilizamos por eventuais inconsistências nos resultados apresentados. Este site <b>não garante prêmios</b> e não possui vínculo com a Caixa Econômica Federal. <b>Sempre confira seu bilhete oficial.</b>
-        </div>
+        	<p><b>ATENÇÃO - APOSTAR É PARA MAIORES DE 18 ANOS</b></p>
+	</div>
     </div>
 
     <div id="cont-megasena" class="container ms-theme">
@@ -289,15 +290,37 @@
         const modal = document.getElementById('modalCustom');
         const msgEl = document.getElementById('modalMsg');
         const containerBotoes = document.getElementById('modalContainerBotoes');
+        
         msgEl.innerText = "Em qual Slot deseja guardar?";
         containerBotoes.innerHTML = '';
+        
         ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
             const btn = document.createElement('button');
+            const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
+            
             btn.className = 'btn-modal btn-sim';
-            btn.innerText = `Jogo ${slot}`;
-            btn.onclick = () => { executarSalvarSlot(tipo, slot); restaurarBotoesModal(); modal.style.display = 'none'; };
+            // Se houver jogo salvo, reduz a opacidade e adiciona um aviso visual
+            if (existeSalvo) {
+                btn.style.opacity = "0.6";
+                btn.innerText = `Jogo ${slot} (Ocupado)`;
+            } else {
+                btn.innerText = `Jogo ${slot} (Vazio)`;
+            }
+
+            btn.onclick = () => { 
+                if (existeSalvo) {
+                    modal.style.display = 'none'; // Fecha o de slots
+                    exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
+                        executarSalvarSlot(tipo, slot);
+                    }, false); // O callback será disparado no botão "Confirmar" do modal de aviso
+                } else {
+                    executarSalvarSlot(tipo, slot);
+                    modal.style.display = 'none';
+                }
+            };
             containerBotoes.appendChild(btn);
         });
+        
         const btnCanc = document.createElement('button');
         btnCanc.className = 'btn-modal btn-nao';
         btnCanc.innerText = 'Cancelar';
@@ -309,7 +332,7 @@
     function executarSalvarSlot(tipo, slot) {
         const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({ ...j, vitorias: 0, vitorias12: 0, vitorias13: 0, ganhoAcumulado: 0, concursosVistos: [] }));
         localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify(jogosParaSalvar));
-        exibirModal(`Jogos guardados com sucesso no Jogo ${slot}!`, null, true);
+        exibirModal(`Jogos guardados com sucesso no Slot ${slot}!`, null, true);
     }
 
     function restaurarBotoesModal() {
@@ -432,8 +455,6 @@
 
                     const percent = (((c - inicio + 1) / total) * 100).toFixed(0);
                     progBar.style.width = percent + '%';
-                    
-                    // ATUALIZAÇÃO: Mostra porcentagem no botão também conforme solicitado
                     btnMassa.innerText = `Parar - ⏳ Processando... (${percent}%)`;
                     
                     await buscar(tipo, c);
@@ -672,3 +693,4 @@
 </script>
 </body>
 </html>
+
