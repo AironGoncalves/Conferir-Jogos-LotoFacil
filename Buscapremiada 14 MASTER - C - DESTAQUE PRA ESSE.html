@@ -1,4 +1,4 @@
-<!DOCTYPE html versao O--TUDO EM UM>
+<!DOCTYPE html versao Q--TUDO EM UM>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -205,16 +205,6 @@
             font-size: 0.9em;
             text-align: center;
             line-height: 1.6;
-        }
-        .lf-theme .resumo-geral {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-            color: #3730a3;
-        }
-        .ms-theme .resumo-geral {
-            background: #e6fffa;
-            border: 1px solid #b2f5ea;
-            color: #234e52;
         }
         .caixa-acerto {
             background: rgba(255, 255, 255, 0.9);
@@ -720,8 +710,120 @@
     pointer-events: auto;
 }
 
+/* NOVOS ESTILOS PARA AS ATUALIZAÇÕES */
 
+/* Modal para selecionar números */
+#modalNumeros {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    align-items: center;
+    justify-content: center;
+}
 
+.modal-numeros-content {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.numeros-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.numero-btn {
+    width: 45px;
+    height: 45px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    background: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.numero-btn:hover {
+    transform: scale(1.1);
+}
+
+.numero-btn.selecionado {
+    background: var(--cor-lotofacil);
+    color: white;
+    border-color: var(--cor-lotofacil);
+}
+
+.contador-selecionados {
+    text-align: center;
+    font-weight: bold;
+    margin: 15px 0;
+    color: #333;
+}
+
+.btn-confirmar-numeros {
+    background: var(--cor-lotofacil);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Estilo para campo de concurso final no scanner */
+.campo-concurso-final {
+    grid-column: span 2;
+    margin-top: 5px;
+}
+
+.campo-concurso-final label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.campo-concurso-final input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+    box-sizing: border-box;
+}
+
+.campo-concurso-final input:focus {
+    border-color: #9b2a92;
+}
+
+/* Para slots vazios */
+.btn-slot-vazio {
+    background: #888 !important;
+    color: white;
+    opacity: 0.8;
+}
+
+.btn-slot-vazio:hover {
+    opacity: 1;
+}
 
     </style>
 </head>
@@ -736,6 +838,20 @@
         </div>
     </div>
     
+    <!-- Modal para selecionar números -->
+    <div id="modalNumeros">
+        <div class="modal-numeros-content">
+            <h3 style="color: var(--cor-lotofacil); text-align: center; margin-bottom: 15px;">Selecione os Números</h3>
+            <div class="contador-selecionados" id="contadorSelecionados">Selecionados: 0/15</div>
+            <div class="numeros-grid" id="numerosGrid"></div>
+            <div style="text-align: center; margin: 15px 0;">
+                <button onclick="limparSelecaoNumeros()" style="background: #ff4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-right: 10px;">Limpar</button>
+                <button onclick="fecharModalNumeros()" style="background: #666; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Cancelar</button>
+            </div>
+            <button class="btn-confirmar-numeros" onclick="confirmarSelecaoNumeros()">✅ Confirmar Seleção</button>
+        </div>
+    </div>
+
     <!-- Modal do Scanner de Alta Performance -->
     <div id="modalScanner">
         <div class="modal-scanner-content" id="scannerContent">
@@ -762,7 +878,10 @@
         <div id="resumoLF" class="resumo-geral">Aguardando...</div>
         <div class="add-jogo-section">
             <label><b>Cadastrar Jogo:</b></label>
-            <input type="text" id="inputLF" placeholder="Digite de 15 a 20 números">
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="inputLF" placeholder="Digite de 15 a 20 números" style="flex: 1;">
+                <button onclick="abrirSelecionadorNumeros('lotofacil')" style="background: var(--cor-lotofacil); color: white; border: none; border-radius: 5px; width: 40px; cursor: pointer; font-weight: bold; font-size: 18px;">🎯</button>
+            </div>
             <button class="btn btn-add-lf" onclick="adicionarJogo('lotofacil')">Salvar Jogo na Lista</button>
             <button class="btn btn-random" onclick="gerarSurpresinha('lotofacil')">🎲 Gerar Surpresinha (15 números)</button>
         </div>
@@ -824,7 +943,10 @@
         <div id="resumoMS" class="resumo-geral">Aguardando...</div>
         <div class="add-jogo-section">
             <label><b>Cadastrar Jogo:</b></label>
-            <input type="text" id="inputMS" placeholder="Digite de 6 a 20 números">
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="inputMS" placeholder="Digite de 6 a 20 números" style="flex: 1;">
+                <button onclick="abrirSelecionadorNumeros('megasena')" style="background: var(--cor-megasena); color: white; border: none; border-radius: 5px; width: 40px; cursor: pointer; font-weight: bold; font-size: 18px;">🎯</button>
+            </div>
             <button class="btn btn-add-ms" onclick="adicionarJogo('megasena')">Salvar Jogo na Lista</button>
             <button class="btn btn-random" onclick="gerarSurpresinha('megasena')">🎲 Gerar Surpresinha (6 números)</button>
         </div>
@@ -946,14 +1068,137 @@
             megasena: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] }
         };
 
-        function prepararSalvamentoSlot(tipo) {
-            if (dados[tipo].meusJogos.length === 0) {
-                exibirModal("Não há jogos na tela para salvar.", null, true);
+        // =============================================
+        // ATUALIZAÇÃO 01: MODAL PARA SELECIONAR NÚMEROS
+        // =============================================
+        let tipoLoteriaAtual = '';
+        let numerosSelecionados = [];
+        
+        function abrirSelecionadorNumeros(tipo) {
+            tipoLoteriaAtual = tipo;
+            numerosSelecionados = [];
+            
+            const modal = document.getElementById('modalNumeros');
+            const grid = document.getElementById('numerosGrid');
+            grid.innerHTML = '';
+            
+            const range = tipo === 'lotofacil' ? 25 : 60;
+            
+            for (let i = 1; i <= range; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'numero-btn';
+                btn.textContent = i.toString().padStart(2, '0');
+                btn.dataset.numero = i;
+                btn.onclick = () => toggleNumeroSelecionado(i);
+                grid.appendChild(btn);
+            }
+            
+            atualizarContadorSelecionados();
+            modal.style.display = 'flex';
+        }
+        
+        function toggleNumeroSelecionado(numero) {
+            const index = numerosSelecionados.indexOf(numero);
+            const maxNumeros = tipoLoteriaAtual === 'lotofacil' ? 20 : 15;
+            
+            if (index === -1) {
+                if (numerosSelecionados.length >= maxNumeros) {
+                    mostrarToastScanner(`Máximo de ${maxNumeros} números permitidos`, 'alerta', 'center');
+                    return;
+                }
+                numerosSelecionados.push(numero);
+            } else {
+                numerosSelecionados.splice(index, 1);
+            }
+            
+            atualizarContadorSelecionados();
+        }
+        
+        function atualizarContadorSelecionados() {
+            const contador = document.getElementById('contadorSelecionados');
+            const min = tipoLoteriaAtual === 'lotofacil' ? 15 : 6;
+            const max = tipoLoteriaAtual === 'lotofacil' ? 20 : 15;
+            
+            contador.textContent = `Selecionados: ${numerosSelecionados.length}/${max} (Mínimo: ${min})`;
+            
+            // Atualizar aparência dos botões
+            document.querySelectorAll('.numero-btn').forEach(btn => {
+                const num = parseInt(btn.dataset.numero);
+                if (numerosSelecionados.includes(num)) {
+                    btn.classList.add('selecionado');
+                    btn.style.backgroundColor = tipoLoteriaAtual === 'lotofacil' ? 'var(--cor-lotofacil)' : 'var(--cor-megasena)';
+                    btn.style.borderColor = tipoLoteriaAtual === 'lotofacil' ? 'var(--cor-lotofacil)' : 'var(--cor-megasena)';
+                } else {
+                    btn.classList.remove('selecionado');
+                    btn.style.backgroundColor = 'white';
+                    btn.style.borderColor = '#ddd';
+                }
+            });
+        }
+        
+        function limparSelecaoNumeros() {
+            numerosSelecionados = [];
+            atualizarContadorSelecionados();
+        }
+        
+        function fecharModalNumeros() {
+            document.getElementById('modalNumeros').style.display = 'none';
+        }
+        
+        function confirmarSelecaoNumeros() {
+            const min = tipoLoteriaAtual === 'lotofacil' ? 15 : 6;
+            
+            if (numerosSelecionados.length < min) {
+                mostrarToastScanner(`Selecione pelo menos ${min} números`, 'alerta', 'center');
                 return;
             }
+            
+            const numerosOrdenados = [...numerosSelecionados].sort((a, b) => a - b);
+            const inputId = tipoLoteriaAtual === 'lotofacil' ? 'inputLF' : 'inputMS';
+            document.getElementById(inputId).value = numerosOrdenados.join(' ');
+            
+            fecharModalNumeros();
+            mostrarToastScanner(`${numerosSelecionados.length} números selecionados!`, 'sucesso', 'center');
+        }
+
+        // =============================================
+        // ATUALIZAÇÃO 02: OPÇÃO DE SALVAR SLOT VAZIO
+        // =============================================
+        function prepararSalvamentoSlot(tipo) {
+            const temJogos = dados[tipo].meusJogos.length > 0;
             const modal = document.getElementById('modalCustom');
             const msgEl = document.getElementById('modalMsg');
             const containerBotoes = document.getElementById('modalContainerBotoes');
+            
+            if (!temJogos) {
+                msgEl.innerText = "Não há jogos na tela para salvar. Deseja salvar um slot vazio?";
+                containerBotoes.innerHTML = '';
+                
+                // Botão para salvar vazio
+                const btnSimVazio = document.createElement('button');
+                btnSimVazio.className = 'btn-modal btn-sim';
+                btnSimVazio.innerText = 'Salvar Slot Vazio';
+                btnSimVazio.onclick = () => {
+                    modal.style.display = 'none';
+                    exibirSelecaoSlotVazio(tipo);
+                };
+                containerBotoes.appendChild(btnSimVazio);
+                
+                // Botão Cancelar
+                const btnNao = document.createElement('button');
+                btnNao.className = 'btn-modal btn-nao';
+                btnNao.innerText = 'Cancelar';
+                btnNao.onclick = () => {
+                    modal.style.display = 'none';
+                    restaurarBotoesModal();
+                };
+                containerBotoes.appendChild(btnNao);
+                
+                modal.style.display = 'flex';
+                return;
+            }
+            
+            // Código original para quando há jogos
             msgEl.innerText = "Em qual Slot deseja guardar?";
             containerBotoes.innerHTML = '';
             ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
@@ -988,6 +1233,54 @@
             };
             containerBotoes.appendChild(btnCanc);
             modal.style.display = 'flex';
+        }
+        
+        function exibirSelecaoSlotVazio(tipo) {
+            const modal = document.getElementById('modalCustom');
+            const msgEl = document.getElementById('modalMsg');
+            const containerBotoes = document.getElementById('modalContainerBotoes');
+            
+            msgEl.innerText = "Selecione o slot para salvar vazio:";
+            containerBotoes.innerHTML = '';
+            
+            ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
+                const btn = document.createElement('button');
+                const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
+                btn.className = 'btn-modal ' + (existeSalvo ? 'btn-sim' : 'btn-slot-vazio');
+                
+                if (existeSalvo) {
+                    btn.innerText = `Jogo ${slot} (Ocupado - Sobrescrever?)`;
+                    btn.onclick = () => {
+                        modal.style.display = 'none';
+                        exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os jogos antigos e salvar vazio?`, () => {
+                            executarSalvarSlotVazio(tipo, slot);
+                        }, false);
+                    };
+                } else {
+                    btn.innerText = `Jogo ${slot} (Vazio)`;
+                    btn.onclick = () => {
+                        executarSalvarSlotVazio(tipo, slot);
+                        modal.style.display = 'none';
+                    };
+                }
+                containerBotoes.appendChild(btn);
+            });
+            
+            const btnCanc = document.createElement('button');
+            btnCanc.className = 'btn-modal btn-nao';
+            btnCanc.innerText = 'Cancelar';
+            btnCanc.onclick = () => {
+                restaurarBotoesModal();
+                modal.style.display = 'none';
+            };
+            containerBotoes.appendChild(btnCanc);
+            
+            modal.style.display = 'flex';
+        }
+        
+        function executarSalvarSlotVazio(tipo, slot) {
+            localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify([]));
+            mostrarToastScanner(`Slot ${slot} salvo como vazio!`, 'sucesso', 'center');
         }
 
         function executarSalvarSlot(tipo, slot) {
@@ -1100,30 +1393,40 @@
             salvarNoLocalStorage(tipo);
         }
 
+        // =============================================
+        // ATUALIZAÇÃO 04: CONCURSO FINAL NO SCANNER
+        // =============================================
         async function conferirMassa(tipo) {
             const inputMassa = document.getElementById(`massa_${tipo}`);
             const btnMassa = document.getElementById(`btnMassa_${tipo}`);
             const progContainer = document.getElementById(`progContainer_${tipo}`);
             const progBar = document.getElementById(`progBar_${tipo}`);
+            
             if (btnMassa.dataset.status === "rodando") {
                 abortarConsultaMassa = true;
                 return;
             }
+            
             let inicio = parseInt(inputMassa.value);
             if (isNaN(inicio) || inicio <= 0) {
                 exibirModal("Digite um concurso inicial válido.", null, true);
                 return;
             }
+            
             const originalText = "🔍 Conferir até o Fim";
+            
             try {
                 const respLatest = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/latest`);
                 const dataLatest = await respLatest.json();
                 const fim = dataLatest.concurso;
+                
                 if (inicio > fim) {
                     exibirModal("Concurso inicial maior que o atual.", null, true);
                     return;
                 }
+                
                 const total = fim - inicio + 1;
+                
                 const iniciarLoop = async () => {
                     abortarConsultaMassa = false;
                     btnMassa.dataset.status = "rodando";
@@ -1133,6 +1436,7 @@
                     zerarFinanceiro(tipo);
                     contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
                     limparEstatisticasJogos(tipo);
+                    
                     for (let c = inicio; c <= fim; c++) {
                         if (abortarConsultaMassa) break;
                         const percent = (((c - inicio + 1) / total) * 100).toFixed(0);
@@ -1140,18 +1444,22 @@
                         btnMassa.innerText = `Parar - ⏳ Processando... (${percent}%)`;
                         await buscar(tipo, c);
                     }
+                    
                     btnMassa.dataset.status = "parado";
                     btnMassa.innerText = originalText;
                     btnMassa.style.backgroundColor = "#f39c12";
+                    
                     if (abortarConsultaMassa) {
                         exibirModal("Consulta interrompida pelo usuário.", null, true);
                     } else {
                         exibirModal(`Conferência finalizada do ${inicio} ao ${fim}!`, null, true);
                     }
+                    
                     setTimeout(() => {
                         progContainer.style.display = 'none';
                     }, 2000);
                 };
+                
                 if (total > 300) {
                     exibirModal(`Você está prestes a consultar ${total} concursos. Deseja continuar?`, iniciarLoop);
                 } else {
@@ -1413,6 +1721,10 @@
                         gerar50Jogos(tipo);
                     };
                     container.appendChild(btn50);
+                    
+                    // =============================================
+                    // ATUALIZAÇÃO 03: CONCURSO INICIAL AUTOMÁTICO
+                    // =============================================
                     const divMassa = document.createElement('div');
                     divMassa.innerHTML = `
                         <label style="font-size:12px"><b>Conferência em Massa:</b></label>
@@ -1423,6 +1735,20 @@
                         <div id="progContainer_${tipo}" class="progress-container"><div id="progBar_${tipo}" class="progress-bar"></div></div>
                     `;
                     container.appendChild(divMassa);
+                    
+                    // Preencher automaticamente o concurso inicial (10 concursos antes do último)
+                    setTimeout(async () => {
+                        try {
+                            const resp = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/latest`);
+                            const data = await resp.json();
+                            if (data && data.concurso) {
+                                const concursoInicial = Math.max(1, data.concurso - 10);
+                                document.getElementById(`massa_${tipo}`).value = concursoInicial;
+                            }
+                        } catch (e) {
+                            console.log("Não foi possível obter o último concurso");
+                        }
+                    }, 1000);
                 }
             });
         }
@@ -1591,6 +1917,10 @@
                 </label>
             </div>
             <div class="campo" style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 12px; font-weight: bold; color: #555;">Concurso Final (opcional):</label>
+                <input type="number" id="concFinalScanner" placeholder="Deixe em branco para ir até o último" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; width: 100%; box-sizing: border-box;" onfocus="this.style.borderColor='#9b2a92'">
+            </div>
+            <div class="campo" style="display: flex; flex-direction: column; gap: 5px;">
                 <label style="font-size: 12px; font-weight: bold; color: #555;">Qtd de Jogos:</label>
                 <input type="number" id="qtdJogosScanner" value="6" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; width: 100%; box-sizing: border-box;" onfocus="this.style.borderColor='#9b2a92'" oninput="document.getElementById('qtdLucroPuroScanner').max = this.value">
             </div>
@@ -1598,7 +1928,7 @@
                 <label style="font-size: 12px; font-weight: bold; color: #555;">Tentativas:</label>
                 <input type="number" id="limiteTentativasScanner" value="10000" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; width: 100%; box-sizing: border-box;" onfocus="this.style.borderColor='#9b2a92'">
             </div>
-            <div class="campo" style="display: flex; flex-direction: column; gap: 5px;">
+            <div class="campo" style="display: flex; flex-direction: column; gap: 5px; grid-column: span 2;">
                 <label style="font-size: 12px; font-weight: bold; color: #555;">Foco Lucro:</label>
                 <input type="number" id="qtdLucroPuroScanner" value="2" title="Jogos focados apenas no lucro" style="padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; width: 100%; box-sizing: border-box;" onfocus="this.style.borderColor='#9b2a92'">
             </div>
@@ -1643,7 +1973,7 @@
 	
         
         <div class="aviso-legal" style="margin-top: 15px; font-size: 11px; color: #777; text-align: center; line-height: 1.4; padding: 10px; border-top: 1px dashed #ccc;">            
-                    ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a geração de jogos (surpresinhas) de 15 números da lotofácil. Os jogos gerados <b>não garantem ganhos reais ou prêmios nos concursos futuros</b>. Não nos responsabilizamos por eventuais inconsistências nos resultados apresentados. Este sistema não possui vínculo com a Caixa Econômica Federal.
+                    ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a geração de jogos (surpresinhas) de 15 números da lotofácil. Os jogos gerados <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. Não nos responsabilizamos por eventuais inconsistências nos resultados apresentados. Este sistema não possui vínculo com a Caixa Econômica Federal.
                     <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b>
                     <p style="text-align: center;">🔞 <b>APOSTAR É PARA MAIORES DE 18 ANOS</b>
                <!-- (LINK Q MUDA PRA OUTRA PAGINA)  <a href="https://www.caixa.gov.br/jogo-responsavel/Paginas/default.aspx" target="_blank" style="color: #0e9f6e; text-decoration: none; font-weight: bold; font-size: 13px;">Acesse aqui o Guia do Jogo Responsável</a> -->
@@ -1729,8 +2059,9 @@
                 const dados = await resp.json();
                 if (dados && dados.concurso) {
                     document.getElementById('infoUltimoConcursoScanner').innerText = `Último concurso: ${dados.concurso} (${dados.data})`;
-                    // Sugere um ponto de partida
-                    //document.getElementById('concFocoScanner').value = dados.concurso - 99;
+                    // Sugere um ponto de partida (10 concursos antes do último)
+                    const concursoInicial = Math.max(1, dados.concurso - 10);
+                    document.getElementById('concFocoScanner').value = concursoInicial;
                 }
             } catch (e) {
                 document.getElementById('infoUltimoConcursoScanner').innerText = "Erro ao carregar último";
@@ -1933,6 +2264,7 @@ function mostrarToastScanner(mensagem, tipo = 'info', posicao = 'top-right') {
 async function iniciarScannerBusca() {
     // Captura dos valores
     const valConc = document.getElementById('concFocoScanner').value;
+    const valFinal = document.getElementById('concFinalScanner').value;
     const valQtd = document.getElementById('qtdJogosScanner').value;
     const valTentativas = document.getElementById('limiteTentativasScanner').value;
     const valLucro = document.getElementById('qtdLucroPuroScanner').value;
@@ -1956,6 +2288,20 @@ async function iniciarScannerBusca() {
     }
 
     const inicioNum = parseInt(valConc);
+    let fimNum = null;
+    
+    // Se houver valor no concurso final, validar
+    if (valFinal && valFinal.trim() !== '') {
+        fimNum = parseInt(valFinal);
+        if (isNaN(fimNum) || fimNum < 1) {
+            mostrarToastScanner("⚠️ Insira um valor válido para: Concurso Final", 'info', 'center');
+            return;
+        }
+        if (fimNum < inicioNum) {
+            mostrarToastScanner("⚠️ Concurso final deve ser maior ou igual ao inicial", 'alerta', 'center');
+            return;
+        }
+    }
     
     // Primeiro, verificar qual é o último concurso disponível
     try {
@@ -1969,6 +2315,15 @@ async function iniciarScannerBusca() {
             mostrarToastScanner(`⚠️ CONCURSO NÃO ENCONTRADO OU NÃO SORTEADO.<br>O último concurso disponível é o ${ultimoConcurso.concurso}.`, 'erro', 'center');
             document.getElementById('statusRealScanner').style.display = 'none';
             return;
+        }
+        
+        // Se não foi definido concurso final, usar o último
+        if (!fimNum) {
+            fimNum = ultimoConcurso.concurso;
+        } else if (fimNum > ultimoConcurso.concurso) {
+            mostrarToastScanner(`⚠️ Concurso final (${fimNum}) maior que o último disponível (${ultimoConcurso.concurso}). Usando último concurso.`, 'alerta', 'center');
+            fimNum = ultimoConcurso.concurso;
+            document.getElementById('concFinalScanner').value = fimNum;
         }
         
         // Atualizar o campo com o valor correto se estiver acima do limite
@@ -2002,15 +2357,15 @@ async function iniciarScannerBusca() {
         const resp = await fetch(`https://loteriascaixa-api.herokuapp.com/api/lotofacil/`);
         const dados = await resp.json();
         
-        // Filtrar apenas concursos válidos (que existem e são >= inicioNum)
-        scannerConcursosData = dados.filter(c => c.concurso >= inicioNum).map(c => ({
+        // Filtrar apenas concursos válidos (que existem e estão entre inicioNum e fimNum)
+        scannerConcursosData = dados.filter(c => c.concurso >= inicioNum && c.concurso <= fimNum).map(c => ({
             id: c.concurso, 
             mask: dezenasParaMaskScanner(c.dezenas.map(Number))
         }));
         
         // Verificar se há dados para os concursos solicitados
         if (scannerConcursosData.length === 0) {
-            mostrarToastScanner(`⚠️ Nenhum concurso encontrado a partir do ${inicioNum}.`, 'erro');
+            mostrarToastScanner(`⚠️ Nenhum concurso encontrado de ${inicioNum} a ${fimNum}.`, 'erro');
             document.getElementById('btnIniciarScanner').disabled = false;
             document.getElementById('btnPararScanner').style.display = 'none';
             document.getElementById('statusRealScanner').style.display = 'none';
@@ -2439,4 +2794,5 @@ document.addEventListener('click', function(event) {
     </script>
 </body>
 </html>
+
 
