@@ -1168,23 +1168,35 @@
                 const btn = document.createElement('button');
                 const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
                 btn.className = 'btn-modal btn-sim';
-                
                 if (existeSalvo) {
-                    btn.style.opacity = "0.6";
-                    btn.innerText = `Jogo ${slot} (Ocupado)`;
-                    btn.onclick = () => {
-                        modal.style.display = 'none';
-                        exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar como vazio?`, () => {
-                            salvarSlotVazio(tipo, slot);
-                        }, false);
-                    };
+                    // Verifica se é um slot vazio
+                    try {
+                        const dadosSlot = JSON.parse(existeSalvo);
+                        if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                            btn.innerText = `Jogo ${slot} (Vazio)`;
+                            btn.style.backgroundColor = '#999';
+                        } else {
+                            btn.style.opacity = "0.6";
+                            btn.innerText = `Jogo ${slot} (Ocupado)`;
+                        }
+                    } catch {
+                        btn.style.opacity = "0.6";
+                        btn.innerText = `Jogo ${slot} (Ocupado)`;
+                    }
                 } else {
-                    btn.innerText = `Jogo ${slot} (Salvar Vazio)`;
-                    btn.onclick = () => {
-                        salvarSlotVazio(tipo, slot);
-                        modal.style.display = 'none';
-                    };
+                    btn.innerText = `Jogo ${slot} (Vazio)`;
                 }
+                btn.onclick = () => {
+                    if (existeSalvo) {
+                        modal.style.display = 'none';
+                        exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
+                            executarSalvarSlot(tipo, slot);
+                        }, false);
+                    } else {
+                        executarSalvarSlot(tipo, slot);
+                        modal.style.display = 'none';
+                    }
+                };
                 containerBotoes.appendChild(btn);
             });
             
@@ -2882,4 +2894,5 @@ document.addEventListener('click', function(event) {
 
     </script>
 </body>
+
 </html>
