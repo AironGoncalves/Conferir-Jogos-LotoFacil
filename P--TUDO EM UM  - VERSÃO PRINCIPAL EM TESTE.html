@@ -928,7 +928,6 @@
 	</div>
 
 
-
    </div>
 
     <div id="cont-megasena" class="container ms-theme">
@@ -986,8 +985,7 @@
      	   </span><br>
 
 		<span style="font-size: 18px; cursor: pointer;" onclick="showTooltip()">📧</span>  
-		<span style="cursor: pointer;" onclick="showTooltip()">Contato</span>
-    		<span class="tooltip-box" id="meuBalao" style="font-size: 14px">aironagm@gmail.com</span> 
+		<span style="cursor: pointer;" onclick="showTooltip()">Contato:  aironagm@gmail.com</span>
    		 </div>
 	</div>
 	
@@ -1073,166 +1071,210 @@
         // ATUALIZAÇÃO 02: FUNÇÃO PREPARAR SALVAMENTO SLOT (COM SLOT VAZIO)
         // =============================================
         function prepararSalvamentoSlot(tipo) {
-            const temJogos = dados[tipo].meusJogos.length > 0;
-            const modal = document.getElementById('modalCustom');
-            const msgEl = document.getElementById('modalMsg');
-            const containerBotoes = document.getElementById('modalContainerBotoes');
-            
-            if (!temJogos) {
-                msgEl.innerText = "Não há jogos na tela para salvar. Deseja salvar um slot vazio?";
-                containerBotoes.innerHTML = '';
-                
-                // Botão para salvar vazio
-                const btnSimVazio = document.createElement('button');
-                btnSimVazio.className = 'btn-modal btn-sim';
-                btnSimVazio.innerText = 'Salvar Slot Vazio';
-                btnSimVazio.onclick = () => {
-                    modal.style.display = 'none';
-                    exibirSelecaoSlotVazio(tipo);
-                };
-                containerBotoes.appendChild(btnSimVazio);
-                
-                // Botão Cancelar
-                const btnNao = document.createElement('button');
-                btnNao.className = 'btn-modal btn-nao';
-                btnNao.innerText = 'Cancelar';
-                btnNao.onclick = () => {
-                    modal.style.display = 'none';
-                    restaurarBotoesModal();
-                };
-                containerBotoes.appendChild(btnNao);
-                
-                modal.style.display = 'flex';
-                return;
+    const temJogos = dados[tipo].meusJogos.length > 0;
+    const modal = document.getElementById('modalCustom');
+    const msgEl = document.getElementById('modalMsg');
+    const containerBotoes = document.getElementById('modalContainerBotoes');
+    
+    if (!temJogos) {
+        msgEl.innerText = "Não há jogos na tela para salvar. Deseja salvar um slot vazio?";
+        containerBotoes.innerHTML = '';
+        
+        // Botão para salvar vazio
+        const btnSimVazio = document.createElement('button');
+        btnSimVazio.className = 'btn-modal btn-sim';
+        btnSimVazio.innerText = 'Salvar Slot Vazio';
+        btnSimVazio.onclick = () => {
+            modal.style.display = 'none';
+            exibirSelecaoSlotVazio(tipo);
+        };
+        containerBotoes.appendChild(btnSimVazio);
+        
+        // Botão Cancelar
+        const btnNao = document.createElement('button');
+        btnNao.className = 'btn-modal btn-nao';
+        btnNao.innerText = 'Cancelar';
+        btnNao.onclick = () => {
+            modal.style.display = 'none';
+            restaurarBotoesModal();
+        };
+        containerBotoes.appendChild(btnNao);
+        
+        modal.style.display = 'flex';
+        return;
+    }
+
+    // Se houver jogos, continua com o fluxo original
+    msgEl.innerText = "Em qual Slot deseja guardar?";
+    containerBotoes.innerHTML = '';
+    ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
+        const btn = document.createElement('button');
+        const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
+        btn.className = 'btn-modal btn-sim';
+        if (existeSalvo) {
+            // Verifica se é um slot vazio
+            try {
+                const dadosSlot = JSON.parse(existeSalvo);
+                if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                    btn.innerText = `Jogo ${slot} (Vazio)`;
+                    btn.style.backgroundColor = '#999';
+                } else {
+                    btn.style.opacity = "0.6";
+                    btn.innerText = `Jogo ${slot} (Ocupado)`;
+                }
+            } catch {
+                btn.style.opacity = "0.6";
+                btn.innerText = `Jogo ${slot} (Ocupado)`;
             }
-
-            // Se houver jogos, continua com o fluxo original
-            msgEl.innerText = "Em qual Slot deseja guardar?";
-            containerBotoes.innerHTML = '';
-            ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
-                const btn = document.createElement('button');
-                const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
-                btn.className = 'btn-modal btn-sim';
-                if (existeSalvo) {
-                    // Verifica se é um slot vazio
-                    try {
-                        const dadosSlot = JSON.parse(existeSalvo);
-                        if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
-                            btn.innerText = `Jogo ${slot} (Vazio)`;
-                            btn.style.backgroundColor = '#999';
-                        } else {
-                            btn.style.opacity = "0.6";
-                            btn.innerText = `Jogo ${slot} (Ocupado)`;
-                        }
-                    } catch {
-                        btn.style.opacity = "0.6";
-                        btn.innerText = `Jogo ${slot} (Ocupado)`;
-                    }
-                } else {
-                    btn.innerText = `Jogo ${slot} (Vazio)`;
-                }
-                btn.onclick = () => {
-                    if (existeSalvo) {
+        } else {
+            btn.innerText = `Jogo ${slot} (Vazio)`;
+        }
+        btn.onclick = () => {
+            // Verifica novamente no momento do clique
+            const dadosAtuais = localStorage.getItem(`slot_${tipo}_${slot}`);
+            
+            if (!dadosAtuais) {
+                // Slot realmente vazio (nunca foi salvo)
+                executarSalvarSlot(tipo, slot);
+                modal.style.display = 'none';
+            } else {
+                try {
+                    const dadosSlot = JSON.parse(dadosAtuais);
+                    // Verifica se é um slot vazio (array vazio ou estrutura de jogo vazio)
+                    if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                        // Slot está vazio, pode salvar direto
+                        executarSalvarSlot(tipo, slot);
+                        modal.style.display = 'none';
+                    } else {
+                        // Slot realmente tem jogos
                         modal.style.display = 'none';
                         exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
                             executarSalvarSlot(tipo, slot);
                         }, false);
-                    } else {
+                    }
+                } catch {
+                    // Erro ao parsear, considera como ocupado
+                    modal.style.display = 'none';
+                    exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
                         executarSalvarSlot(tipo, slot);
-                        modal.style.display = 'none';
-                    }
-                };
-                containerBotoes.appendChild(btn);
-            });
-            const btnCanc = document.createElement('button');
-            btnCanc.className = 'btn-modal btn-nao';
-            btnCanc.innerText = 'Cancelar';
-            btnCanc.onclick = () => {
-                restaurarBotoesModal();
-                modal.style.display = 'none';
-            };
-            containerBotoes.appendChild(btnCanc);
-            modal.style.display = 'flex';
-        }
-
-        // Função para exibir seleção de slot vazio
-        function exibirSelecaoSlotVazio(tipo) {
-            const modal = document.getElementById('modalCustom');
-            const msgEl = document.getElementById('modalMsg');
-            const containerBotoes = document.getElementById('modalContainerBotoes');
-            
-            msgEl.innerText = "Selecione um slot para salvar como vazio:";
-            containerBotoes.innerHTML = '';
-            
-            ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
-                const btn = document.createElement('button');
-                const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
-                btn.className = 'btn-modal btn-sim';
-                if (existeSalvo) {
-                    // Verifica se é um slot vazio
-                    try {
-                        const dadosSlot = JSON.parse(existeSalvo);
-                        if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
-                            btn.innerText = `Jogo ${slot} (Vazio)`;
-                            btn.style.backgroundColor = '#999';
-                        } else {
-                            btn.style.opacity = "0.6";
-                            btn.innerText = `Jogo ${slot} (Ocupado)`;
-                        }
-                    } catch {
-                        btn.style.opacity = "0.6";
-                        btn.innerText = `Jogo ${slot} (Ocupado)`;
-                    }
-                } else {
-                    btn.innerText = `Jogo ${slot} (Vazio)`;
+                    }, false);
                 }
-                btn.onclick = () => {
-                    if (existeSalvo) {
+            }
+        };
+        containerBotoes.appendChild(btn);
+    });
+    const btnCanc = document.createElement('button');
+    btnCanc.className = 'btn-modal btn-nao';
+    btnCanc.innerText = 'Cancelar';
+    btnCanc.onclick = () => {
+        restaurarBotoesModal();
+        modal.style.display = 'none';
+    };
+    containerBotoes.appendChild(btnCanc);
+    modal.style.display = 'flex';
+}
+
+// Função para exibir seleção de slot vazio
+function exibirSelecaoSlotVazio(tipo) {
+    const modal = document.getElementById('modalCustom');
+    const msgEl = document.getElementById('modalMsg');
+    const containerBotoes = document.getElementById('modalContainerBotoes');
+    
+    msgEl.innerText = "Selecione um slot para salvar como vazio:";
+    containerBotoes.innerHTML = '';
+    
+    ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
+        const btn = document.createElement('button');
+        const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
+        btn.className = 'btn-modal btn-sim';
+        if (existeSalvo) {
+            // Verifica se é um slot vazio
+            try {
+                const dadosSlot = JSON.parse(existeSalvo);
+                if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                    btn.innerText = `Jogo ${slot} (Vazio)`;
+                    btn.style.backgroundColor = '#999';
+                } else {
+                    btn.style.opacity = "0.6";
+                    btn.innerText = `Jogo ${slot} (Ocupado)`;
+                }
+            } catch {
+                btn.style.opacity = "0.6";
+                btn.innerText = `Jogo ${slot} (Ocupado)`;
+            }
+        } else {
+            btn.innerText = `Jogo ${slot} (Vazio)`;
+        }
+        btn.onclick = () => {
+            // Verifica novamente no momento do clique
+            const dadosAtuais = localStorage.getItem(`slot_${tipo}_${slot}`);
+            
+            if (!dadosAtuais) {
+                // Slot realmente vazio (nunca foi salvo)
+                salvarSlotVazio(tipo, slot);
+                modal.style.display = 'none';
+            } else {
+                try {
+                    const dadosSlot = JSON.parse(dadosAtuais);
+                    // Verifica se é um slot vazio (array vazio ou estrutura de jogo vazio)
+                    if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                        // Slot está vazio, pode salvar direto
+                        salvarSlotVazio(tipo, slot);
+                        modal.style.display = 'none';
+                    } else {
+                        // Slot realmente tem jogos
                         modal.style.display = 'none';
                         exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
-                            executarSalvarSlot(tipo, slot);
+                            salvarSlotVazio(tipo, slot);
                         }, false);
-                    } else {
-                        executarSalvarSlot(tipo, slot);
-                        modal.style.display = 'none';
                     }
-                };
-                containerBotoes.appendChild(btn);
-            });
-            
-            const btnCanc = document.createElement('button');
-            btnCanc.className = 'btn-modal btn-nao';
-            btnCanc.innerText = 'Cancelar';
-            btnCanc.onclick = () => {
-                restaurarBotoesModal();
-                modal.style.display = 'none';
-            };
-            containerBotoes.appendChild(btnCanc);
-            
-            modal.style.display = 'flex';
-        }
+                } catch {
+                    // Erro ao parsear, considera como ocupado
+                    modal.style.display = 'none';
+                    exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
+                        salvarSlotVazio(tipo, slot);
+                    }, false);
+                }
+            }
+        };
+        containerBotoes.appendChild(btn);
+    });
+    
+    const btnCanc = document.createElement('button');
+    btnCanc.className = 'btn-modal btn-nao';
+    btnCanc.innerText = 'Cancelar';
+    btnCanc.onclick = () => {
+        restaurarBotoesModal();
+        modal.style.display = 'none';
+    };
+    containerBotoes.appendChild(btnCanc);
+    
+    modal.style.display = 'flex';
+}
 
-        // Função para salvar slot vazio
-        function salvarSlotVazio(tipo, slot) {
-            // Salva um array vazio como slot vazio
-            localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify([]));
-            exibirModal(`Slot ${slot} salvo como vazio!`, null, true);
-            atualizarBotoesSlot(tipo);
-        }
+// Função para salvar slot vazio
+function salvarSlotVazio(tipo, slot) {
+    // Salva um array vazio como slot vazio
+    localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify([]));
+    exibirModal(`Slot ${slot} salvo como vazio!`, null, true);
+    atualizarBotoesSlot(tipo);
+}
 
-        function executarSalvarSlot(tipo, slot) {
-            const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({
-                ...j,
-                vitorias: 0,
-                vitorias12: 0,
-                vitorias13: 0,
-                ganhoAcumulado: 0,
-                concursosVistos: []
-            }));
-            localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify(jogosParaSalvar));
-            exibirModal(`Jogos guardados com sucesso no Slot ${slot}!`, null, true);
-            atualizarBotoesSlot(tipo);
-        }
+function executarSalvarSlot(tipo, slot) {
+    const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({
+        ...j,
+        vitorias: 0,
+        vitorias12: 0,
+        vitorias13: 0,
+        ganhoAcumulado: 0,
+        concursosVistos: []
+    }));
+    localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify(jogosParaSalvar));
+    exibirModal(`Jogos guardados com sucesso no Slot ${slot}!`, null, true);
+    atualizarBotoesSlot(tipo);
+}
+
+
 
         // Função para atualizar aparência dos botões de slot
         function atualizarBotoesSlot(tipo) {
@@ -2894,5 +2936,4 @@ document.addEventListener('click', function(event) {
 
     </script>
 </body>
-
 </html>
