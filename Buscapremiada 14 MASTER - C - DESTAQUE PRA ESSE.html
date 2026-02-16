@@ -1752,7 +1752,7 @@
                             const resp = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/latest`);
                             const data = await resp.json();
                             if (data && data.concurso) {
-                                const concursoInicial = Math.max(1, data.concurso - 10);
+                                const concursoInicial = Math.max(1, data.concurso - 40);
                                 document.getElementById(`massa_${tipo}`).value = concursoInicial;
                             }
                         } catch (e) {
@@ -2804,6 +2804,7 @@ document.addEventListener('click', function(event) {
     </script>
 </body>
 </html>
+
 
 
 
