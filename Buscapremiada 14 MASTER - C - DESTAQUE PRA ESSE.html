@@ -1,4 +1,4 @@
-<!DOCTYPE html versao Q--TUDO EM UM>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -206,7 +206,7 @@
             text-align: center;
             line-height: 1.6;
         }
-		.lf-theme .resumo-geral {
+.lf-theme .resumo-geral {
             background: #eef2ff;
             border: 1px solid #c7d2fe;
             color: #3730a3;
@@ -302,6 +302,12 @@
             border-color: #000;
             transform: scale(1.05);
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+ 	.btn-memoria.slot-vazio {
+            background: #f0f0f0;
+            color: #888;
+            border-color: #ddd;
+            font-style: italic;
         }
         .btn-guardar {
             width: 100%;
@@ -995,8 +1001,7 @@
      	   </span><br>
 
 		<span style="font-size: 18px; cursor: pointer;" onclick="showTooltip()">📧</span>  
-		<span style="cursor: pointer;" onclick="showTooltip()">Contato</span>
-    		<span class="tooltip-box" id="meuBalao" style="font-size: 14px">aironagm@gmail.com</span> 
+		<span style="cursor: pointer;" onclick="showTooltip()">Contato:  aironagm@gmail.com</span>
    		 </div>
 	</div>
 	
@@ -1175,135 +1180,238 @@
         // ATUALIZAÇÃO 02: OPÇÃO DE SALVAR SLOT VAZIO
         // =============================================
         function prepararSalvamentoSlot(tipo) {
-            const temJogos = dados[tipo].meusJogos.length > 0;
-            const modal = document.getElementById('modalCustom');
-            const msgEl = document.getElementById('modalMsg');
-            const containerBotoes = document.getElementById('modalContainerBotoes');
-            
-            if (!temJogos) {
-                msgEl.innerText = "Não há jogos na tela para salvar. Deseja salvar um slot vazio?";
-                containerBotoes.innerHTML = '';
-                
-                // Botão para salvar vazio
-                const btnSimVazio = document.createElement('button');
-                btnSimVazio.className = 'btn-modal btn-sim';
-                btnSimVazio.innerText = 'Salvar Slot Vazio';
-                btnSimVazio.onclick = () => {
-                    modal.style.display = 'none';
-                    exibirSelecaoSlotVazio(tipo);
-                };
-                containerBotoes.appendChild(btnSimVazio);
-                
-                // Botão Cancelar
-                const btnNao = document.createElement('button');
-                btnNao.className = 'btn-modal btn-nao';
-                btnNao.innerText = 'Cancelar';
-                btnNao.onclick = () => {
-                    modal.style.display = 'none';
-                    restaurarBotoesModal();
-                };
-                containerBotoes.appendChild(btnNao);
-                
-                modal.style.display = 'flex';
-                return;
-            }
-            
-            // Código original para quando há jogos
-            msgEl.innerText = "Em qual Slot deseja guardar?";
-            containerBotoes.innerHTML = '';
-            ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
-                const btn = document.createElement('button');
-                const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
-                btn.className = 'btn-modal btn-sim';
-                if (existeSalvo) {
+    const temJogos = dados[tipo].meusJogos.length > 0;
+    const modal = document.getElementById('modalCustom');
+    const msgEl = document.getElementById('modalMsg');
+    const containerBotoes = document.getElementById('modalContainerBotoes');
+    
+    if (!temJogos) {
+        msgEl.innerText = "Não há jogos na tela para salvar. Deseja salvar um slot vazio?";
+        containerBotoes.innerHTML = '';
+        
+        // Botão para salvar vazio
+        const btnSimVazio = document.createElement('button');
+        btnSimVazio.className = 'btn-modal btn-sim';
+        btnSimVazio.innerText = 'Salvar Slot Vazio';
+        btnSimVazio.onclick = () => {
+            modal.style.display = 'none';
+            exibirSelecaoSlotVazio(tipo);
+        };
+        containerBotoes.appendChild(btnSimVazio);
+        
+        // Botão Cancelar
+        const btnNao = document.createElement('button');
+        btnNao.className = 'btn-modal btn-nao';
+        btnNao.innerText = 'Cancelar';
+        btnNao.onclick = () => {
+            modal.style.display = 'none';
+            restaurarBotoesModal();
+        };
+        containerBotoes.appendChild(btnNao);
+        
+        modal.style.display = 'flex';
+        return;
+    }
+
+    // Se houver jogos, continua com o fluxo original
+    msgEl.innerText = "Em qual Slot deseja guardar?";
+    containerBotoes.innerHTML = '';
+    ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
+        const btn = document.createElement('button');
+        const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
+        btn.className = 'btn-modal btn-sim';
+        if (existeSalvo) {
+            // Verifica se é um slot vazio
+            try {
+                const dadosSlot = JSON.parse(existeSalvo);
+                if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                    btn.innerText = `Jogo ${slot} (Vazio)`;
+                    btn.style.backgroundColor = '#999';
+                } else {
                     btn.style.opacity = "0.6";
                     btn.innerText = `Jogo ${slot} (Ocupado)`;
-                } else {
-                    btn.innerText = `Jogo ${slot} (Vazio)`;
                 }
-                btn.onclick = () => {
-                    if (existeSalvo) {
+            } catch {
+                btn.style.opacity = "0.6";
+                btn.innerText = `Jogo ${slot} (Ocupado)`;
+            }
+        } else {
+            btn.innerText = `Jogo ${slot} (Vazio)`;
+        }
+        btn.onclick = () => {
+            // Verifica novamente no momento do clique
+            const dadosAtuais = localStorage.getItem(`slot_${tipo}_${slot}`);
+            
+            if (!dadosAtuais) {
+                // Slot realmente vazio (nunca foi salvo)
+                executarSalvarSlot(tipo, slot);
+                modal.style.display = 'none';
+            } else {
+                try {
+                    const dadosSlot = JSON.parse(dadosAtuais);
+                    // Verifica se é um slot vazio (array vazio ou estrutura de jogo vazio)
+                    if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                        // Slot está vazio, pode salvar direto
+                        executarSalvarSlot(tipo, slot);
+                        modal.style.display = 'none';
+                    } else {
+                        // Slot realmente tem jogos
                         modal.style.display = 'none';
                         exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
                             executarSalvarSlot(tipo, slot);
                         }, false);
-                    } else {
-                        executarSalvarSlot(tipo, slot);
-                        modal.style.display = 'none';
                     }
-                };
-                containerBotoes.appendChild(btn);
-            });
-            const btnCanc = document.createElement('button');
-            btnCanc.className = 'btn-modal btn-nao';
-            btnCanc.innerText = 'Cancelar';
-            btnCanc.onclick = () => {
-                restaurarBotoesModal();
-                modal.style.display = 'none';
-            };
-            containerBotoes.appendChild(btnCanc);
-            modal.style.display = 'flex';
-        }
-        
-        function exibirSelecaoSlotVazio(tipo) {
-            const modal = document.getElementById('modalCustom');
-            const msgEl = document.getElementById('modalMsg');
-            const containerBotoes = document.getElementById('modalContainerBotoes');
-            
-            msgEl.innerText = "Selecione o slot para salvar vazio:";
-            containerBotoes.innerHTML = '';
-            
-            ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
-                const btn = document.createElement('button');
-                const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
-                btn.className = 'btn-modal ' + (existeSalvo ? 'btn-sim' : 'btn-slot-vazio');
-                
-                if (existeSalvo) {
-                    btn.innerText = `Jogo ${slot} (Ocupado - Sobrescrever?)`;
-                    btn.onclick = () => {
-                        modal.style.display = 'none';
-                        exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os jogos antigos e salvar vazio?`, () => {
-                            executarSalvarSlotVazio(tipo, slot);
-                        }, false);
-                    };
-                } else {
-                    btn.innerText = `Jogo ${slot} (Vazio)`;
-                    btn.onclick = () => {
-                        executarSalvarSlotVazio(tipo, slot);
-                        modal.style.display = 'none';
-                    };
+                } catch {
+                    // Erro ao parsear, considera como ocupado
+                    modal.style.display = 'none';
+                    exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
+                        executarSalvarSlot(tipo, slot);
+                    }, false);
                 }
-                containerBotoes.appendChild(btn);
-            });
-            
-            const btnCanc = document.createElement('button');
-            btnCanc.className = 'btn-modal btn-nao';
-            btnCanc.innerText = 'Cancelar';
-            btnCanc.onclick = () => {
-                restaurarBotoesModal();
-                modal.style.display = 'none';
-            };
-            containerBotoes.appendChild(btnCanc);
-            
-            modal.style.display = 'flex';
-        }
-        
-        function executarSalvarSlotVazio(tipo, slot) {
-            localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify([]));
-            mostrarToastScanner(`Slot ${slot} salvo como vazio!`, 'sucesso', 'center');
-        }
+            }
+        };
+        containerBotoes.appendChild(btn);
+    });
+    const btnCanc = document.createElement('button');
+    btnCanc.className = 'btn-modal btn-nao';
+    btnCanc.innerText = 'Cancelar';
+    btnCanc.onclick = () => {
+        restaurarBotoesModal();
+        modal.style.display = 'none';
+    };
+    containerBotoes.appendChild(btnCanc);
+    modal.style.display = 'flex';
+}
 
-        function executarSalvarSlot(tipo, slot) {
-            const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({
-                ...j,
-                vitorias: 0,
-                vitorias12: 0,
-                vitorias13: 0,
-                ganhoAcumulado: 0,
-                concursosVistos: []
-            }));
-            localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify(jogosParaSalvar));
-            exibirModal(`Jogos guardados com sucesso no Slot ${slot}!`, null, true);
+// Função para exibir seleção de slot vazio
+function exibirSelecaoSlotVazio(tipo) {
+    const modal = document.getElementById('modalCustom');
+    const msgEl = document.getElementById('modalMsg');
+    const containerBotoes = document.getElementById('modalContainerBotoes');
+    
+    msgEl.innerText = "Selecione um slot para salvar como vazio:";
+    containerBotoes.innerHTML = '';
+    
+    ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
+        const btn = document.createElement('button');
+        const existeSalvo = localStorage.getItem(`slot_${tipo}_${slot}`);
+        btn.className = 'btn-modal btn-sim';
+        if (existeSalvo) {
+            // Verifica se é um slot vazio
+            try {
+                const dadosSlot = JSON.parse(existeSalvo);
+                if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                    btn.innerText = `Jogo ${slot} (Vazio)`;
+                    btn.style.backgroundColor = '#999';
+                } else {
+                    btn.style.opacity = "0.6";
+                    btn.innerText = `Jogo ${slot} (Ocupado)`;
+                }
+            } catch {
+                btn.style.opacity = "0.6";
+                btn.innerText = `Jogo ${slot} (Ocupado)`;
+            }
+        } else {
+            btn.innerText = `Jogo ${slot} (Vazio)`;
+        }
+        btn.onclick = () => {
+            // Verifica novamente no momento do clique
+            const dadosAtuais = localStorage.getItem(`slot_${tipo}_${slot}`);
+            
+            if (!dadosAtuais) {
+                // Slot realmente vazio (nunca foi salvo)
+                salvarSlotVazio(tipo, slot);
+                modal.style.display = 'none';
+            } else {
+                try {
+                    const dadosSlot = JSON.parse(dadosAtuais);
+                    // Verifica se é um slot vazio (array vazio ou estrutura de jogo vazio)
+                    if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                        // Slot está vazio, pode salvar direto
+                        salvarSlotVazio(tipo, slot);
+                        modal.style.display = 'none';
+                    } else {
+                        // Slot realmente tem jogos
+                        modal.style.display = 'none';
+                        exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
+                            salvarSlotVazio(tipo, slot);
+                        }, false);
+                    }
+                } catch {
+                    // Erro ao parsear, considera como ocupado
+                    modal.style.display = 'none';
+                    exibirModal(`O Slot ${slot} já tem jogos salvos. Tem certeza que deseja APAGAR os antigos e salvar a lista atual?`, () => {
+                        salvarSlotVazio(tipo, slot);
+                    }, false);
+                }
+            }
+        };
+        containerBotoes.appendChild(btn);
+    });
+    
+    const btnCanc = document.createElement('button');
+    btnCanc.className = 'btn-modal btn-nao';
+    btnCanc.innerText = 'Cancelar';
+    btnCanc.onclick = () => {
+        restaurarBotoesModal();
+        modal.style.display = 'none';
+    };
+    containerBotoes.appendChild(btnCanc);
+    
+    modal.style.display = 'flex';
+}
+
+// Função para salvar slot vazio
+function salvarSlotVazio(tipo, slot) {
+    // Salva um array vazio como slot vazio
+    localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify([]));
+    exibirModal(`Slot ${slot} salvo como vazio!`, null, true);
+    atualizarBotoesSlot(tipo);
+}
+
+function executarSalvarSlot(tipo, slot) {
+    const jogosParaSalvar = dados[tipo].meusJogos.map(j => ({
+        ...j,
+        vitorias: 0,
+        vitorias12: 0,
+        vitorias13: 0,
+        ganhoAcumulado: 0,
+        concursosVistos: []
+    }));
+    localStorage.setItem(`slot_${tipo}_${slot}`, JSON.stringify(jogosParaSalvar));
+    exibirModal(`Jogos guardados com sucesso no Slot ${slot}!`, null, true);
+    atualizarBotoesSlot(tipo);
+}
+
+
+
+        // Função para atualizar aparência dos botões de slot
+        function atualizarBotoesSlot(tipo) {
+            const prefixo = tipo === 'lotofacil' ? 'lf' : 'ms';
+            ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
+                const btn = document.querySelector(`.btn-memoria-${prefixo}-${slot}`);
+                if (btn) {
+                    const salvo = localStorage.getItem(`slot_${tipo}_${slot}`);
+                    if (salvo) {
+                        try {
+                            const dadosSlot = JSON.parse(salvo);
+                            if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                                btn.classList.add('slot-vazio');
+                                btn.innerText = `Slot ${slot} (Vazio)`;
+                            } else {
+                                btn.classList.remove('slot-vazio');
+                                btn.innerText = `Jogo ${slot}`;
+                            }
+                        } catch {
+                            btn.classList.remove('slot-vazio');
+                            btn.innerText = `Jogo ${slot}`;
+                        }
+                    } else {
+                        btn.classList.remove('slot-vazio');
+                        btn.innerText = `Jogo ${slot}`;
+                    }
+                }
+            });
         }
 
         function restaurarBotoesModal() {
@@ -1316,18 +1424,29 @@
         function carregarSlot(tipo, slot) {
             const salvo = localStorage.getItem(`slot_${tipo}_${slot}`);
             if (salvo) {
-                financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
-                contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
-                dados[tipo].meusJogos = JSON.parse(salvo);
-                salvarNoLocalStorage(tipo);
-                renderizar(tipo);
-                const prefixo = tipo === 'lotofacil' ? 'lf' : 'ms';
-                document.querySelectorAll(`.btn-memoria`).forEach(btn => {
-                    if(btn.className.includes(`btn-memoria-${prefixo}`)) btn.classList.remove('slot-active');
-                });
-                const btnSel = document.querySelector(`.btn-memoria-${prefixo}-${slot}`);
-                if(btnSel) btnSel.classList.add('slot-active');
-                exibirModal(`Jogo ${slot} carregado para conferência!`, null, true);
+                try {
+                    const dadosSlot = JSON.parse(salvo);
+                    // Verifica se é um slot vazio
+                    if (dadosSlot.length === 0 || (dadosSlot.length === 1 && dadosSlot[0].numeros && dadosSlot[0].numeros.length === 0)) {
+                        exibirModal(`O Jogo ${slot} está vazio.`, null, true);
+                        return;
+                    }
+                    
+                    financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
+                    contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+                    dados[tipo].meusJogos = dadosSlot;
+                    salvarNoLocalStorage(tipo);
+                    renderizar(tipo);
+                    const prefixo = tipo === 'lotofacil' ? 'lf' : 'ms';
+                    document.querySelectorAll(`.btn-memoria`).forEach(btn => {
+                        if(btn.className.includes(`btn-memoria-${prefixo}`)) btn.classList.remove('slot-active');
+                    });
+                    const btnSel = document.querySelector(`.btn-memoria-${prefixo}-${slot}`);
+                    if(btnSel) btnSel.classList.add('slot-active');
+                    exibirModal(`Jogo ${slot} carregado para conferência!`, null, true);
+                } catch (e) {
+                    exibirModal(`Erro ao carregar o Jogo ${slot}.`, null, true);
+                }
             } else {
                 exibirModal(`O Jogo ${slot} está vazio.`, null, true);
             }
@@ -1359,27 +1478,72 @@
             document.body.className = `${tipo === 'lotofacil' ? 'lf' : 'ms'}-theme`;
         }
 
+
+ // =============================================
+ // ATUALIZAÇÃO 03: FUNÇÃO BUSCAR COM MÚLTIPLAS APIS
+ // =============================================
         async function buscar(tipo, concurso = 'latest') {
             const idInfo = tipo === 'lotofacil' ? 'infoLF' : 'infoMS';
             const idInput = tipo === 'lotofacil' ? 'numLF' : 'numMS';
             const idBolas = tipo === 'lotofacil' ? 'bolasLF' : 'bolasMS';
             const bolasEl = document.getElementById(idBolas);
-            try {
-                const termo = (concurso === '' || concurso === null) ? 'latest' : concurso;
-                const response = await fetch(`https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/${termo}`);
-                if (!response.ok) throw new Error();
-                const data = await response.json();
-                dados[tipo].concursoAtual = data.concurso;
-                document.getElementById(idInput).value = data.concurso;
-                dados[tipo].ganhadores = data.dezenas.map(Number);
-                document.getElementById(idInfo).innerHTML = `Concurso ${data.concurso} - Data: ${data.data}`;
+            
+            const termo = (concurso === '' || concurso === null) ? 'latest' : concurso;
+            
+            // Lista de APIs de fallback
+            const apis = [
+                `https://loteriascaixa-api.herokuapp.com/api/${dados[tipo].api}/${termo}`,
+                `https://api-loteria.vercel.app/api/${dados[tipo].api}/${termo}`,
+                `https://www.lotodicas.com.br/api/${dados[tipo].api}/${termo}`
+            ];
+            
+            let data = null;
+            let lastError = null;
+            
+            // Tenta cada API até conseguir uma resposta
+            for (let apiUrl of apis) {
+                try {
+                    console.log(`Tentando API: ${apiUrl}`);
+                    const response = await fetch(apiUrl, { timeout: 10000 });
+                    if (!response.ok) throw new Error(`API ${apiUrl} falhou com status ${response.status}`);
+                    data = await response.json();
+                    console.log(`Sucesso com API: ${apiUrl}`);
+                    break; // Sai do loop se conseguir
+                } catch (error) {
+                    console.warn(`Falha com API ${apiUrl}:`, error);
+                    lastError = error;
+                    continue; // Tenta próxima API
+                }
+            }
+            
+            if (data) {
+                dados[tipo].concursoAtual = data.concurso || data.numero_concurso || data.numero;
+                document.getElementById(idInput).value = dados[tipo].concursoAtual;
+                
+                // Extrai as dezenas de diferentes formatos de API
+                let dezenas = [];
+                if (data.dezenas) {
+                    dezenas = data.dezenas.map(Number);
+                } else if (data.numeros) {
+                    dezenas = data.numeros.map(Number);
+                } else if (data.numeros_sorteados) {
+                    dezenas = data.numeros_sorteados.map(Number);
+                }
+                
+                dados[tipo].ganhadores = dezenas;
+                
+                // Formata a data
+                const dataFormatada = data.data ? data.data : (data.data_sorteio ? data.data_sorteio : 'Data não disponível');
+                document.getElementById(idInfo).innerHTML = `Concurso ${dados[tipo].concursoAtual} - Data: ${dataFormatada}`;
+                
                 bolasEl.innerHTML = '';
-                data.dezenas.forEach(num => {
+                dezenas.forEach(num => {
                     bolasEl.innerHTML += `<div class="bola">${num}</div>`;
                 });
                 renderizar(tipo);
-                return data.concurso;
-            } catch (e) {
+                return dados[tipo].concursoAtual;
+            } else {
+                // Se todas as APIs falharem
                 document.getElementById(idInfo).innerHTML = `<span style="color:#d93025">⚠️ CONCURSO NÃO ENCONTRADO OU NÃO SORTEADO</span>`;
                 bolasEl.innerHTML = '';
                 for(let i=0; i < dados[tipo].max_bolas; i++) bolasEl.innerHTML += `<div class="bola" style="background:#ccc; color:#666">- -</div>`;
@@ -1981,7 +2145,6 @@
 
 
 	
-        
         <div class="aviso-legal" style="margin-top: 15px; font-size: 11px; color: #777; text-align: center; line-height: 1.4; padding: 10px; border-top: 1px dashed #ccc;">            
                     ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a geração de jogos (surpresinhas) de 15 números da lotofácil. Os jogos gerados <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. Não nos responsabilizamos por eventuais inconsistências nos resultados apresentados. Este sistema não possui vínculo com a Caixa Econômica Federal.
                     <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b>
@@ -2005,10 +2168,6 @@
 	}
 
 
-
-
-
-
         function fecharScanner() {
     	document.getElementById('modalScanner').style.display = 'none';
   	  if (isMobile) {
@@ -2019,8 +2178,6 @@
    	 // Restaurar botões do modal padrão
    	 restaurarBotoesModal();
 		}
-
-
 
 
 	function restaurarBotoesModal() {
@@ -2461,7 +2618,6 @@ async function iniciarScannerBusca() {
 }
 
 
-        
         function exibirJogoScanner(num, d) {
             const container = document.getElementById('resultadoFinalScanner');
             const item = document.createElement('div');
@@ -2503,9 +2659,6 @@ async function iniciarScannerBusca() {
         }
         
        
-
-
-
 	function transferirJogosScanner() {
   	  if (scannerJogosGerados.length === 0) {
  	       mostrarToastScanner("Não há jogos gerados para transferir.", 'erro', 'center');
@@ -2620,8 +2773,6 @@ function fecharModalScannerConfirm() {
 }
 
 
-
-
 function executarTransferenciaScanner(apagarExistentes) {
     if (apagarExistentes) {
         // Limpa todos os jogos existentes
@@ -2660,8 +2811,6 @@ function executarTransferenciaScanner(apagarExistentes) {
         fecharScanner();
     }, 500);
 }
-
-
 
 
 function executarTransferencia(apagarExistentes) {
@@ -2706,7 +2855,6 @@ function executarTransferencia(apagarExistentes) {
 }
 
 
-
 //======================================================
 //MOSTRAR BALAO DO CONTATO==============================
 
@@ -2740,9 +2888,6 @@ function showTooltip() {
         tooltip.innerHTML = '✅ Email copiado!';
         tooltip.style.background = '#27ae60';
        
-
-
-
         // Reseta após 1.5 segundos
         setTimeout(() => {
             tooltip.innerHTML = originalText;
@@ -2780,10 +2925,6 @@ document.addEventListener('click', function(event) {
 });
 
 
-
-
-
-
         // =============================================
         // INICIALIZAÇÃO DO SISTEMA
         // =============================================
@@ -2804,7 +2945,3 @@ document.addEventListener('click', function(event) {
     </script>
 </body>
 </html>
-
-
-
-
