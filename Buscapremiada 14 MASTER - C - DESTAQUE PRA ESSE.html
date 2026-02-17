@@ -1802,8 +1802,8 @@ function atualizarPercentual(tipo) {
     if (!percentualElement) return; // Sai se o elemento não existir
     
     // Extrair valores numéricos
-    const totalGasto = parseFloat(valInvestidoElement.innerText.replace('R$', '').replace(',', '.').trim());
-    const totalGanho = parseFloat(valGanhoElement.innerText.replace('R$', '').replace(',', '.').trim());
+    const totalGasto = parseFloat(valInvestidoElement.innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+    const totalGanho = parseFloat(valGanhoElement.innerText.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
     
     // Calcular saldo
     const saldo = totalGanho - totalGasto;
@@ -3048,3 +3048,4 @@ document.addEventListener('click', function(event) {
     </script>
 </body>
 </html>
+
