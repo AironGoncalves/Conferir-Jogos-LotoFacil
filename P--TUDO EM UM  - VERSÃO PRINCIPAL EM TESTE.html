@@ -826,6 +826,45 @@
     font-style: italic;
 }
 
+
+/* POR CENTAGEM */
+.percentual-status {
+    margin-left: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.percentual-status.positivo {
+    color: #2196F3; /* Azul */
+}
+
+.percentual-status.positivo::before {
+    content: "+";
+    margin-right: 2px;
+}
+
+.percentual-status.negativo {
+    color: #f44336; /* Vermelho */
+}
+
+.percentual-status.negativo::before {
+    content: "-";
+    margin-right: 2px;
+}
+
+.percentual-status.zero {
+    color: #666;
+}
+
+.percentual-status.zero::before {
+    content: "";
+    margin-right: 0;
+}
+
+
+
     </style>
 </head>
 <body class="lf-theme">
@@ -902,6 +941,7 @@
             <div class="financeiro-item"><span>Total Gasto:</span> <span id="valInvestidoLF">R$ 0,00</span></div>
             <div class="financeiro-item"><span>Total de Ganhos:</span> <span id="valGanhoLF">R$ 0,00</span></div>
             <div class="financeiro-total" id="statusLF">Saldo: R$ 0,00</span></div>
+	    <div class="percentual-status" id="percentualLF">Saldo: R$ 0,00</span></div>
         </div>
         <div id="contagemEspecialLF" class="contagem-especial">
             <strong>🏆 Prêmios de Elite Acumulados:</strong>
@@ -966,6 +1006,7 @@
             <div class="financeiro-item"><span>Total Gasto:</span> <span id="valInvestidoMS">R$ 0,00</span></div>
             <div class="financeiro-item"><span>Total de Ganhos:</span> <span id="valGanhoMS">R$ 0,00</span></div>
             <div class="financeiro-total" id="statusMS">Saldo: R$ 0,00</span></div>
+	    <div class="percentual-status" id="percentualMS">Saldo: R$ 0,00</span></div>
         </div>
         <div id="contagemEspecialMS" class="contagem-especial">
             <strong>🏆 Prêmios de Elite Acumulados:</strong>
@@ -1457,6 +1498,10 @@ function executarSalvarSlot(tipo, slot) {
             salvarNoLocalStorage(tipo);
         }
 
+        // =============================================
+        // ATUALIZAÇÃO 04: CONCURSO FINAL NO SCANNER
+        // =============================================
+
         async function conferirMassa(tipo) {
             const inputMassa = document.getElementById(`massa_${tipo}`);
             const btnMassa = document.getElementById(`btnMassa_${tipo}`);
@@ -1755,6 +1800,62 @@ function executarSalvarSlot(tipo, slot) {
             });
         }
 
+
+
+//***********CALCULAR PERCENTAGEM
+function calcularPercentual(saldo, totalGasto) {
+    if (totalGasto === 0) return 0;
+    return (saldo / totalGasto) * 100;
+}
+
+function formatarPercentual(valor) {
+    return Math.abs(valor).toFixed(2).replace('.', ',') + '%';
+}
+
+function atualizarPercentual(tipo) {
+    const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
+    const valInvestidoElement = document.getElementById(`valInvestido${sufixo}`);
+    const valGanhoElement = document.getElementById(`valGanho${sufixo}`);
+    const percentualElement = document.getElementById(`percentual${sufixo}`);
+    const saldoElement = document.getElementById(`status${sufixo}`);
+    
+    if (!percentualElement) return; // Sai se o elemento não existir
+    
+    // Extrair valores numéricos
+    const totalGasto = parseFloat(valInvestidoElement.innerText.replace('R$', '').replace(',', '.').trim());
+    const totalGanho = parseFloat(valGanhoElement.innerText.replace('R$', '').replace(',', '.').trim());
+    
+    // Calcular saldo
+    const saldo = totalGanho - totalGasto;
+    
+    // Atualizar APENAS o texto do saldo, sem recriar o HTML
+    const saldoTexto = saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    
+    // Encontrar o nó de texto do saldo (primeiro filho do statusLF)
+    const saldoNode = saldoElement.childNodes[0];
+    if (saldoNode) {
+        saldoNode.nodeValue = `Saldo: ${saldoTexto} `;
+    }
+    
+    // Calcular percentual
+    const percentual = calcularPercentual(saldo, totalGasto);
+    
+    // Limpar classes anteriores
+    percentualElement.className = 'percentual-status';
+    
+    // Aplicar classe e formato baseado no valor
+    if (percentual > 0) {
+        percentualElement.classList.add('positivo');
+        percentualElement.innerText = formatarPercentual(percentual);
+    } else if (percentual < 0) {
+        percentualElement.classList.add('negativo');
+        percentualElement.innerText = formatarPercentual(percentual);
+    } else {
+        percentualElement.classList.add('zero');
+        percentualElement.innerText = '0,00%';
+    }
+}
+
         function renderizar(tipo) {
             const lista = document.getElementById(tipo === 'lotofacil' ? 'listaLF' : 'listaMS');
             const resumo = document.getElementById(tipo === 'lotofacil' ? 'resumoLF' : 'resumoMS');
@@ -1764,6 +1865,7 @@ function executarSalvarSlot(tipo, slot) {
                 resumo.innerHTML = "Nenhum jogo salvo.";
                 atualizarPainelFinanceiro(tipo);
                 atualizarPainelElite(tipo);
+	        atualizarPercentual(tipo);
                 return;
             }
             const concursoAtual = dados[tipo].concursoAtual;
@@ -1880,6 +1982,7 @@ function executarSalvarSlot(tipo, slot) {
             const el = document.getElementById(`status${sufixo}`);
             el.innerText = `Saldo: R$ ${saldo.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
             el.className = 'financeiro-total ' + (saldo > 0 ? 'lucro' : (saldo < 0 ? 'prejuizo' : ''));
+	    atualizarPercentual(tipo);
         }
 
         function zerarFinanceiro(tipo) {
