@@ -923,7 +923,8 @@
                 <button onclick="abrirSelecionadorNumeros('lotofacil')" style="background: var(--cor-lotofacil); color: white; border: none; border-radius: 5px; width: 40px; cursor: pointer; font-weight: bold; font-size: 18px;">🎯</button>
             </div>
             <button class="btn btn-add-lf" onclick="adicionarJogo('lotofacil')">Salvar Jogo na Lista</button>
-            <button class="btn btn-random" onclick="gerarSurpresinha('lotofacil')">🎲 Gerar Surpresinha (15 números)</button>
+            <!-- Botão unificado para gerar surpresinhas com opções -->
+            <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('lotofacil')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
             </div>
         <div class="secao-memoria">
             <button class="btn-guardar" onclick="prepararSalvamentoSlot('lotofacil')">💾 Guardar Lista Atual em um Slot</button>
@@ -988,7 +989,8 @@
                 <button onclick="abrirSelecionadorNumeros('megasena')" style="background: var(--cor-megasena); color: white; border: none; border-radius: 5px; width: 40px; cursor: pointer; font-weight: bold; font-size: 18px;">🎯</button>
             </div>
             <button class="btn btn-add-ms" onclick="adicionarJogo('megasena')">Salvar Jogo na Lista</button>
-            <button class="btn btn-random" onclick="gerarSurpresinha('megasena')">🎲 Gerar Surpresinha (6 números)</button>
+            <!-- Botão unificado para gerar surpresinhas com opções -->
+            <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('megasena')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
           </div>
         <div class="secao-memoria">
             <button class="btn-guardar" onclick="prepararSalvamentoSlot('megasena')">💾 Guardar Lista Atual em um Slot</button>
@@ -1573,6 +1575,54 @@ function executarSalvarSlot(tipo, slot) {
             if(!isNaN(val)) buscar(tipo, val + direcao);
         }
 
+        // =============================================
+        // NOVA FUNÇÃO: MODAL PARA ESCOLHER QUANTIDADE DE SURPRESINHAS
+        // =============================================
+        function abrirModalOpcoesSurpresinha(tipo) {
+            const modal = document.getElementById('modalCustom');
+            const msgEl = document.getElementById('modalMsg');
+            const containerBotoes = document.getElementById('modalContainerBotoes');
+            
+            msgEl.innerText = "Escolha a quantidade de surpresinhas:";
+            containerBotoes.innerHTML = '';
+            
+            // Opções de quantidade
+            const opcoes = [1, 5, 10, 15];
+            
+            opcoes.forEach(qtd => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-modal btn-sim';
+                btn.innerText = qtd + (qtd === 1 ? ' Jogo' : ' Jogos');
+                btn.style.minWidth = '70px';
+                btn.onclick = () => {
+                    modal.style.display = 'none';
+                    gerarMultiplasSurpresinhas(tipo, qtd);
+                };
+                containerBotoes.appendChild(btn);
+            });
+            
+            // Botão Cancelar
+            const btnCanc = document.createElement('button');
+            btnCanc.className = 'btn-modal btn-nao';
+            btnCanc.innerText = 'Cancelar';
+            btnCanc.onclick = () => {
+                modal.style.display = 'none';
+                restaurarBotoesModal();
+            };
+            containerBotoes.appendChild(btnCanc);
+            
+            modal.style.display = 'flex';
+        }
+
+        // Função para gerar múltiplas surpresinhas
+        function gerarMultiplasSurpresinhas(tipo, quantidade) {
+            for (let i = 0; i < quantidade; i++) {
+                gerarSurpresinha(tipo);
+            }
+            exibirModal(`${quantidade} surpresinha(s) gerada(s) com sucesso!`, null, true);
+        }
+
+        // Função original para gerar uma surpresinha (mantida exatamente igual)
         function gerarSurpresinha(tipo) {
             let numeros = [];
             while(numeros.length < dados[tipo].min) {
@@ -1590,20 +1640,6 @@ function executarSalvarSlot(tipo, slot) {
             });
             salvarNoLocalStorage(tipo);
             renderizar(tipo);
-        }
-
-        async function gerar50Jogos(tipo) {
-            const btn = document.getElementById(`btn50_${tipo}`);
-            const textoOriginal = btn.innerHTML;
-            btn.innerHTML = "⏳ Gerando 50 Jogos...";
-            btn.disabled = true;
-            await new Promise(r => setTimeout(r, 200));
-            for(let i=0; i<50; i++) {
-                gerarSurpresinha(tipo);
-            }
-            btn.disabled = false;
-            btn.innerHTML = textoOriginal;
-            exibirModal("50 jogos gerados com sucesso!", null, true);
         }
 
         // =============================================
@@ -2005,15 +2041,8 @@ function atualizarPercentual(tipo) {
                     hr.style.margin = "10px 0";
                     hr.style.opacity = "0.3";
                     container.appendChild(hr);
-                    const btn50 = document.createElement('button');
-                    btn50.id = `btn50_${tipo}`;
-                    btn50.className = "btn btn-random";
-                    btn50.style.backgroundColor = "#2c3e50";
-                    btn50.innerHTML = "🎰 Gerar 50 Jogos Surpresinha";
-                    btn50.onclick = () => {
-                        gerar50Jogos(tipo);
-                    };
-                    container.appendChild(btn50);
+                    // Botão de 50 jogos foi removido conforme solicitado
+                    // Agora só temos o botão unificado de surpresinha
                     const divMassa = document.createElement('div');
                     divMassa.innerHTML = `
                         <label style="font-size:12px"><b>Conferência em Massa:</b></label>
@@ -3040,4 +3069,3 @@ document.addEventListener('click', function(event) {
     </script>
 </body>
 </html>
-
