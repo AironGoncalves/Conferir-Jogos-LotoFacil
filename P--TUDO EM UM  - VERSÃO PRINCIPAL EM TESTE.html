@@ -3045,6 +3045,93 @@ document.addEventListener('click', function(event) {
 });
 
 
+		
+		// Funções para comunicar com o Android
+window.AndroidBridge = window.AndroidBridge || {};
+
+// Verificar se o usuário é premium
+function checkPremiumStatus() {
+    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.isUserPremium) {
+        const isPremium = AndroidBridge.isUserPremium();
+        if (isPremium) {
+            document.body.classList.add('premium');
+            showPremiumFeatures();
+        }
+    }
+}
+
+// Iniciar compra da assinatura
+function startPurchase() {
+    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.purchaseSubscription) {
+        AndroidBridge.purchaseSubscription();
+    } else {
+        alert('Versão web: use o app para assinar');
+    }
+}
+
+// Callbacks que o Android vai chamar
+window.onPurchaseSuccess = function() {
+    alert('🎉 Assinatura ativada com sucesso!');
+    document.body.classList.add('premium');
+    showPremiumFeatures();
+    location.reload(); // Recarrega para liberar as funções premium
+};
+
+window.onPurchaseCanceled = function() {
+    alert('Compra cancelada.');
+};
+
+window.onPurchaseError = function(errorMessage) {
+    alert('Erro na compra: ' + errorMessage);
+};
+
+window.onAlreadyPremium = function() {
+    alert('Você já é assinante premium!');
+};
+
+window.setPremiumStatus = function(isPremium) {
+    if (isPremium) {
+        document.body.classList.add('premium');
+        showPremiumFeatures();
+    }
+};
+
+// Libera as funcionalidades premium
+function showPremiumFeatures() {
+    // Exemplos:
+    // - Esconder anúncios
+    // - Habilitar geração ilimitada
+    // - Habilitar salvar jogos
+    // - Mostrar amostragem detalhada
+    
+    document.querySelectorAll('.premium-only').forEach(el => {
+        el.style.display = 'block';
+    });
+    
+    document.querySelectorAll('.no-premium').forEach(el => {
+        el.style.display = 'none';
+    });
+}
+
+// Botão de assinar no HTML
+function createSubscribeButton() {
+    const btn = document.createElement('button');
+    btn.innerHTML = '📱 ASSINAR PLANO MENSAL - R$ XX,XX';
+    btn.onclick = startPurchase;
+    btn.style.cssText = 'background: #4CAF50; color: white; padding: 15px; border: none; border-radius: 5px; font-size: 16px; margin: 10px;';
+    document.body.appendChild(btn);
+}
+
+// Chama ao carregar a página
+document.addEventListener('DOMContentLoaded', function() {
+    checkPremiumStatus();
+    // Se não for premium, mostra botão de assinar
+    if (!window.isPremium) {
+        createSubscribeButton();
+    }
+});
+
+
         // =============================================
         // INICIALIZAÇÃO DO SISTEMA
         // =============================================
