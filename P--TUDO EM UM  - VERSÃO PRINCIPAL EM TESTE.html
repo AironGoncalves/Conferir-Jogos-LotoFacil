@@ -2650,41 +2650,55 @@
         atualizarBotoesSlot('megasena');
         restaurarAbaAposRecarregar();
         
-        document.addEventListener('DOMContentLoaded', function() {
-    
-    // 1. NOVO LISTENER PARA O BOTÃO DA PLAY STORE
+        
+
+		document.addEventListener('DOMContentLoaded', function() {
     const btnPlayStore = document.getElementById('btnAcessarPlayStore');
+    
     if (btnPlayStore) {
-        btnPlayStore.addEventListener('click', function() {
+        btnPlayStore.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // SUBSTITUA PELO SEU PACOTE REAL
             const packageName = 'com.meuapp.lotofacilscanner'; 
+            
+            // URLs para diferentes cenários
             const playStoreAppUrl = `market://details?id=${packageName}`;
             const playStoreWebUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
             
-            // Lógica de redirecionamento que te passei antes...
-            const startTime = Date.now();
-            window.location.href = playStoreAppUrl;
-            setTimeout(function() {
-                if (Date.now() - startTime < 1200) {
-                    window.location.href = playStoreWebUrl;
-                }
-            }, 1000);
+            // 🔍 DETECTA SE É ANDROID
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            
+            if (isAndroid) {
+                // Dispositivo Android - Tenta abrir o app da Play Store
+                const startTime = Date.now();
+                window.location.href = playStoreAppUrl;
+                
+                // Fallback: Se não abrir em 1.5 segundos, vai para o site
+                setTimeout(function() {
+                    if (Date.now() - startTime < 1800) {
+                        window.location.href = playStoreWebUrl;
+                    }
+                }, 1500);
+            } else {
+                // Desktop, iOS ou outro - Abre direto no site
+                window.open(playStoreWebUrl, '_blank');
+            }
         });
     }
 
-    // 2. LISTENER PARA RESTAURAR COMPRA (MANTIDO)
+    // Restaurar compra (mantenha seu código existente)
     const btnRestaurar = document.getElementById('restaurarCompra');
     if (btnRestaurar) {
         btnRestaurar.onclick = () => {
             if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
                 AndroidBridge.restorePurchases();
             } else {
-                verificarStatusPremium(); // Essa função já existia no seu código
+                verificarStatusPremium();
             }
         };
     }
-
-    // 3. OS LISTENERS ANTIGOS (plano-item e btnAssinarPaywall) DEVEM SER APAGADOS DAQUI
-   });
+});
 
 
 };
