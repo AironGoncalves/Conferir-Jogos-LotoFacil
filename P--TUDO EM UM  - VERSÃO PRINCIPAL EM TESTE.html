@@ -945,11 +945,9 @@
 <!-- PAYWALL - TELA DE ASSINATURA (PRIMEIRA TELA) -->
 <div id="paywall">
     <div class="paywall-card">
-	<h2>🍀 Acesso Premium</h2>
+        <h2>🍀 Acesso Premium</h2>
         <p>Escolha um plano para continuar usando o aplicativo</p>
         <div id="paywallAviso" class="aviso-expirado" style="display:none;"></div>
-
-
         <div class="planos-container">
             <div class="plano-item" data-plano="teste">
                 <div class="plano-info">
@@ -958,8 +956,6 @@
                 </div>
                 <div class="plano-preco">Grátis</div>
             </div>
-
-
             <div class="plano-item" data-plano="mensal">
                 <div class="plano-info">
                     <h3>Plano Mensal</h3>
@@ -975,10 +971,8 @@
                 <div class="plano-preco">R$ 94,90</div>
             </div>
         </div>
-
-
         <button class="btn-assinar-paywall" id="btnAssinarPaywall">🔓 CONTINUAR</button>
-       <div class="restaurar-link" id="restaurarCompra">Já sou assinante? Restaurar compra</div>
+        <div class="restaurar-link" id="restaurarCompra">Já sou assinante? Restaurar compra</div>
     </div>
 </div>
 
@@ -2642,8 +2636,8 @@
         
         document.getElementById('btnAssinarPaywall').onclick = () => {
             const selected = document.querySelector('.plano-item.selecionado');
- //           if (selected) iniciarCompra(selected.dataset.plano);
-     //       else alert("Selecione um plano primeiro.");
+            if (selected) iniciarCompra(selected.dataset.plano);
+            else alert("Selecione um plano primeiro.");
         };
         document.querySelectorAll('.plano-item').forEach(el => {
             el.onclick = () => {
