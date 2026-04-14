@@ -2595,45 +2595,40 @@
     }
 
 
-	
 
-document.addEventListener('DOMContentLoaded', function() {
+   document.addEventListener('DOMContentLoaded', function() {
     const btnPlayStore = document.getElementById('btnAcessarPlayStore');
-    const btnRestaurar = document.getElementById('restaurarCompra');
     
     if (btnPlayStore) {
-        btnPlayStore.addEventListener('click', function(e) {
-            e.preventDefault();
+        btnPlayStore.addEventListener('click', function() {
+            // SUBSTITUA 'com.meuapp.lotofacilscanner' pelo ID do seu app no Google Play
+            // Exemplo: 'com.whatsapp' ou 'com.spotify.music'
+            const packageName = 'com.meuapp.lotofacilscanner'; 
             
-            const packageName = 'com.meuapp.lotofacilscanner';
+            // Tenta abrir diretamente no app Google Play (funciona melhor em Android)
+            const playStoreAppUrl = `market://details?id=${packageName}`;
             
-            // 🔑 SOLUÇÃO PARA WEBVIEW
-            // Tenta abrir via Intent (Android nativo)
-            const intentUrl = `intent://details?id=${packageName}#Intent;scheme=market;action=android.intent.action.VIEW;package=com.android.vending;end`;
+            // Fallback: Se o app da Play Store não abrir, vai para o site no navegador
+            const playStoreWebUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
+
+            const startTime = Date.now();
             
-            // Fallback: URL normal da Play Store
-            const playStoreUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
+            // Tenta abrir o app da Play Store
+            window.location.href = playStoreAppUrl;
             
-            // Tenta abrir com o esquema intent:// (funciona no WebView)
-            window.location.href = intentUrl;
-            
-            // Se não abrir em 1 segundo, tenta o link normal
+            // Verificação de segurança: Se após 1 segundo ainda estiver na página,
+            // significa que o app da Play Store não está instalado/abriu e redirecionamos para o site.
             setTimeout(function() {
-                window.open(playStoreUrl, '_blank');
+                // Só redireciona se o tempo for curto (usuário não saiu da página)
+                if (Date.now() - startTime < 1200) {
+                    window.location.href = playStoreWebUrl;
+                }
             }, 1000);
         });
     }
-    
-    // Restaurar compra
-    if (btnRestaurar) {
-        btnRestaurar.addEventListener('click', function() {
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
-                AndroidBridge.restorePurchases();
-            } else {
-                verificarStatusPremium();
-            }
-        });
-    }
+
+    // Mantenha aqui a lógica do botão "Restaurar Compra" se ela já existir
+    // document.getElementById('restaurarCompra').addEventListener...
 });
 
 
@@ -2641,22 +2636,71 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // INICIALIZAÇÃO
     window.onload = () => {
-    verificarStatusPremium();
-    zerarFinanceiro('lotofacil');
-    zerarFinanceiro('megasena');
-    contagemElite['lotofacil'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
-    contagemElite['megasena'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
-    limparEstatisticasJogos('lotofacil');
-    limparEstatisticasJogos('megasena');
-    buscar('lotofacil', 'latest');
-    buscar('megasena', 'latest');
-    unificarNovosBotoes();
-    atualizarBotoesSlot('lotofacil');
-    atualizarBotoesSlot('megasena');
-    restaurarAbaAposRecarregar();
+        verificarStatusPremium();
+        zerarFinanceiro('lotofacil');
+        zerarFinanceiro('megasena');
+        contagemElite['lotofacil'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+        contagemElite['megasena'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+        limparEstatisticasJogos('lotofacil');
+        limparEstatisticasJogos('megasena');
+        buscar('lotofacil', 'latest');
+        buscar('megasena', 'latest');
+        unificarNovosBotoes();
+        atualizarBotoesSlot('lotofacil');
+        atualizarBotoesSlot('megasena');
+        restaurarAbaAposRecarregar();
+        
+        document.addEventListener('DOMContentLoaded', function() {
+    const btnPlayStore = document.getElementById('btnAcessarPlayStore');
     
-    // ✅ NÃO COLOQUE O CÓDIGO DO BOTÃO AQUI
+    if (btnPlayStore) {
+        btnPlayStore.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // SUBSTITUA PELO SEU PACOTE REAL
+            const packageName = 'com.meuapp.lotofacilscanner'; 
+            
+            // URLs para diferentes cenários
+            const playStoreAppUrl = `market://details?id=${packageName}`;
+            const playStoreWebUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
+            
+            // 🔍 DETECTA SE É ANDROID
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            
+            if (isAndroid) {
+                // Dispositivo Android - Tenta abrir o app da Play Store
+                const startTime = Date.now();
+                window.location.href = playStoreAppUrl;
+                
+                // Fallback: Se não abrir em 1.5 segundos, vai para o site
+                setTimeout(function() {
+                    if (Date.now() - startTime < 1800) {
+                        window.location.href = playStoreWebUrl;
+                    }
+                }, 1500);
+            } else {
+                // Desktop, iOS ou outro - Abre direto no site
+                window.open(playStoreWebUrl, '_blank');
+            }
+        });
+    }
+
+    // Restaurar compra (mantenha seu código existente)
+    const btnRestaurar = document.getElementById('restaurarCompra');
+    if (btnRestaurar) {
+        btnRestaurar.onclick = () => {
+            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
+                AndroidBridge.restorePurchases();
+            } else {
+                verificarStatusPremium();
+            }
+        };
+    }
+});
+
+
 };
+
 
 </script>
 </body>
