@@ -943,7 +943,7 @@
         
         <!-- SUBSTITUA O CONTAINER DE PLANOS POR ESTE BOTÃO -->
         <button class="btn-acessar-playstore" id="btnAcessarPlayStore">
-            <span>📱</span> ACESSAR PLANOS NO GOOGLE PLAYyyyYYY
+            <span>📱</span> ACESSAR PLANOS NO GOOGLE PLAY
         </button>
         
         <div class="restaurar-link" id="restaurarCompra">Já sou assinante? Restaurar compra</div>
@@ -2601,23 +2601,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnPlayStore = document.getElementById('btnAcessarPlayStore');
     const btnRestaurar = document.getElementById('restaurarCompra');
     
-    // 🎯 BOTÃO DA PLAY STORE - VERSÃO SIMPLIFICADA
     if (btnPlayStore) {
         btnPlayStore.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Seu pacote real
             const packageName = 'com.meuapp.lotofacilscanner';
             
-            // URL da Play Store (funciona em desktop e mobile)
+            // 🔑 SOLUÇÃO PARA WEBVIEW
+            // Tenta abrir via Intent (Android nativo)
+            const intentUrl = `intent://details?id=${packageName}#Intent;scheme=market;action=android.intent.action.VIEW;package=com.android.vending;end`;
+            
+            // Fallback: URL normal da Play Store
             const playStoreUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
             
-            // Abre em uma nova aba
-            window.open(playStoreUrl, '_blank');
+            // Tenta abrir com o esquema intent:// (funciona no WebView)
+            window.location.href = intentUrl;
+            
+            // Se não abrir em 1 segundo, tenta o link normal
+            setTimeout(function() {
+                window.open(playStoreUrl, '_blank');
+            }, 1000);
         });
     }
     
-    // 🔄 RESTAURAR COMPRA
+    // Restaurar compra
     if (btnRestaurar) {
         btnRestaurar.addEventListener('click', function() {
             if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
