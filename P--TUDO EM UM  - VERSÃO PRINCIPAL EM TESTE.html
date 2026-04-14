@@ -2597,44 +2597,27 @@
 
 	
 
-   document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const btnPlayStore = document.getElementById('btnAcessarPlayStore');
     const btnRestaurar = document.getElementById('restaurarCompra');
     
-    // 🎯 BOTÃO DA PLAY STORE
+    // 🎯 BOTÃO DA PLAY STORE - VERSÃO SIMPLIFICADA
     if (btnPlayStore) {
         btnPlayStore.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // ⚠️ SUBSTITUA PELO SEU PACOTE REAL
-            const packageName = 'com.meuapp.lotofacilscanner'; // <-- COLOQUE O NOME CORRETO AQUI
+            // Seu pacote real
+            const packageName = 'com.meuapp.lotofacilscanner';
             
-            // URLs
-            const playStoreAppUrl = `market://details?id=${packageName}`;
-            const playStoreWebUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
+            // URL da Play Store (funciona em desktop e mobile)
+            const playStoreUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
             
-            // Detecta se é Android
-            const isAndroid = /Android/i.test(navigator.userAgent);
-            
-            if (isAndroid) {
-                // Tenta abrir app da Play Store
-                const startTime = Date.now();
-                window.location.href = playStoreAppUrl;
-                
-                // Fallback para navegador
-                setTimeout(function() {
-                    if (Date.now() - startTime < 1800) {
-                        window.location.href = playStoreWebUrl;
-                    }
-                }, 1500);
-            } else {
-                // Desktop ou iOS - abre no navegador
-                window.open(playStoreWebUrl, '_blank');
-            }
+            // Abre em uma nova aba
+            window.open(playStoreUrl, '_blank');
         });
     }
     
-    // 🔄 RESTAURAR COMPRA (JÁ EXISTENTE NO SEU CÓDIGO)
+    // 🔄 RESTAURAR COMPRA
     if (btnRestaurar) {
         btnRestaurar.addEventListener('click', function() {
             if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
