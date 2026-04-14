@@ -2595,40 +2595,55 @@
     }
 
 
+	
 
    document.addEventListener('DOMContentLoaded', function() {
     const btnPlayStore = document.getElementById('btnAcessarPlayStore');
+    const btnRestaurar = document.getElementById('restaurarCompra');
     
+    // 🎯 BOTÃO DA PLAY STORE
     if (btnPlayStore) {
-        btnPlayStore.addEventListener('click', function() {
-            // SUBSTITUA 'com.meuapp.lotofacilscanner' pelo ID do seu app no Google Play
-            // Exemplo: 'com.whatsapp' ou 'com.spotify.music'
-            const packageName = 'com.meuapp.lotofacilscanner'; 
+        btnPlayStore.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            // Tenta abrir diretamente no app Google Play (funciona melhor em Android)
+            // ⚠️ SUBSTITUA PELO SEU PACOTE REAL
+            const packageName = 'com.meuapp.lotofacilscanner'; // <-- COLOQUE O NOME CORRETO AQUI
+            
+            // URLs
             const playStoreAppUrl = `market://details?id=${packageName}`;
-            
-            // Fallback: Se o app da Play Store não abrir, vai para o site no navegador
             const playStoreWebUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
-
-            const startTime = Date.now();
             
-            // Tenta abrir o app da Play Store
-            window.location.href = playStoreAppUrl;
+            // Detecta se é Android
+            const isAndroid = /Android/i.test(navigator.userAgent);
             
-            // Verificação de segurança: Se após 1 segundo ainda estiver na página,
-            // significa que o app da Play Store não está instalado/abriu e redirecionamos para o site.
-            setTimeout(function() {
-                // Só redireciona se o tempo for curto (usuário não saiu da página)
-                if (Date.now() - startTime < 1200) {
-                    window.location.href = playStoreWebUrl;
-                }
-            }, 1000);
+            if (isAndroid) {
+                // Tenta abrir app da Play Store
+                const startTime = Date.now();
+                window.location.href = playStoreAppUrl;
+                
+                // Fallback para navegador
+                setTimeout(function() {
+                    if (Date.now() - startTime < 1800) {
+                        window.location.href = playStoreWebUrl;
+                    }
+                }, 1500);
+            } else {
+                // Desktop ou iOS - abre no navegador
+                window.open(playStoreWebUrl, '_blank');
+            }
         });
     }
-
-    // Mantenha aqui a lógica do botão "Restaurar Compra" se ela já existir
-    // document.getElementById('restaurarCompra').addEventListener...
+    
+    // 🔄 RESTAURAR COMPRA (JÁ EXISTENTE NO SEU CÓDIGO)
+    if (btnRestaurar) {
+        btnRestaurar.addEventListener('click', function() {
+            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
+                AndroidBridge.restorePurchases();
+            } else {
+                verificarStatusPremium();
+            }
+        });
+    }
 });
 
 
@@ -2636,31 +2651,21 @@
 
     // INICIALIZAÇÃO
     window.onload = () => {
-        verificarStatusPremium();
-        zerarFinanceiro('lotofacil');
-        zerarFinanceiro('megasena');
-        contagemElite['lotofacil'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
-        contagemElite['megasena'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
-        limparEstatisticasJogos('lotofacil');
-        limparEstatisticasJogos('megasena');
-        buscar('lotofacil', 'latest');
-        buscar('megasena', 'latest');
-        unificarNovosBotoes();
-        atualizarBotoesSlot('lotofacil');
-        atualizarBotoesSlot('megasena');
-        restaurarAbaAposRecarregar();
-        
-        
-
-		btnPlayStore.addEventListener('click', function(e) {
-    e.preventDefault();
-    const packageName = 'com.meuapp.lotofacilscanner';
-    const playStoreWebUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
-    window.open(playStoreWebUrl, '_blank');
-});
-		
-
-
+    verificarStatusPremium();
+    zerarFinanceiro('lotofacil');
+    zerarFinanceiro('megasena');
+    contagemElite['lotofacil'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+    contagemElite['megasena'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+    limparEstatisticasJogos('lotofacil');
+    limparEstatisticasJogos('megasena');
+    buscar('lotofacil', 'latest');
+    buscar('megasena', 'latest');
+    unificarNovosBotoes();
+    atualizarBotoesSlot('lotofacil');
+    atualizarBotoesSlot('megasena');
+    restaurarAbaAposRecarregar();
+    
+    // ✅ NÃO COLOQUE O CÓDIGO DO BOTÃO AQUI
 };
 
 </script>
