@@ -2750,6 +2750,27 @@
         atualizarBotoesSlot('lotofacil');
         atualizarBotoesSlot('megasena');
         restaurarAbaAposRecarregar();
+
+
+		// 👇👇👇 ADICIONE ESTE CÓDIGO AQUI 👇👇👇
+    document.getElementById('btnAssinarPaywall').onclick = () => {
+        iniciarCompra();
+    };
+    
+    document.getElementById('restaurarCompra').onclick = () => {
+        restaurarCompras();
+    };
+    // 👆👆👆 ADICIONE ESTE CÓDIGO AQUI 👆👆👆
+    
+    document.querySelectorAll('.plano-item').forEach(el => {
+        el.onclick = () => {
+            document.querySelectorAll('.plano-item').forEach(p => p.classList.remove('selecionado'));
+            el.classList.add('selecionado');
+        };
+    });
+
+
+		
         
     };
 
