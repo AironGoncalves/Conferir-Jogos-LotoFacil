@@ -975,6 +975,28 @@
     </style>
 </head>
 <body class="lf-theme">
+	
+
+<!-- CONTADOR DE TRIAL - Mostra dias restantes -->
+<div id="contadorTrial" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: bold; position: fixed; top: 0; left: 0; right: 0; z-index: 10000;">
+    ⏰ <span id="diasRestantesTrial">0</span> dias restantes de teste grátis
+</div>
+
+<!-- Aviso de último dia (aparece quando falta 1 dia) -->
+<div id="avisoUltimoDia" style="display: none; background: #ff4444; color: white; text-align: center; padding: 10px; font-size: 14px; font-weight: bold; position: fixed; top: 35px; left: 0; right: 0; z-index: 10000; animation: pulse 1s infinite;">
+    ⚠️ ÚLTIMO DIA DE TESTE! ⚠️<br>
+    Assine agora para não perder o acesso!
+</div>
+
+<style>
+    @keyframes pulse {
+        0% { background: #ff4444; }
+        50% { background: #ff0000; }
+        100% { background: #ff4444; }
+    }
+</style>
+
+	
 
 <!-- PAYWALL - TELA DE BOAS-VINDAS SIMPLES -->
 <div id="paywall">
