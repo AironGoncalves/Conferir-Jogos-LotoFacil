@@ -2958,6 +2958,42 @@ window.onAppReady = function() {
     });
 
 
+
+		
+		// Função para atualizar contador de dias restantes (se você quiser mostrar no app)
+function atualizarContadorTrial() {
+    if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+        // Se quiser mostrar em algum lugar do app
+        const contadorEl = document.getElementById('contadorTrial');
+        if (contadorEl) {
+            contadorEl.innerText = `${trialInfo.remainingDays} dias restantes`;
+            contadorEl.style.display = 'block';
+        }
+        
+        // Se for último dia, mostrar destaque
+        if (trialInfo.remainingDays === 1) {
+            const avisoEl = document.getElementById('avisoUltimoDia');
+            if (avisoEl) avisoEl.style.display = 'block';
+        }
+    }
+}
+
+// Chamar atualização periódica (a cada 1 hora)
+setInterval(() => {
+    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.getRemainingTrialDays) {
+        const days = AndroidBridge.getRemainingTrialDays();
+        if (days !== trialInfo.remainingDays) {
+            trialInfo.remainingDays = days;
+            atualizarContadorTrial();
+            
+            if (days <= 3 && days > 0) {
+                mostrarBannerTrial(days);
+            }
+        }
+    }
+}, 3600000); // 1 hora
+
+
 		
         
     };
