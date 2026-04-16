@@ -2960,39 +2960,24 @@ window.onAppReady = function() {
 
 
 		
-		// Função para atualizar contador de dias restantes (se você quiser mostrar no app)
+		// Função simplificada - usa o banner que já existe
 function atualizarContadorTrial() {
     if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
-        // Se quiser mostrar em algum lugar do app
-        const contadorEl = document.getElementById('contadorTrial');
-        if (contadorEl) {
-            contadorEl.innerText = `${trialInfo.remainingDays} dias restantes`;
-            contadorEl.style.display = 'block';
-        }
-        
-        // Se for último dia, mostrar destaque
-        if (trialInfo.remainingDays === 1) {
-            const avisoEl = document.getElementById('avisoUltimoDia');
-            if (avisoEl) avisoEl.style.display = 'block';
+        // Se já tem o banner, atualiza ele
+        const bannerExistente = document.getElementById('trialBanner');
+        if (bannerExistente) {
+            if (trialInfo.remainingDays === 1) {
+                bannerExistente.innerHTML = "⚠️ ÚLTIMO DIA de teste grátis! Assine agora! ⚠️";
+                bannerExistente.style.background = "linear-gradient(135deg, #ff4444, #cc0000)";
+            } else {
+                bannerExistente.innerHTML = `⏰ Seu teste grátis termina em ${trialInfo.remainingDays} dias! Clique aqui para assinar →`;
+            }
+        } else if (trialInfo.remainingDays <= 3) {
+            // Se não tem banner, cria um
+            mostrarBannerTrial(trialInfo.remainingDays);
         }
     }
 }
-
-// Chamar atualização periódica (a cada 1 hora)
-setInterval(() => {
-    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.getRemainingTrialDays) {
-        const days = AndroidBridge.getRemainingTrialDays();
-        if (days !== trialInfo.remainingDays) {
-            trialInfo.remainingDays = days;
-            atualizarContadorTrial();
-            
-            if (days <= 3 && days > 0) {
-                mostrarBannerTrial(days);
-            }
-        }
-    }
-}, 3600000); // 1 hora
-
 
 		
         
