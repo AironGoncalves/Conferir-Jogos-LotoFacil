@@ -2982,22 +2982,50 @@ window.onAppReady = function() {
 
 
 		
-		// Função simplificada - usa o banner que já existe
+// Função para atualizar contador de dias restantes
 function atualizarContadorTrial() {
     if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
-        // Se já tem o banner, atualiza ele
-        const bannerExistente = document.getElementById('trialBanner');
-        if (bannerExistente) {
-            if (trialInfo.remainingDays === 1) {
-                bannerExistente.innerHTML = "⚠️ ÚLTIMO DIA de teste grátis! Assine agora! ⚠️";
-                bannerExistente.style.background = "linear-gradient(135deg, #ff4444, #cc0000)";
+        // Mostra o contador
+        const contadorEl = document.getElementById('contadorTrial');
+        const diasSpan = document.getElementById('diasRestantesTrial');
+        
+        if (contadorEl) {
+            contadorEl.style.display = 'block';
+            if (diasSpan) {
+                diasSpan.innerText = trialInfo.remainingDays;
             } else {
-                bannerExistente.innerHTML = `⏰ Seu teste grátis termina em ${trialInfo.remainingDays} dias! Clique aqui para assinar →`;
+                // Fallback se não tiver o span
+                contadorEl.innerHTML = `⏰ ${trialInfo.remainingDays} dias restantes de teste grátis`;
             }
-        } else if (trialInfo.remainingDays <= 3) {
-            // Se não tem banner, cria um
-            mostrarBannerTrial(trialInfo.remainingDays);
+            
+            // Muda a cor baseado nos dias restantes
+            if (trialInfo.remainingDays === 1) {
+                contadorEl.style.background = '#ff4444';
+                contadorEl.style.color = 'white';
+            } else if (trialInfo.remainingDays <= 3) {
+                contadorEl.style.background = '#ff9800';
+                contadorEl.style.color = 'white';
+            } else {
+                contadorEl.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                contadorEl.style.color = 'white';
+            }
         }
+        
+        // Mostra aviso especial no último dia
+        if (trialInfo.remainingDays === 1) {
+            const avisoEl = document.getElementById('avisoUltimoDia');
+            if (avisoEl) avisoEl.style.display = 'block';
+        } else {
+            const avisoEl = document.getElementById('avisoUltimoDia');
+            if (avisoEl) avisoEl.style.display = 'none';
+        }
+    } else {
+        // Esconde o contador se não estiver em trial
+        const contadorEl = document.getElementById('contadorTrial');
+        if (contadorEl) contadorEl.style.display = 'none';
+        
+        const avisoEl = document.getElementById('avisoUltimoDia');
+        if (avisoEl) avisoEl.style.display = 'none';
     }
 }
 
