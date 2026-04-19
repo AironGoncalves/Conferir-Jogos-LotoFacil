@@ -978,7 +978,7 @@
 
 
 	<!-- CONTADOR DE TRIAL FIXO -->
-<div id="contadorTrialFixo" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: bold; z-index: 10001; cursor: pointer;">
+<div id="contadorTrialFixo" onclick="assinarPeloContador()" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: bold; z-index: 10001; cursor: pointer;">
     🎉 <strong>Teste Grátis!</strong> Você tem <span id="diasRestantesFixo">7</span> dia(s) restantes - Clique para assinar
 </div>
 
@@ -1180,10 +1180,31 @@
     let assinaturaExpirada = false;
     
     // Função chamada pelo Android quando o app está pronto
-    window.onAppReady = function() {
-        console.log('✅ App pronto! Verificando status premium...');
-        verificarStatusPremium();
-    };
+ window.onAppReady = function() {
+    console.log('✅ App pronto! Verificando status premium...');
+    
+    // Solicitar informações do trial ao Android
+    if (typeof AndroidBridge !== 'undefined') {
+        // Buscar informações do trial
+        if (AndroidBridge.getTrialInfo) {
+            const info = AndroidBridge.getTrialInfo();
+            if (info) {
+                window.setTrialInfo(info);
+            }
+        }
+        
+        // Buscar dias restantes diretamente
+        if (AndroidBridge.getRemainingTrialDays) {
+            const days = AndroidBridge.getRemainingTrialDays();
+            if (days > 0) {
+                window.showTrialRemaining(days);
+            }
+        }
+    }
+    
+    verificarStatusPremium();
+};
+	
     
     // Função chamada pelo Android para definir status premium
     window.setPremiumStatus = function(isPremium) {
@@ -1209,41 +1230,90 @@
     };
     
     function verificarStatusPremium() {
-        // Verifica se a bridge do Android está disponível
-        if (typeof AndroidBridge !== 'undefined' && AndroidBridge.isUserPremium) {
-            usuarioPremium = AndroidBridge.isUserPremium();
-            console.log('📱 Status premium via AndroidBridge:', usuarioPremium);
-        } else {
-            // Fallback para teste web (apenas desenvolvimento)
-            const testePremium = localStorage.getItem('premium_fake');
-            const testeExpirado = localStorage.getItem('premium_expirado');
-            
-            if (testeExpirado === 'true') {
-                assinaturaExpirada = true;
-                usuarioPremium = false;
-            } else {
-                usuarioPremium = testePremium === 'true';
-                assinaturaExpirada = false;
-            }
-            console.log('🌐 Status premium via localStorage (teste):', usuarioPremium);
+    // PRIORIDADE 1: Verificar trial ativo
+    if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+        console.log('🎯 Usuário em período de TRIAL:', trialInfo.remainingDays, 'dias restantes');
+        usuarioPremium = true;
+        assinaturaExpirada = false;
+        
+        // ATUALIZA O CONTADOR
+        atualizarContadorFixo();
+        
+        const paywall = document.getElementById('paywall');
+        if (paywall) {
+            paywall.style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
         
-        if (usuarioPremium && !assinaturaExpirada) {
-            document.getElementById('paywall').style.display = 'none';
-            document.body.style.overflow = 'auto';
+        if (trialInfo.remainingDays <= 3) {
+            mostrarBannerTrial(trialInfo.remainingDays);
+        }
+        return;
+    }
+    
+    // PRIORIDADE 2: Verificar assinatura via AndroidBridge
+    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.isUserPremium) {
+        usuarioPremium = AndroidBridge.isUserPremium();
+        console.log('📱 Status premium via AndroidBridge:', usuarioPremium);
+        
+        if (!usuarioPremium && trialInfo.trialEnded) {
+            assinaturaExpirada = true;
         } else {
-            document.getElementById('paywall').style.display = 'flex';
+            assinaturaExpirada = false;
+        }
+    } else {
+        // PRIORIDADE 3: Fallback para teste web
+        const testePremium = localStorage.getItem('premium_fake');
+        const testeExpirado = localStorage.getItem('premium_expirado');
+        
+        if (testeExpirado === 'true') {
+            assinaturaExpirada = true;
+            usuarioPremium = false;
+        } else {
+            usuarioPremium = testePremium === 'true';
+            assinaturaExpirada = false;
+        }
+        console.log('🌐 Status premium via localStorage (teste):', usuarioPremium);
+    }
+    
+    // Aplicar UI baseado no status final
+    if (usuarioPremium && !assinaturaExpirada) {
+        const paywall = document.getElementById('paywall');
+        if (paywall) {
+            paywall.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        const banner = document.getElementById('trialBanner');
+        if (banner) {
+            banner.remove();
+            document.body.style.paddingTop = '20px';
+        }
+    } else {
+        const paywall = document.getElementById('paywall');
+        if (paywall) {
+            paywall.style.display = 'flex';
             document.body.style.overflow = 'hidden';
-            
-            const avisoElement = document.getElementById('paywallAviso');
+        }
+        
+        const avisoElement = document.getElementById('paywallAviso');
+        if (avisoElement) {
             if (assinaturaExpirada) {
                 avisoElement.style.display = 'block';
-                avisoElement.innerHTML = '⚠️ Sua assinatura expirou. Renove para continuar usando o aplicativo. ⚠️';
+                avisoElement.innerHTML = '⚠️ Seu período de avaliação GRATUITA de 7 dias expirou! ⚠️<br>Assine agora para continuar usando todos os recursos premium.';
+                avisoElement.style.background = '#ff4444';
+                avisoElement.style.color = 'white';
+            } else if (trialInfo.trialEnded) {
+                avisoElement.style.display = 'block';
+                avisoElement.innerHTML = '⚠️ Seu teste grátis acabou! ⚠️<br>Assine o plano premium para continuar usando o aplicativo.';
+                avisoElement.style.background = '#ff9800';
+                avisoElement.style.color = 'white';
             } else {
                 avisoElement.style.display = 'none';
             }
         }
     }
+}
 
     
     function iniciarCompra() {
@@ -2789,7 +2859,7 @@ window.setTrialInfo = function(infoJSON) {
         
         console.log('📱 Trial info recebida:', trialInfo);
         
-        // Atualiza o contador fixo
+        // ATUALIZA O CONTADOR
         atualizarContadorFixo();
         
         // Se estiver em trial, mostra o banner
@@ -2808,11 +2878,14 @@ window.setTrialInfo = function(infoJSON) {
 
 // Função para mostrar dias restantes
 window.showTrialRemaining = function(daysLeft) {
+    console.log('📱 Dias restantes do trial:', daysLeft);
+    
     if (daysLeft > 0) {
         trialInfo.isInTrial = true;
         trialInfo.remainingDays = daysLeft;
         trialInfo.trialEnded = false;
         
+        // ATUALIZA O CONTADOR
         atualizarContadorFixo();
         
         if (daysLeft <= 3) {
@@ -2822,6 +2895,24 @@ window.showTrialRemaining = function(daysLeft) {
         verificarStatusPremium();
     }
 };
+
+// Função para obter informações do trial
+window.getTrialInfo = function() {
+    return JSON.stringify(trialInfo);
+};
+
+// Função chamada quando clica no contador
+function assinarPeloContador() {
+    console.log('🛒 Clique no contador - iniciando compra...');
+    
+    if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+        if (confirm(`Você tem ${trialInfo.remainingDays} dias de teste grátis restantes.\n\nDeseja assinar agora para garantir acesso contínuo?`)) {
+            iniciarCompra();
+        }
+    } else {
+        iniciarCompra();
+    }
+}
 
 // Chamar a atualização dentro de setTrialInfo  e verificarStatusPremium
 
