@@ -975,12 +975,12 @@
     </style>
 </head>
 <body class="lf-theme">
-	
-<div id="contadorTrial" style="display: none; position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #ff9800; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; z-index: 9999;">
-    ⏰ <span id="diasRestantesTrial">0</span> dias
-</div>
 
-	
+
+	<!-- CONTADOR DE TRIAL FIXO -->
+<div id="contadorTrialFixo" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; padding: 10px; font-size: 13px; font-weight: bold; z-index: 10001; cursor: pointer;">
+    🎉 <strong>Teste Grátis!</strong> Você tem <span id="diasRestantesFixo">7</span> dia(s) restantes - Clique para assinar
+</div>
 
 <!-- PAYWALL - TELA DE BOAS-VINDAS SIMPLES -->
 <div id="paywall">
@@ -1049,7 +1049,7 @@
 </div>
 
 <div class="menu-loterias">
-    <button class="btn-aba aba-lotofacil active" onclick="switchTab('lotofacil')">Lotofácilllll</button>
+    <button class="btn-aba aba-lotofacil active" onclick="switchTab('lotofacil')">Lotofácil</button>
     <button class="btn-aba aba-megasena" onclick="switchTab('megasena')">Mega-Sena</button>
     <button class="btn-aba" onclick="abrirScannerAltaPerformance()" style="background: linear-gradient(45deg, #ff6b6b, #ee5a24); flex: 1.2;">🚀 Gerar jogos baseados em concursos anteriores</button>
 </div>
@@ -1178,142 +1178,12 @@
     // =============================================
     let usuarioPremium = false;
     let assinaturaExpirada = false;
-
-	let trialInfo = {
-    isInTrial: false,
-    remainingDays: 0,
-    trialEnded: false
-};
-
-	// Função chamada pelo Android para enviar informações do trial
-window.setTrialInfo = function(infoJSON) {
-    try {
-        trialInfo = JSON.parse(infoJSON);
-        console.log('📱 Trial info recebida:', trialInfo);
-        
-        // Atualizar interface se necessário
-        if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
-            mostrarBannerTrial(trialInfo.remainingDays);
-        }
-    } catch(e) {
-        console.error('Erro ao parse trial info:', e);
-    }
-};
-
-// Função para mostrar dias restantes do trial
-window.showTrialRemaining = function(daysLeft) {
-    if (daysLeft > 0) {
-        mostrarBannerTrial(daysLeft);
-        
-        // Se estiver no paywall, mostrar mensagem amigável
-        const paywall = document.getElementById('paywall');
-        if (paywall && paywall.style.display !== 'none') {
-            const avisoElement = document.getElementById('paywallAviso');
-            if (avisoElement) {
-                avisoElement.style.display = 'block';
-                avisoElement.innerHTML = `
-                    🎉 Você ainda tem <strong>${daysLeft} dia(s)</strong> de teste GRÁTIS!<br>
-                    Aproveite todos os recursos sem custo.
-                `;
-                avisoElement.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                avisoElement.style.color = 'white';
-            }
-        }
-    }
-};
-
-// Função para criar banner do trial (não intrusivo)
-function mostrarBannerTrial(diasRestantes) {
-    // Remove banner existente se houver
-    const bannerExistente = document.getElementById('trialBanner');
-    if (bannerExistente) {
-        bannerExistente.remove();
-    }
     
-    // Só mostra banner se tiver menos de 3 dias OU for o último dia
-    if (diasRestantes <= 3 && diasRestantes > 0) {
-        const banner = document.createElement('div');
-        banner.id = 'trialBanner';
-        banner.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #ff9800, #f57c00);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            font-size: 14px;
-            font-weight: bold;
-            z-index: 9999;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            animation: slideDown 0.5s ease-out;
-        `;
-        
-        const mensagem = diasRestantes === 1 
-            ? "⚠️ ÚLTIMO DIA de teste grátis! Assine agora para não perder o acesso ⚠️"
-            : `⏰ Seu teste grátis termina em ${diasRestantes} dias! Clique aqui para assinar →`;
-        
-        banner.innerHTML = mensagem;
-        banner.onclick = () => {
-            if (confirm(`Você tem ${diasRestantes} dias de teste grátis restantes. Deseja assinar agora para garantir acesso contínuo?`)) {
-                if (typeof AndroidBridge !== 'undefined' && AndroidBridge.purchaseSubscription) {
-                    AndroidBridge.purchaseSubscription();
-                }
-            }
-        };
-        
-        document.body.insertBefore(banner, document.body.firstChild);
-        
-        // Adicionar CSS para animação
-        if (!document.querySelector('#trialAnimationStyle')) {
-            const style = document.createElement('style');
-            style.id = 'trialAnimationStyle';
-            style.textContent = `
-                @keyframes slideDown {
-                    from { transform: translateY(-100%); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        // Ajustar padding do body
-        document.body.style.paddingTop = '50px';
-    }
-}
-    
-   // Função chamada pelo Android quando o app está pronto
-window.onAppReady = function() {
-    console.log('✅ App pronto! Verificando status premium...');
-    
-    // Solicitar informações do trial ao Android
-    if (typeof AndroidBridge !== 'undefined') {
-        // Buscar informações do trial
-        if (AndroidBridge.getTrialInfo) {
-            const info = AndroidBridge.getTrialInfo();
-            window.setTrialInfo(info);
-        }
-        
-        // Buscar dias restantes diretamente
-        if (AndroidBridge.getRemainingTrialDays) {
-            const days = AndroidBridge.getRemainingTrialDays();
-            if (days > 0) {
-                trialInfo.isInTrial = true;
-                trialInfo.remainingDays = days;
-                trialInfo.trialEnded = false;
-                console.log('📱 Dias restantes do trial:', days);
-                
-                if (days <= 3) {
-                    mostrarBannerTrial(days);
-                }
-            }
-        }
-    }
-    
-    verificarStatusPremium();
-};
+    // Função chamada pelo Android quando o app está pronto
+    window.onAppReady = function() {
+        console.log('✅ App pronto! Verificando status premium...');
+        verificarStatusPremium();
+    };
     
     // Função chamada pelo Android para definir status premium
     window.setPremiumStatus = function(isPremium) {
@@ -1339,99 +1209,42 @@ window.onAppReady = function() {
     };
     
     function verificarStatusPremium() {
-    // PRIORIDADE 1: Verificar trial ativo (via variável global)
-    if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
-        console.log('🎯 Usuário em período de TRIAL:', trialInfo.remainingDays, 'dias restantes');
-        usuarioPremium = true;
-        assinaturaExpirada = false;
-        
-        // Esconde paywall e libera app
-        const paywall = document.getElementById('paywall');
-        if (paywall) {
-            paywall.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-        
-        // Mostra banner de aviso se faltar poucos dias
-        if (trialInfo.remainingDays <= 3) {
-            mostrarBannerTrial(trialInfo.remainingDays);
-        }
-        return;
-    }
-    
-    // PRIORIDADE 2: Verificar assinatura via AndroidBridge
-    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.isUserPremium) {
-        usuarioPremium = AndroidBridge.isUserPremium();
-        console.log('📱 Status premium via AndroidBridge:', usuarioPremium);
-        
-        // Se não for premium, verificar se trial expirou
-        if (!usuarioPremium && trialInfo.trialEnded) {
-            assinaturaExpirada = true;
+        // Verifica se a bridge do Android está disponível
+        if (typeof AndroidBridge !== 'undefined' && AndroidBridge.isUserPremium) {
+            usuarioPremium = AndroidBridge.isUserPremium();
+            console.log('📱 Status premium via AndroidBridge:', usuarioPremium);
         } else {
-            assinaturaExpirada = false;
+            // Fallback para teste web (apenas desenvolvimento)
+            const testePremium = localStorage.getItem('premium_fake');
+            const testeExpirado = localStorage.getItem('premium_expirado');
+            
+            if (testeExpirado === 'true') {
+                assinaturaExpirada = true;
+                usuarioPremium = false;
+            } else {
+                usuarioPremium = testePremium === 'true';
+                assinaturaExpirada = false;
+            }
+            console.log('🌐 Status premium via localStorage (teste):', usuarioPremium);
         }
-    } else {
-        // PRIORIDADE 3: Fallback para teste web (apenas desenvolvimento)
-        const testePremium = localStorage.getItem('premium_fake');
-        const testeExpirado = localStorage.getItem('premium_expirado');
         
-        if (testeExpirado === 'true') {
-            assinaturaExpirada = true;
-            usuarioPremium = false;
-        } else {
-            usuarioPremium = testePremium === 'true';
-            assinaturaExpirada = false;
-        }
-        console.log('🌐 Status premium via localStorage (teste):', usuarioPremium);
-    }
-    
-    // Aplicar UI baseado no status final
-    if (usuarioPremium && !assinaturaExpirada) {
-        // Usuário premium ou em trial válido
-        const paywall = document.getElementById('paywall');
-        if (paywall) {
-            paywall.style.display = 'none';
+        if (usuarioPremium && !assinaturaExpirada) {
+            document.getElementById('paywall').style.display = 'none';
             document.body.style.overflow = 'auto';
-        }
-        
-        // Remover banner do trial se existir (já é premium pago)
-        const banner = document.getElementById('trialBanner');
-        if (banner) {
-            banner.remove();
-            document.body.style.paddingTop = '20px';
-        }
-    } else {
-        // Usuário não premium - mostrar paywall
-        const paywall = document.getElementById('paywall');
-        if (paywall) {
-            paywall.style.display = 'flex';
+        } else {
+            document.getElementById('paywall').style.display = 'flex';
             document.body.style.overflow = 'hidden';
-        }
-        
-        const avisoElement = document.getElementById('paywallAviso');
-        if (avisoElement) {
+            
+            const avisoElement = document.getElementById('paywallAviso');
             if (assinaturaExpirada) {
                 avisoElement.style.display = 'block';
-                avisoElement.innerHTML = `
-                    ⚠️ Seu período de avaliação GRATUITA de 7 dias expirou! ⚠️<br>
-                    Assine agora para continuar usando todos os recursos premium.
-                `;
-                avisoElement.style.background = '#ff4444';
-                avisoElement.style.color = 'white';
-            } else if (trialInfo.trialEnded) {
-                avisoElement.style.display = 'block';
-                avisoElement.innerHTML = `
-                    ⚠️ Seu teste grátis acabou! ⚠️<br>
-                    Assine o plano premium para continuar usando o aplicativo.
-                `;
-                avisoElement.style.background = '#ff9800';
-                avisoElement.style.color = 'white';
+                avisoElement.innerHTML = '⚠️ Sua assinatura expirou. Renove para continuar usando o aplicativo. ⚠️';
             } else {
                 avisoElement.style.display = 'none';
             }
         }
     }
-}
+
     
     function iniciarCompra() {
         console.log('🛒 Iniciando processo de compra...');
@@ -2929,6 +2742,89 @@ window.onAppReady = function() {
         });
     }
 
+
+	// Função para atualizar o contador fixo
+function atualizarContadorFixo() {
+    const contadorEl = document.getElementById('contadorTrialFixo');
+    const diasSpan = document.getElementById('diasRestantesFixo');
+    
+    if (contadorEl && diasSpan) {
+        if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+            contadorEl.style.display = 'block';
+            diasSpan.innerText = trialInfo.remainingDays;
+            
+            // Muda a cor baseado nos dias
+            if (trialInfo.remainingDays === 1) {
+                contadorEl.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+            } else if (trialInfo.remainingDays <= 3) {
+                contadorEl.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
+            } else {
+                contadorEl.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            }
+            
+            contadorEl.onclick = () => {
+                if (confirm(`Você tem ${trialInfo.remainingDays} dias de teste grátis. Deseja assinar agora?`)) {
+                    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.purchaseSubscription) {
+                        AndroidBridge.purchaseSubscription();
+                    }
+                }
+            };
+        } else {
+            contadorEl.style.display = 'none';
+        }
+    }
+}
+
+
+	// Função para receber informações do trial do Android
+window.setTrialInfo = function(infoJSON) {
+    try {
+        let info = typeof infoJSON === 'string' ? JSON.parse(infoJSON) : infoJSON;
+        
+        trialInfo = {
+            isInTrial: info.isInTrial || false,
+            remainingDays: info.remainingDays || 0,
+            trialEnded: info.trialEnded || false
+        };
+        
+        console.log('📱 Trial info recebida:', trialInfo);
+        
+        // Atualiza o contador fixo
+        atualizarContadorFixo();
+        
+        // Se estiver em trial, mostra o banner
+        if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+            if (trialInfo.remainingDays <= 3) {
+                mostrarBannerTrial(trialInfo.remainingDays);
+            }
+        }
+        
+        verificarStatusPremium();
+        
+    } catch(e) {
+        console.error('Erro ao processar trial info:', e);
+    }
+};
+
+// Função para mostrar dias restantes
+window.showTrialRemaining = function(daysLeft) {
+    if (daysLeft > 0) {
+        trialInfo.isInTrial = true;
+        trialInfo.remainingDays = daysLeft;
+        trialInfo.trialEnded = false;
+        
+        atualizarContadorFixo();
+        
+        if (daysLeft <= 3) {
+            mostrarBannerTrial(daysLeft);
+        }
+        
+        verificarStatusPremium();
+    }
+};
+
+// Chamar a atualização dentro de setTrialInfo  e verificarStatusPremium
+
     // INICIALIZAÇÃO
     window.onload = () => {
         verificarStatusPremium();
@@ -2945,8 +2841,7 @@ window.onAppReady = function() {
         atualizarBotoesSlot('megasena');
         restaurarAbaAposRecarregar();
 
-
-		// 👇👇👇 ADICIONE ESTE CÓDIGO AQUI 👇👇👇
+	// 👇👇👇 ADICIONE ESTE CÓDIGO AQUI 👇👇👇
     document.getElementById('btnAssinarPaywall').onclick = () => {
         iniciarCompra();
     };
@@ -2965,56 +2860,6 @@ window.onAppReady = function() {
 
 
 
-		
-// Função para atualizar contador de dias restantes
-function atualizarContadorTrial() {
-    if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
-        // Mostra o contador
-        const contadorEl = document.getElementById('contadorTrial');
-        const diasSpan = document.getElementById('diasRestantesTrial');
-        
-        if (contadorEl) {
-            contadorEl.style.display = 'block';
-            if (diasSpan) {
-                diasSpan.innerText = trialInfo.remainingDays;
-            } else {
-                // Fallback se não tiver o span
-                contadorEl.innerHTML = `⏰ ${trialInfo.remainingDays} dias restantes de teste grátis`;
-            }
-            
-            // Muda a cor baseado nos dias restantes
-            if (trialInfo.remainingDays === 1) {
-                contadorEl.style.background = '#ff4444';
-                contadorEl.style.color = 'white';
-            } else if (trialInfo.remainingDays <= 3) {
-                contadorEl.style.background = '#ff9800';
-                contadorEl.style.color = 'white';
-            } else {
-                contadorEl.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                contadorEl.style.color = 'white';
-            }
-        }
-        
-        // Mostra aviso especial no último dia
-        if (trialInfo.remainingDays === 1) {
-            const avisoEl = document.getElementById('avisoUltimoDia');
-            if (avisoEl) avisoEl.style.display = 'block';
-        } else {
-            const avisoEl = document.getElementById('avisoUltimoDia');
-            if (avisoEl) avisoEl.style.display = 'none';
-        }
-    } else {
-        // Esconde o contador se não estiver em trial
-        const contadorEl = document.getElementById('contadorTrial');
-        if (contadorEl) contadorEl.style.display = 'none';
-        
-        const avisoEl = document.getElementById('avisoUltimoDia');
-        if (avisoEl) avisoEl.style.display = 'none';
-    }
-}
-
-		
-        
     };
 
 </script>
