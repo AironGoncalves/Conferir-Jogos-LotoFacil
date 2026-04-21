@@ -1227,45 +1227,59 @@
             }
         }
         
-        // Função para mostrar banner do trial
-        function mostrarBannerTrial(diasRestantes) {
-            const bannerExistente = document.getElementById('trialBanner');
-            if (bannerExistente) bannerExistente.remove();
+        
+
+// Função para mostrar banner do trial
+function mostrarBannerTrial(diasRestantes) {
+    const bannerExistente = document.getElementById('trialBanner');
+    if (bannerExistente) bannerExistente.remove();
+    
+    if (diasRestantes <= 3 && diasRestantes > 0) {
+        const banner = document.createElement('div');
+        banner.id = 'trialBanner';
+        banner.style.cssText = `
+            position: fixed;
+            top: 45px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 10000;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        `;
+        
+        const mensagem = diasRestantes === 1 
+            ? "⚠️ ÚLTIMO DIA de teste grátis! Clique para assinar ⚠️"
+            : `⏰ Seu teste grátis termina em ${diasRestantes} dias! Clique para assinar →`;
+        
+        banner.innerHTML = mensagem;
+        
+        // ========== VERSÃO MELHORADA COM LOGS ==========
+        banner.onclick = () => {
+            console.log('🖱️ Banner clicado! Dias restantes:', diasRestantes);
+            console.log('📱 AndroidBridge disponível?', typeof AndroidBridge !== 'undefined');
             
-            if (diasRestantes <= 3 && diasRestantes > 0) {
-                const banner = document.createElement('div');
-                banner.id = 'trialBanner';
-                banner.style.cssText = `
-                    position: fixed;
-                    top: 45px;
-                    left: 0;
-                    right: 0;
-                    background: linear-gradient(135deg, #ff9800, #f57c00);
-                    color: white;
-                    text-align: center;
-                    padding: 10px;
-                    font-size: 13px;
-                    font-weight: bold;
-                    z-index: 10000;
-                    cursor: pointer;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                `;
-                
-                const mensagem = diasRestantes === 1 
-                    ? "⚠️ ÚLTIMO DIA de teste grátis! Clique para assinar ⚠️"
-                    : `⏰ Seu teste grátis termina em ${diasRestantes} dias! Clique para assinar →`;
-                
-                banner.innerHTML = mensagem;
-                banner.onclick = () => {
-                    if (confirm(`Você tem ${diasRestantes} dias de teste grátis restantes. Deseja assinar agora?`)) {
-                        iniciarCompra();
-                    }
-                };
-                
-                document.body.insertBefore(banner, document.body.firstChild);
-                document.body.style.paddingTop = '95px';
+            if (confirm(`Você tem ${diasRestantes} dias de teste grátis restantes. Deseja assinar agora?`)) {
+                console.log('✅ Usuário confirmou assinatura');
+                iniciarCompra();
+            } else {
+                console.log('❌ Usuário cancelou assinatura');
             }
-        }
+        };
+        // ==============================================
+        
+        document.body.insertBefore(banner, document.body.firstChild);
+        document.body.style.paddingTop = '95px';
+    }
+}
+
+
+
         
         // Função para atualizar o contador fixo
         function atualizarContadorFixo() {
@@ -1443,19 +1457,74 @@
         }
         
         function iniciarCompra() {
-            console.log('🛒 Iniciando processo de compra...');
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.purchaseSubscription) {
-                AndroidBridge.purchaseSubscription();
-            } else if (typeof AndroidBridge !== 'undefined' && AndroidBridge.showPlansScreen) {
-                AndroidBridge.showPlansScreen();
-            } else {
-                console.log('🌐 Modo teste: simulando compra...');
-                localStorage.setItem('premium_fake', 'true');
-                localStorage.removeItem('premium_expirado');
-                alert("⚠️ Modo de teste: Assinatura simulada! (Apenas para desenvolvimento)");
-                location.reload();
-            }
+    console.log('🛒 Iniciando processo de compra...');
+    
+    // Verifica se a bridge do Android está disponível
+    if (typeof AndroidBridge !== 'undefined') {
+        console.log('✅ AndroidBridge encontrada!');
+        
+        // Tenta o método principal
+        if (AndroidBridge.purchaseSubscription) {
+            console.log('📱 Chamando AndroidBridge.purchaseSubscription()');
+            AndroidBridge.purchaseSubscription();
+            return;
         }
+        
+        // Tenta o método alternativo
+        if (AndroidBridge.showPlansScreen) {
+            console.log('📱 Chamando AndroidBridge.showPlansScreen()');
+            AndroidBridge.showPlansScreen();
+            return;
+        }
+        
+        // Tenta método genérico de compra
+        if (AndroidBridge.startPurchase) {
+            console.log('📱 Chamando AndroidBridge.startPurchase()');
+            AndroidBridge.startPurchase();
+            return;
+        }
+        
+        console.warn('⚠️ Nenhum método de compra encontrado no AndroidBridge');
+    } else {
+        console.warn('⚠️ AndroidBridge não está disponível!');
+    }
+    
+    // Fallback para teste web (apenas desenvolvimento)
+    console.log('🌐 Modo teste: simulando compra...');
+    localStorage.setItem('premium_fake', 'true');
+    localStorage.removeItem('premium_expirado');
+    alert("⚠️ Modo de teste: Assinatura simulada! (Apenas para desenvolvimento)");
+    location.reload();
+}
+
+
+// Função de teste para verificar se o AndroidBridge está funcionando
+function testarAndroidBridge() {
+    console.log('=== TESTE ANDROID BRIDGE ===');
+    if (typeof AndroidBridge !== 'undefined') {
+        console.log('✅ AndroidBridge EXISTE!');
+        console.log('Métodos disponíveis:', Object.keys(AndroidBridge));
+        
+        if (AndroidBridge.purchaseSubscription) {
+            console.log('✅ purchaseSubscription DISPONÍVEL');
+        } else {
+            console.log('❌ purchaseSubscription NÃO DISPONÍVEL');
+        }
+        
+        if (AndroidBridge.showPlansScreen) {
+            console.log('✅ showPlansScreen DISPONÍVEL');
+        } else {
+            console.log('❌ showPlansScreen NÃO DISPONÍVEL');
+        }
+    } else {
+        console.log('❌ AndroidBridge NÃO EXISTE!');
+    }
+    console.log('==========================');
+}
+
+// Chame esta função no console do navegador/WebView para testar
+
+
         
         function restaurarCompras() {
             console.log('🔄 Restaurando compras...');
