@@ -981,29 +981,81 @@
         🎉 <strong>Teste Grátis!</strong> Você tem <span id="diasRestantesFixo">7</span> dia(s) restantes - Clique para assinar
     </div>
 
-    <!-- PAYWALL - TELA DE BOAS-VINDAS SIMPLES -->
-    <div id="paywall">
-        <div class="paywall-card">
-            <div class="welcome-icon">🍀</div>
-            <h2>LotoFácil Scanner</h2>
-            <p>Confiram seus jogos da LotoFácil de forma rápida e fácil</p>
-            
-            <div id="paywallAviso" class="aviso-expirado" style="display:none;"></div>
-            
-            <div class="benefits-list">
-                <div class="benefit-item"><span>✓</span> Confira múltiplos jogos</div>
-                <div class="benefit-item"><span>✓</span> Histórico de conferências</div>
-                <div class="benefit-item"><span>✓</span> Estatísticas detalhadas</div>
-                <div class="benefit-item"><span>✓</span> Scanner de alta performance</div>
+   <!-- PAYWALL - TELA DE BOAS-VINDAS COM DOIS PLANOS -->
+<div id="paywall">
+    <div class="paywall-card">
+        <div class="welcome-icon">🍀</div>
+        <h2>LotoFácil Scanner</h2>
+        <p>Escolha o melhor plano para você</p>
+        
+        <div id="paywallAviso" class="aviso-expirado" style="display:none;"></div>
+        
+        <!-- ===== PLANO MENSAL ===== -->
+        <div class="plano-paywall plano-mensal" id="planoMensal" onclick="selecionarPlanoPaywall('mensal')" style="background: white; border: 3px solid #9b2a92; border-radius: 15px; padding: 18px; margin: 15px 0; cursor: pointer; text-align: left; transition: all 0.3s ease; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-weight: bold; font-size: 18px; color: #333;">Plano Mensal</div>
+                    <div style="font-size: 12px; color: #888;">Cobrado mensalmente</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 28px; font-weight: bold; color: #9b2a92;">R$ 2,99</div>
+                    <div style="font-size: 12px; color: #9b2a92;">/mês</div>
+                </div>
             </div>
-            
-            <button class="btn-assinar-paywall" id="btnAssinarPaywall">🔓 VER PLANOS DISPONÍVEIS</button>
-            
-            <div class="restaurar-link" id="restaurarCompra">Já sou assinante? Restaurar compra</div>
-            
-            <div style="margin-top: 20px; font-size: 11px; color: #999;">Ao assinar, você concorda com os termos de uso</div>
+            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;">✓ 7 dias grátis</span>
+                <span style="background: #f3e5f5; color: #7b1fa2; padding: 4px 10px; border-radius: 20px; font-size: 11px;">Cancele quando quiser</span>
+            </div>
+            <div id="checkMensal" style="position: absolute; top: 10px; right: 15px; font-size: 24px; color: #9b2a92;">✓</div>
+        </div>
+        
+        <!-- ===== PLANO ANUAL ===== -->
+        <div class="plano-paywall plano-anual" id="planoAnual" onclick="selecionarPlanoPaywall('anual')" style="background: white; border: 2px solid #e0c3fc; border-radius: 15px; padding: 18px; margin: 15px 0; cursor: pointer; text-align: left; transition: all 0.3s ease; position: relative;">
+            <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff9800, #f57c00); color: white; padding: 4px 15px; border-radius: 20px; font-size: 10px; font-weight: bold; white-space: nowrap;">
+                ⭐ MELHOR OFERTA
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                <div>
+                    <div style="font-weight: bold; font-size: 18px; color: #333;">Plano Anual</div>
+                    <div style="font-size: 12px; color: #888;">Cobrado anualmente</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 28px; font-weight: bold; color: #6a1b9a;">R$ 29,90</div>
+                    <div style="font-size: 12px; color: #6a1b9a;">/ano</div>
+                </div>
+            </div>
+            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                <span style="background: #fff3e0; color: #e65100; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;">💰 Economize 17%</span>
+                <span style="background: #e8eaf6; color: #283593; padding: 4px 10px; border-radius: 20px; font-size: 11px;">Melhor custo-benefício</span>
+            </div>
+            <div id="checkAnual" style="position: absolute; top: 10px; right: 15px; font-size: 24px; color: #6a1b9a; display: none;">✓</div>
+        </div>
+        
+        <!-- ===== INFORMAÇÕES DO PLANO SELECIONADO ===== -->
+        <div id="infoPlanoSelecionado" style="background: #f3e5f5; padding: 12px; border-radius: 10px; margin: 15px 0; font-size: 13px; color: #4a148c; text-align: center;">
+            <strong>💡 Pagamento único de R$ 2,99</strong><br>
+            <small>Renova automaticamente a cada mês • Cancele quando quiser</small>
+        </div>
+        
+        <div class="benefits-list">
+            <div class="benefit-item"><span>✓</span> Confira múltiplos jogos</div>
+            <div class="benefit-item"><span>✓</span> Histórico de conferências</div>
+            <div class="benefit-item"><span>✓</span> Estatísticas detalhadas</div>
+            <div class="benefit-item"><span>✓</span> Scanner de alta performance</div>
+        </div>
+        
+        <button class="btn-assinar-paywall" id="btnAssinarPaywall" onclick="iniciarAssinaturaPaywall()">
+            🔓 ASSINAR PLANO MENSAL • R$ 2,99
+        </button>
+        
+        <div class="restaurar-link" id="restaurarCompra">Já sou assinante? Restaurar compra</div>
+        
+        <div style="margin-top: 20px; font-size: 11px; color: #999;">
+            Ao assinar, você concorda com os termos de uso<br>
+            Assinatura renovada automaticamente
         </div>
     </div>
+</div>
 
     <div id="modalCustom">
         <div class="modal-content">
