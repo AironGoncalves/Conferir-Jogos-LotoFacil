@@ -2878,6 +2878,119 @@
                 document.body.removeChild(textArea);
             });
         }
+
+
+        // =============================================
+// FUNÇÕES PARA SELEÇÃO DE PLANOS NO PAYWALL
+// =============================================
+let planoSelecionadoPaywall = 'mensal'; // 'mensal' ou 'anual'
+
+function selecionarPlanoPaywall(plano) {
+    planoSelecionadoPaywall = plano;
+    
+    const planoMensal = document.getElementById('planoMensal');
+    const planoAnual = document.getElementById('planoAnual');
+    const checkMensal = document.getElementById('checkMensal');
+    const checkAnual = document.getElementById('checkAnual');
+    const btnAssinar = document.getElementById('btnAssinarPaywall');
+    const infoPlano = document.getElementById('infoPlanoSelecionado');
+    
+    if (plano === 'mensal') {
+        // Destaca plano mensal
+        planoMensal.style.border = '3px solid #9b2a92';
+        planoMensal.style.background = '#faf5ff';
+        planoAnual.style.border = '2px solid #e0c3fc';
+        planoAnual.style.background = 'white';
+        checkMensal.style.display = 'block';
+        checkAnual.style.display = 'none';
+        
+        // Atualiza botão
+        btnAssinar.innerHTML = '🔓 ASSINAR PLANO MENSAL • R$ 2,99';
+        btnAssinar.style.background = 'linear-gradient(45deg, #9b2a92, #6a1b9a)';
+        
+        // Atualiza info
+        infoPlano.innerHTML = '<strong>💡 Pagamento único de R$ 2,99</strong><br><small>Renova automaticamente a cada mês • Cancele quando quiser</small>';
+        infoPlano.style.background = '#f3e5f5';
+        infoPlano.style.color = '#4a148c';
+        
+    } else if (plano === 'anual') {
+        // Destaca plano anual
+        planoAnual.style.border = '3px solid #9b2a92';
+        planoAnual.style.background = '#faf5ff';
+        planoMensal.style.border = '2px solid #e0c3fc';
+        planoMensal.style.background = 'white';
+        checkAnual.style.display = 'block';
+        checkMensal.style.display = 'none';
+        
+        // Atualiza botão
+        btnAssinar.innerHTML = '🔓 ASSINAR PLANO ANUAL • R$ 29,90';
+        btnAssinar.style.background = 'linear-gradient(45deg, #6a1b9a, #9b2a92)';
+        
+        // Atualiza info
+        infoPlano.innerHTML = '<strong>💡 Pagamento único de R$ 29,90 por ano</strong><br><small>Equivale a apenas R$ 2,49/mês • Cancele quando quiser</small>';
+        infoPlano.style.background = '#e8eaf6';
+        infoPlano.style.color = '#283593';
+    }
+}
+
+function iniciarAssinaturaPaywall() {
+    console.log('🛒 Iniciando assinatura do plano:', planoSelecionadoPaywall);
+    
+    if (typeof AndroidBridge !== 'undefined') {
+        if (planoSelecionadoPaywall === 'anual') {
+            // Verifica se existe função específica para plano anual
+            if (AndroidBridge.purchaseYearlySubscription) {
+                console.log('📱 Chamando purchaseYearlySubscription()');
+                AndroidBridge.purchaseYearlySubscription();
+            } else if (AndroidBridge.purchaseSubscription) {
+                console.log('📱 Chamando purchaseSubscription("plano_anual")');
+                AndroidBridge.purchaseSubscription('plano_anual');
+            } else {
+                alert('Erro: Função de compra não disponível');
+            }
+        } else {
+            // Plano mensal
+            if (AndroidBridge.purchaseMonthlySubscription) {
+                console.log('📱 Chamando purchaseMonthlySubscription()');
+                AndroidBridge.purchaseMonthlySubscription();
+            } else if (AndroidBridge.purchaseSubscription) {
+                console.log('📱 Chamando purchaseSubscription("gerador_mensal")');
+                AndroidBridge.purchaseSubscription('gerador_mensal');
+            } else {
+                alert('Erro: Função de compra não disponível');
+            }
+        }
+    } else {
+        // Modo teste/desenvolvimento
+        console.log('🌐 Modo teste: simulando compra do plano', planoSelecionadoPaywall);
+        localStorage.setItem('premium_fake', 'true');
+        localStorage.removeItem('premium_expirado');
+        alert("⚠️ Modo de teste: Assinatura simulada! (Apenas para desenvolvimento)\n\nPlano selecionado: " + (planoSelecionadoPaywall === 'anual' ? 'Anual R$ 29,90' : 'Mensal R$ 2,99'));
+        location.reload();
+    }
+}
+
+// Atualiza a função iniciarCompra() para usar a nova função
+function iniciarCompra() {
+    // Se o paywall com planos estiver visível, usa a função de assinatura
+    if (document.getElementById('planoMensal')) {
+        iniciarAssinaturaPaywall();
+    } else {
+        // Fallback para comportamento antigo
+        console.log('🛒 Iniciando processo de compra (fallback)...');
+        if (typeof AndroidBridge !== 'undefined' && AndroidBridge.purchaseSubscription) {
+            AndroidBridge.purchaseSubscription();
+        } else if (typeof AndroidBridge !== 'undefined' && AndroidBridge.showPlansScreen) {
+            AndroidBridge.showPlansScreen();
+        } else {
+            console.log('🌐 Modo teste: simulando compra...');
+            localStorage.setItem('premium_fake', 'true');
+            localStorage.removeItem('premium_expirado');
+            alert("⚠️ Modo de teste: Assinatura simulada! (Apenas para desenvolvimento)");
+            location.reload();
+        }
+    }
+}
         
         // INICIALIZAÇÃO
         window.onload = () => {
@@ -2894,8 +3007,14 @@
             atualizarBotoesSlot('lotofacil');
             atualizarBotoesSlot('megasena');
             restaurarAbaAposRecarregar();
+
+          // O onclick já está definido no HTML como iniciarAssinaturaPaywall()
+          // Mas garantimos que funcione também programaticamente
+            const btnPaywall = document.getElementById('btnAssinarPaywall');
+                if (btnPaywall) {
+            btnPaywall.onclick = () => { iniciarAssinaturaPaywall(); };
+            }
             
-            document.getElementById('btnAssinarPaywall').onclick = () => { iniciarCompra(); };
             document.getElementById('restaurarCompra').onclick = () => { restaurarCompras(); };
             
             document.querySelectorAll('.plano-item').forEach(el => {
