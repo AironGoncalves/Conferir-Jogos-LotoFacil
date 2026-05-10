@@ -1379,15 +1379,42 @@
         };
         
         function assinarPeloContador() {
-            console.log('🛒 Clique no contador - iniciando compra...');
-            if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
-                if (confirm(`Você tem ${trialInfo.remainingDays} dias de teste grátis restantes.\n\nDeseja assinar agora para garantir acesso contínuo?`)) {
-                    iniciarCompra();
-                }
-            } else {
-                iniciarCompra();
-            }
-        }
+    console.log('🛒 Clique no contador - iniciando compra...');
+    
+    // Primeiro, mostra o paywall com os planos (se estiver escondido)
+    const paywall = document.getElementById('paywall');
+    if (paywall && paywall.style.display === 'none') {
+        paywall.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // Rola a página até o paywall para garantir que os planos estejam visíveis
+    if (paywall) {
+        paywall.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Atualiza a mensagem de aviso no paywall
+    const avisoElement = document.getElementById('paywallAviso');
+    if (avisoElement && trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+        avisoElement.style.display = 'block';
+        avisoElement.style.background = '#4CAF50';
+        avisoElement.style.color = 'white';
+        avisoElement.innerHTML = `🎉 Você tem ${trialInfo.remainingDays} dia(s) de teste grátis!<br><small>Assine agora e continue usando após o período de testes</small>`;
+    }
+    
+    // Garante que o plano mensal está selecionado por padrão
+    if (typeof selecionarPlanoPaywall === 'function') {
+        selecionarPlanoPaywall('mensal');
+    }
+    
+    // Dá um pequeno destaque visual no paywall
+    const paywallCard = document.querySelector('.paywall-card');
+    if (paywallCard) {
+        paywallCard.style.animation = 'none';
+        paywallCard.offsetHeight; // Trigger reflow
+        paywallCard.style.animation = 'fadeInUp 0.6s ease-out';
+    }
+}
         
         window.onAppReady = function() {
             console.log('✅ App pronto! Verificando status premium...');
