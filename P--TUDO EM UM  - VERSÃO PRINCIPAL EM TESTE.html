@@ -981,58 +981,62 @@
         🎉 <strong>Teste Grátis!</strong> Você tem <span id="diasRestantesFixo">7</span> dia(s) restantes - Clique para assinar
     </div>
 
-   <!-- PAYWALL - TELA DE BOAS-VINDAS COM DOIS PLANOS -->
+  <!-- PAYWALL - TELA DE BOAS-VINDAS COM DOIS PLANOS -->
 <div id="paywall">
-    <div class="paywall-card">
+    <div class="paywall-card" style="max-height: 90vh; overflow-y: auto; padding: 25px 20px;">
         <div class="welcome-icon">🍀</div>
         <h2>LotoFácil Scanner</h2>
+        
+        <!-- Botão Voltar (visível apenas durante o trial) -->
+        <button id="btnVoltarTrial" onclick="voltarParaApp()" style="display: none; position: absolute; top: 15px; left: 15px; background: #666; color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 16px; z-index: 10;">✕</button>
+        
         <p>Escolha o melhor plano para você</p>
         
         <div id="paywallAviso" class="aviso-expirado" style="display:none;"></div>
         
         <!-- ===== PLANO MENSAL ===== -->
-        <div class="plano-paywall plano-mensal" id="planoMensal" onclick="selecionarPlanoPaywall('mensal')" style="background: white; border: 3px solid #9b2a92; border-radius: 15px; padding: 18px; margin: 15px 0; cursor: pointer; text-align: left; transition: all 0.3s ease; position: relative;">
+        <div class="plano-paywall plano-mensal" id="planoMensal" onclick="selecionarPlanoPaywall('mensal')" style="background: white; border: 3px solid #9b2a92; border-radius: 15px; padding: 15px; margin: 10px 0; cursor: pointer; text-align: left; transition: all 0.3s ease; position: relative;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-weight: bold; font-size: 18px; color: #333;">Plano Mensal</div>
-                    <div style="font-size: 12px; color: #888;">Cobrado mensalmente</div>
+                    <div style="font-weight: bold; font-size: 16px; color: #333;">Plano Mensal</div>
+                    <div style="font-size: 11px; color: #888;">Cobrado mensalmente</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-size: 28px; font-weight: bold; color: #9b2a92;">R$ 2,99</div>
-                    <div style="font-size: 12px; color: #9b2a92;">/mês</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #9b2a92;">R$ 2,99</div>
+                    <div style="font-size: 11px; color: #9b2a92;">/mês</div>
                 </div>
             </div>
-            <div style="margin-top: 10px; display: flex; gap: 8px;">
-                <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;">✓ 7 dias grátis</span>
-                <span style="background: #f3e5f5; color: #7b1fa2; padding: 4px 10px; border-radius: 20px; font-size: 11px;">Cancele quando quiser</span>
+            <div style="margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap;">
+                <span style="background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: bold;">✓ 7 dias grátis</span>
+                <span style="background: #f3e5f5; color: #7b1fa2; padding: 3px 8px; border-radius: 20px; font-size: 10px;">Cancele quando quiser</span>
             </div>
-            <div id="checkMensal" style="position: absolute; top: 10px; right: 15px; font-size: 24px; color: #9b2a92;">✓</div>
+            <div id="checkMensal" style="position: absolute; top: 10px; right: 12px; font-size: 20px; color: #9b2a92;">✓</div>
         </div>
         
         <!-- ===== PLANO ANUAL ===== -->
-        <div class="plano-paywall plano-anual" id="planoAnual" onclick="selecionarPlanoPaywall('anual')" style="background: white; border: 2px solid #e0c3fc; border-radius: 15px; padding: 18px; margin: 15px 0; cursor: pointer; text-align: left; transition: all 0.3s ease; position: relative;">
-            <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff9800, #f57c00); color: white; padding: 4px 15px; border-radius: 20px; font-size: 10px; font-weight: bold; white-space: nowrap;">
+        <div class="plano-paywall plano-anual" id="planoAnual" onclick="selecionarPlanoPaywall('anual')" style="background: white; border: 2px solid #e0c3fc; border-radius: 15px; padding: 15px; margin: 10px 0; cursor: pointer; text-align: left; transition: all 0.3s ease; position: relative;">
+            <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff9800, #f57c00); color: white; padding: 3px 12px; border-radius: 20px; font-size: 9px; font-weight: bold; white-space: nowrap;">
                 ⭐ MELHOR OFERTA
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 3px;">
                 <div>
-                    <div style="font-weight: bold; font-size: 18px; color: #333;">Plano Anual</div>
-                    <div style="font-size: 12px; color: #888;">Cobrado anualmente</div>
+                    <div style="font-weight: bold; font-size: 16px; color: #333;">Plano Anual</div>
+                    <div style="font-size: 11px; color: #888;">Cobrado anualmente</div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="font-size: 28px; font-weight: bold; color: #6a1b9a;">R$ 29,90</div>
-                    <div style="font-size: 12px; color: #6a1b9a;">/ano</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #6a1b9a;">R$ 29,90</div>
+                    <div style="font-size: 11px; color: #6a1b9a;">/ano</div>
                 </div>
             </div>
-            <div style="margin-top: 10px; display: flex; gap: 8px;">
-                <span style="background: #fff3e0; color: #e65100; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;">💰 Economize 17%</span>
-                <span style="background: #e8eaf6; color: #283593; padding: 4px 10px; border-radius: 20px; font-size: 11px;">Melhor custo-benefício</span>
+            <div style="margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap;">
+                <span style="background: #fff3e0; color: #e65100; padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: bold;">💰 Economize 17%</span>
+                <span style="background: #e8eaf6; color: #283593; padding: 3px 8px; border-radius: 20px; font-size: 10px;">Melhor custo-benefício</span>
             </div>
-            <div id="checkAnual" style="position: absolute; top: 10px; right: 15px; font-size: 24px; color: #6a1b9a; display: none;">✓</div>
+            <div id="checkAnual" style="position: absolute; top: 10px; right: 12px; font-size: 20px; color: #6a1b9a; display: none;">✓</div>
         </div>
         
         <!-- ===== INFORMAÇÕES DO PLANO SELECIONADO ===== -->
-        <div id="infoPlanoSelecionado" style="background: #f3e5f5; padding: 12px; border-radius: 10px; margin: 15px 0; font-size: 13px; color: #4a148c; text-align: center;">
+        <div id="infoPlanoSelecionado" style="background: #f3e5f5; padding: 10px; border-radius: 10px; margin: 10px 0; font-size: 12px; color: #4a148c; text-align: center;">
             <strong>💡 Pagamento único de R$ 2,99</strong><br>
             <small>Renova automaticamente a cada mês • Cancele quando quiser</small>
         </div>
@@ -1044,13 +1048,19 @@
             <div class="benefit-item"><span>✓</span> Scanner de alta performance</div>
         </div>
         
-        <button class="btn-assinar-paywall" id="btnAssinarPaywall" onclick="iniciarAssinaturaPaywall()">
+        <!-- Botão de Assinar (sempre visível) -->
+        <button class="btn-assinar-paywall" id="btnAssinarPaywall" onclick="iniciarAssinaturaPaywall()" style="margin-bottom: 8px;">
             🔓 ASSINAR PLANO MENSAL • R$ 2,99
         </button>
         
-        <div class="restaurar-link" id="restaurarCompra">Já sou assinante? Restaurar compra</div>
+        <!-- Botão Voltar (abaixo do botão de assinar, visível apenas durante trial) -->
+        <button id="btnVoltarTrial2" onclick="voltarParaApp()" style="display: none; width: 100%; padding: 12px; background: #e0e0e0; color: #666; border: none; border-radius: 50px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 5px;">
+            ← Voltar para o aplicativo
+        </button>
         
-        <div style="margin-top: 20px; font-size: 11px; color: #999;">
+        <div class="restaurar-link" id="restaurarCompra" style="margin-top: 5px;">Já sou assinante? Restaurar compra</div>
+        
+        <div style="margin-top: 15px; font-size: 10px; color: #999;">
             Ao assinar, você concorda com os termos de uso<br>
             Assinatura renovada automaticamente
         </div>
@@ -1378,17 +1388,17 @@
             return JSON.stringify(trialInfo);
         };
         
-        function assinarPeloContador() {
-    console.log('🛒 Clique no contador - iniciando compra...');
+       function assinarPeloContador() {
+    console.log('🛒 Clique no contador - mostrando planos...');
     
-    // Primeiro, mostra o paywall com os planos (se estiver escondido)
+    // Mostra o paywall com os planos
     const paywall = document.getElementById('paywall');
     if (paywall && paywall.style.display === 'none') {
         paywall.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
     
-    // Rola a página até o paywall para garantir que os planos estejam visíveis
+    // Rola a página até o paywall
     if (paywall) {
         paywall.scrollIntoView({ behavior: 'smooth' });
     }
@@ -1401,6 +1411,15 @@
         avisoElement.style.color = 'white';
         avisoElement.innerHTML = `🎉 Você tem ${trialInfo.remainingDays} dia(s) de teste grátis!<br><small>Assine agora e continue usando após o período de testes</small>`;
     }
+    
+    // ===== NOVO: Mostra os botões de voltar durante o trial =====
+    if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+        const btnVoltar1 = document.getElementById('btnVoltarTrial');
+        const btnVoltar2 = document.getElementById('btnVoltarTrial2');
+        if (btnVoltar1) btnVoltar1.style.display = 'flex';
+        if (btnVoltar2) btnVoltar2.style.display = 'block';
+    }
+    // ===========================================================
     
     // Garante que o plano mensal está selecionado por padrão
     if (typeof selecionarPlanoPaywall === 'function') {
@@ -1502,6 +1521,19 @@
                     paywall.style.display = 'flex';
                     document.body.style.overflow = 'hidden';
                 }
+
+                 // ===== NOVO: Mostra/Esconde botões de voltar =====
+                 const btnVoltar1 = document.getElementById('btnVoltarTrial');
+                 const btnVoltar2 = document.getElementById('btnVoltarTrial2');
+                      if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+                      if (btnVoltar1) btnVoltar1.style.display = 'flex';
+                      if (btnVoltar2) btnVoltar2.style.display = 'block';
+                 } else {
+                      if (btnVoltar1) btnVoltar1.style.display = 'none';
+                      if (btnVoltar2) btnVoltar2.style.display = 'none';
+                  }
+        // =================================================
+                
                 const avisoElement = document.getElementById('paywallAviso');
                 if (avisoElement) {
                     if (assinaturaExpirada) {
@@ -2890,6 +2922,22 @@
                 document.body.removeChild(textArea);
             });
         }
+
+
+    // Função para voltar ao aplicativo (fechar paywall durante trial)
+function voltarParaApp() {
+    console.log('🔙 Voltando para o aplicativo...');
+    
+    // Se estiver em período de trial, apenas fecha o paywall
+    if (trialInfo.isInTrial && trialInfo.remainingDays > 0) {
+        document.getElementById('paywall').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        console.log('✅ Paywall fechado - usuário continua no trial');
+    } else {
+        // Se não estiver em trial, não pode voltar (deve assinar)
+        console.log('⚠️ Usuário não está em trial, deve assinar');
+    }
+}
 
 
         // =============================================
