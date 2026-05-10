@@ -1493,22 +1493,7 @@
                 }
             }
         }
-        
-        function iniciarCompra() {
-            console.log('🛒 Iniciando processo de compra...');
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.purchaseSubscription) {
-                AndroidBridge.purchaseSubscription();
-            } else if (typeof AndroidBridge !== 'undefined' && AndroidBridge.showPlansScreen) {
-                AndroidBridge.showPlansScreen();
-            } else {
-                console.log('🌐 Modo teste: simulando compra...');
-                localStorage.setItem('premium_fake', 'true');
-                localStorage.removeItem('premium_expirado');
-                alert("⚠️ Modo de teste: Assinatura simulada! (Apenas para desenvolvimento)");
-                location.reload();
-            }
-        }
-        
+                
         function restaurarCompras() {
             console.log('🔄 Restaurando compras...');
             if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
