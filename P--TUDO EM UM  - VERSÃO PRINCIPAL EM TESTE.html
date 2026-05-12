@@ -1331,17 +1331,7 @@
         
         // Função para atualizar o contador fixo
         function atualizarContadorFixo() {
-            // ============================================================
-            // ⚠️ TESTE EXTERNO - CONTADOR DE TRIAL OCULTO
-            // Quando for para PRODUÇÃO, remova as 3 linhas abaixo
-            // e DESCOMENTE o bloco original
-            // ============================================================
-            const contadorEl = document.getElementById('contadorTrialFixo');
-            if (contadorEl) contadorEl.style.display = 'none';
-            return;
-            // ============================================================
             
-            /*
             const contadorEl = document.getElementById('contadorTrialFixo');
             const diasSpan = document.getElementById('diasRestantesFixo');
             
@@ -1361,10 +1351,7 @@
                     contadorEl.style.display = 'none';
                 }
             }
-            */
-             // ============================================================
-            // FIM DO BLOCO COMENTADO PARA TESTE EXTERNO
-            // ============================================================
+          
         }
         
         // Funções do sistema de trial
@@ -1532,13 +1519,6 @@
                 }
             } else {
 
-                // ============================================================
-                // ⚠️ TESTE EXTERNO - PAYWALL DESLIGADO
-                // Comente o bloco abaixo para liberar o app nos testes
-                // Quando for para PRODUÇÃO, remova as barras de comentário
-                // ============================================================
-                
-                /*
                 const paywall = document.getElementById('paywall');
                 if (paywall) {
                     paywall.style.display = 'flex';
@@ -1573,11 +1553,7 @@
                         avisoElement.style.display = 'none';
                     }
                 }
-                 */
                 
-                // ============================================================
-                // FIM DO BLOCO COMENTADO PARA TESTE EXTERNO
-                // ============================================================
             }
         }
                 
