@@ -1291,6 +1291,14 @@
         
         // Função para mostrar banner do trial
         function mostrarBannerTrial(diasRestantes) {
+            // ============================================================
+   	    // ⚠️ TESTE EXTERNO - BANNER DE TRIAL OCULTO
+    	    // REMOVA o comentário abaixo para PRODUÇÃO
+     	    // ============================================================
+   	    return;  // ← Sai da função sem mostrar nada
+    	   // ============================================================
+    
+    	    /*
             const bannerExistente = document.getElementById('trialBanner');
             if (bannerExistente) bannerExistente.remove();
             
@@ -1327,6 +1335,10 @@
                 document.body.insertBefore(banner, document.body.firstChild);
                 document.body.style.paddingTop = '95px';
             }
+            */
+	         // ============================================================
+            // FIM DO BLOCO COMENTADO PARA TESTE EXTERNO
+            // ============================================================
         }
         
         // Função para atualizar o contador fixo
