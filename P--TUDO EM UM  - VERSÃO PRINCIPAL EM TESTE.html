@@ -1390,9 +1390,19 @@
                 };
                 console.log('📱 Trial info recebida:', trialInfo);
                 atualizarContadorFixo();
-                if (trialInfo.isInTrial && trialInfo.remainingDays > 0 && trialInfo.remainingDays <= 3) {
+				 // ============================================================
+   	    		// ⚠️ TESTE EXTERNO - BANNER DE TRIAL OCULTO
+    	   		 // REMOVA o comentário abaixo para PRODUÇÃO
+     	   		 // ============================================================
+				
+               /* if (trialInfo.isInTrial && trialInfo.remainingDays > 0 && trialInfo.remainingDays <= 3) {
                     mostrarBannerTrial(trialInfo.remainingDays);
                 }
+				*/
+				
+				  // REMOVA o comentário acima  para PRODUÇÃO
+     	   		 // ============================================================
+				
                 verificarStatusPremium();
             } catch(e) {
                 console.error('Erro ao processar trial info:', e);
@@ -1406,7 +1416,11 @@
                 trialInfo.remainingDays = daysLeft;
                 trialInfo.trialEnded = false;
                 atualizarContadorFixo();
-                if (daysLeft <= 3) mostrarBannerTrial(daysLeft);
+               // REMOVA o comentário abaixo para PRODUÇÃO
+     	   		 // ============================================================
+				/*if (daysLeft <= 3) mostrarBannerTrial(daysLeft);*/
+				// REMOVA o comentário abaixo para PRODUÇÃO
+     	   		 // ============================================================
                 verificarStatusPremium();
             }
         };
@@ -1509,7 +1523,12 @@
                     paywall.style.display = 'none';
                     document.body.style.overflow = 'auto';
                 }
-                if (trialInfo.remainingDays <= 3) mostrarBannerTrial(trialInfo.remainingDays);
+				// REMOVA o comentário abaixo para PRODUÇÃO
+     	   		 // ============================================================
+                /*if (trialInfo.remainingDays <= 3) mostrarBannerTrial(trialInfo.remainingDays);
+				*/
+				// REMOVA o comentário acima /**/ para PRODUÇÃO
+     	   		 // ============================================================
                 return;
             }
             
