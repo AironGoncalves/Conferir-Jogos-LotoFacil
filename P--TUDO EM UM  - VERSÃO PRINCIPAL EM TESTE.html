@@ -535,6 +535,19 @@
             font-size: 14px;
             border-left: 4px solid #ffd700;
         }
+	/* CAIXA DE AVISO/MENSAGEM (ANTIGO VALOR ACUMULADO) */
+        .caixa-aviso {
+            margin-top: 10px;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 14px;
+            border-left: 4px solid #ffd700;
+            display: none;
+        }
         .aviso-legal {
             margin-top: 15px;
             font-size: 11px;
@@ -1145,6 +1158,9 @@
             <div id="count15LF">15 Acertos: 0x</div>
             <div id="valorAcumuladoLF" class="valor-acumulado" style="display:none;"></div>
         </div>
+ 	<div>
+	    <div id="caixaAvisoLF" class="caixa-aviso"></div>
+    	</div>
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a conferência de jogos da LotoFácil e da Mega-Sena. Pode ocorre eventuais inconsistências nos resultados apresentados. Os jogos gerados neste site/aplicativo <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. O aplicativo não possui vínculo com a Caixa Econômica Federal. <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b><br><br>
             <b>🔞 APOSTAR É PROIBIDO PARA MENORES DE 18 ANOS</b>
@@ -1196,6 +1212,9 @@
             <div id="count15MS">Sena: 0x</div>
             <div id="valorAcumuladoMS" class="valor-acumulado" style="display:none;"></div>
         </div>
+	<div>
+	<div id="caixaAvisoMS" class="caixa-aviso"></div>
+        </div>
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a conferência de jogos da LotoFácil e da Mega-Sena. Pode ocorre eventuais inconsistências nos resultados apresentados. Os jogos gerados neste site/aplicativo <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. O aplicativo não possui vínculo com a Caixa Econômica Federal. <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b><br><br>
             <b>🔞 APOSTAR É PROIBIDO PARA MENORES DE 18 ANOS</b>
@@ -1219,16 +1238,16 @@
         // RESULTADO MANUAL (FALLBACK) - Usado quando a API está fora do ar
         const RESULTADO_MANUAL = {
             lotofacil: {
-                concurso: 3707,
+                concurso: 3705,
                 dezenas: [1,2,3,7,8,9,10,13,14,18,20,21,22,23,24],
                 data: "10/06/2026",
-                //valorAcumulado: "BOA SORTE"
+             //   valorAcumulado: "BOA SORTE"
             },
             megasena: {
                 concurso: 3006,
                 dezenas: [25,42,45,48,50,60],
                 data: "09/05/2026",
-                valorAcumulado: "Boa sorte"
+             //   valorAcumulado: "Boa sorte"
             }
         };
         
@@ -1620,6 +1639,27 @@
                 sessionStorage.removeItem('abaAtiva');
             }
         }
+
+
+   // =============================================
+    // CAIXA DE AVISO/MENSAGEM (CONFIGURÁVEL) 💰 🍀 📢  ✨ Boa sorte!
+    // =============================================
+    // Configure aqui as mensagens que deseja exibir
+    const MENSAGEM_AVISO_LF = "Boa sorte!✨ <br>Cada aposta carrega um sonho. Que seus números sejam sorteados e que este concurso traga uma grande conquista para você. Nunca deixe de acreditar na sua sorte!";
+    const MENSAGEM_AVISO_MS = "✨ Boa sorte!<br> Que a sorte esteja ao seu lado e que seus números tragam uma grande surpresa.";
+    
+    function exibirCaixaAviso(tipo) {
+        const caixaId = tipo === 'lotofacil' ? 'caixaAvisoLF' : 'caixaAvisoMS';
+        const mensagem = tipo === 'lotofacil' ? MENSAGEM_AVISO_LF : MENSAGEM_AVISO_MS;
+        const elemento = document.getElementById(caixaId);
+        if (elemento && mensagem) {
+            elemento.style.display = 'block';
+            elemento.innerHTML = `🍀 ${mensagem}`;
+        }
+    }
+
+
+
         
         // =============================================
         // CÓDIGO PRINCIPAL - FUNÇÕES ORIGINAIS
@@ -3053,6 +3093,11 @@ function iniciarCompra() {
             atualizarBotoesSlot('lotofacil');
             atualizarBotoesSlot('megasena');
             restaurarAbaAposRecarregar();
+
+	   
+	    // Exibe as caixas de aviso
+            exibirCaixaAviso('lotofacil');
+            exibirCaixaAviso('megasena');
 
           // O onclick já está definido no HTML como iniciarAssinaturaPaywall()
           // Mas garantimos que funcione também programaticamente
