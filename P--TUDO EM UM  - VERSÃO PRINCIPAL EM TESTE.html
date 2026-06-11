@@ -1648,8 +1648,8 @@
     // CAIXA DE AVISO/MENSAGEM (CONFIGURÁVEL) 💰 🍀 📢 💙 ✨ Boa sorte!
     // =============================================
     // Configure aqui as mensagens que deseja exibir
-    const MENSAGEM_AVISO_LF = "Não ganhou desta vez?🍀 <br>Faz parte da jornada de todo apostador. O importante é continuar sonhando e participando com responsabilidade. Que a sorte esteja ao seu lado no próximo sorteio!";
-    const MENSAGEM_AVISO_MS = "Boa sorte!✨<br> Que a sorte esteja ao seu lado e que seus números tragam uma grande surpresa.";
+    const MENSAGEM_AVISO_LF = "Olá pessoal <br>Que a sorte esteja ao seu lado e que seus números tragam uma grande surpresa. Boa sorte!✨";;
+    const MENSAGEM_AVISO_MS = "<br> Que a sorte esteja ao seu lado e que seus números tragam uma grande surpresa.";
     
     function exibirCaixaAviso(tipo) {
         const caixaId = tipo === 'lotofacil' ? 'caixaAvisoLF' : 'caixaAvisoMS';
@@ -1657,7 +1657,7 @@
         const elemento = document.getElementById(caixaId);
         if (elemento && mensagem) {
             elemento.style.display = 'block';
-            elemento.innerHTML = `💙 ${mensagem}`;
+            elemento.innerHTML = `🍀 ${mensagem}`;
         }
     }
 
