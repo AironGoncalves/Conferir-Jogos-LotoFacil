@@ -1238,15 +1238,15 @@
         // RESULTADO MANUAL (FALLBACK) - Usado quando a API está fora do ar
         const RESULTADO_MANUAL = {
             lotofacil: {
-                concurso: 3705,
-                dezenas: [1,2,3,7,8,9,10,13,14,18,20,21,22,23,24],
-                data: "10/06/2026",
+                concurso: 3710,
+                dezenas: [1,2,3,4,5,6,9,12,13,14,15,16,17,18,25],
+                data: "14/06/2026",
              //   valorAcumulado: "BOA SORTE"
             },
             megasena: {
-                concurso: 3006,
-                dezenas: [25,42,45,48,50,60],
-                data: "09/05/2026",
+                concurso: 3018,
+                dezenas: [05,06,17,27,57,58],
+                data: "14/06/2026",
              //   valorAcumulado: "Boa sorte"
             }
         };
@@ -1644,7 +1644,7 @@
 
 //"Boa sorte!✨ <br>Cada aposta carrega um sonho. Que seus números sejam sorteados e que este concurso traga uma grande conquista para você. Nunca deixe de acreditar na sua sorte!";
 
-		
+//Prêmio estimado do concurso de N° 3710. R$ 8.000.000,00. Aviso: o sorteio será realizado dia 14/06/2026 às 11:00:00
 //Que a sorte esteja ao seu lado e que seus números tragam uma grande surpresa. Boa sorte!✨
 //Espero que esteja gostando do aplicativo. Aproveite para testá-lo bem e ver como seus jogos se comportam. Assim, você pode manter ou montar uma nova estratégia
 		
@@ -1652,7 +1652,7 @@
     // CAIXA DE AVISO/MENSAGEM (CONFIGURÁVEL) 💰 🍀 📢 💙 ✨ 🇧🇷 Boa sorte!
     // =============================================
     // Configure aqui as mensagens que deseja exibir
-    const MENSAGEM_AVISO_LF = "Olá! <br>Prêmio estimado do concurso de N° 3710. R$ 8.000.000,00. Aviso: o sorteio será realizado dia 14/06/2026 às 11:00:00. Boa sorte!✨";
+    const MENSAGEM_AVISO_LF = "Olá! <br>. Espero que esteja gostando do aplicativo. Aproveite para testá-lo bem e ver como seus jogos se comportam. Assim, você pode manter ou montar uma nova estratégia. Boa sorte!✨";
     const MENSAGEM_AVISO_MS = "<br> Que a sorte esteja ao seu lado e que seus números tragam uma grande surpresa.";
     
     function exibirCaixaAviso(tipo) {
@@ -1661,7 +1661,7 @@
         const elemento = document.getElementById(caixaId);
         if (elemento && mensagem) {
             elemento.style.display = 'block';
-            elemento.innerHTML = `🇧🇷 ${mensagem}`;
+            elemento.innerHTML = `🍀 ${mensagem}`;
         }
     }
 
