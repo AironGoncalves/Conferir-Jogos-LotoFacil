@@ -1714,6 +1714,7 @@ function toggleMsgScroll(id, btn) {
     const container = document.getElementById(id);
     if (container.classList.contains('expandido')) {
         container.classList.remove('expandido');
+		container.scrollTop = 0; // Volta o scroll para o início
         btn.textContent = 'Ver mais ▼';
     } else {
         container.classList.add('expandido');
