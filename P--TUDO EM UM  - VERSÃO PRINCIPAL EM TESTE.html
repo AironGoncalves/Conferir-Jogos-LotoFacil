@@ -985,6 +985,235 @@
             content: "";
             margin-right: 0;
         }
+
+        /* ============================================= */
+        /* PAINEL DE ESTATÍSTICAS HISTÓRICAS (NOVO)        */
+        /* ============================================= */
+        .painel-estatisticas {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+        }
+        .painel-estatisticas h3 {
+            font-size: 15px;
+            margin-top: 0;
+        }
+        .painel-estatisticas h4 {
+            font-size: 13px;
+            margin: 12px 0 8px 0;
+            color: #444;
+        }
+        .info-concursos-pesquisados {
+            text-align: center;
+            font-size: 12.5px;
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin: 0 0 10px 0;
+            border: 1px solid #c7d2fe;
+        }
+        .ms-theme .info-concursos-pesquisados {
+            background: #e6fffa;
+            color: #234e52;
+            border: 1px solid #b2f5ea;
+        }
+        .sub-secao-estat {
+            margin-bottom: 12px;
+        }
+        .grid-numeros-sorteados {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+        .numero-sorteado-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .numero-sorteado-item .num-valor {
+            font-size: 13px;
+        }
+        .numero-sorteado-item .num-contagem {
+            font-size: 9px;
+            opacity: 0.85;
+        }
+        .numero-sorteado-item.freq-alta {
+            background: #6a1b9a;
+            color: white;
+            border-color: #4a148c;
+        }
+        .numero-sorteado-item.freq-media {
+            background: #ce93d8;
+            color: #3a0053;
+            border-color: #ab47bc;
+        }
+        .numero-sorteado-item.freq-baixa {
+            background: #f3e5f5;
+            color: #6a1b9a;
+            border-color: #e1bee7;
+        }
+        .numero-sorteado-item.freq-zero {
+            background: #f5f5f5;
+            color: #aaa;
+            border-color: #e0e0e0;
+            font-style: italic;
+        }
+        .ms-theme .numero-sorteado-item.freq-alta {
+            background: #1b5e20;
+            border-color: #0d3f10;
+        }
+        .ms-theme .numero-sorteado-item.freq-media {
+            background: #a5d6a7;
+            color: #1b3a1d;
+            border-color: #81c784;
+        }
+        .ms-theme .numero-sorteado-item.freq-baixa {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-color: #c8e6c9;
+        }
+        .lista-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .chip-atraso {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 11.5px;
+            color: #444;
+        }
+        .aviso-estatistica {
+            margin-top: 12px;
+            font-size: 10.5px;
+            color: #888;
+            line-height: 1.4;
+            border-top: 1px dashed #ddd;
+            padding-top: 8px;
+        }
+        .btn-ver-contagem {
+            margin-top: 8px;
+            display: inline-block;
+            background: #444;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-gerar-substituicao {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13.5px;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            transition: 0.3s;
+        }
+        .btn-gerar-substituicao:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .badge-identificador {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: #333;
+            color: white;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 3px 10px;
+            border-radius: 10px;
+            letter-spacing: 0.3px;
+        }
+        .lf-theme .badge-identificador {
+            background: var(--cor-lotofacil);
+        }
+        .ms-theme .badge-identificador {
+            background: var(--cor-megasena);
+        }
+        .badge-origem-substituicao {
+            display: inline-block;
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin: 4px 2px;
+        }
+        .lf-theme .btn-ver-contagem {
+            background: var(--cor-lotofacil);
+        }
+        .ms-theme .btn-ver-contagem {
+            background: var(--cor-megasena);
+        }
+
+        /* MODAL DE CONTAGEM POR JOGO */
+        #modalContagemJogo {
+            display: none;
+            position: fixed;
+            z-index: 10004;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-contagem-content {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            max-width: 380px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .modal-contagem-content h3 {
+            text-align: center;
+            margin-top: 0;
+        }
+        .grid-contagem-jogo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .btn-fechar-modal {
+            width: 100%;
+            padding: 12px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body class="lf-theme">
@@ -1107,6 +1336,19 @@
         </div>
     </div>
 
+    <!-- Modal para mostrar contagem de números de um jogo específico -->
+    <div id="modalContagemJogo">
+        <div class="modal-contagem-content">
+            <h3 id="tituloModalContagem">🎯 Números mais frequentes deste jogo</h3>
+            <p id="infoIntervaloModalContagem" style="font-size:12px;color:#666;text-align:center;margin-bottom:12px;"></p>
+            <div id="gridContagemJogo" class="grid-contagem-jogo">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+            <p style="font-size:10px;color:#999;text-align:center;margin-bottom:12px;">ℹ️ Contagem baseada apenas nos concursos que você já pesquisou nesta sessão. Não representa previsão de resultados futuros.</p>
+            <button class="btn-fechar-modal" onclick="fecharModalContagemJogo()">Fechar</button>
+        </div>
+    </div>
+
     <div class="menu-loterias">
         <button class="btn-aba aba-lotofacil active" onclick="switchTab('lotofacil')">Lotofácil</button>
         <button class="btn-aba aba-megasena" onclick="switchTab('megasena')">Mega-Sena</button>
@@ -1161,6 +1403,27 @@
  	<div>
 	    <div id="caixaAvisoLF" class="caixa-aviso"></div>
     	</div>
+
+        <!-- ============================================= -->
+        <!-- PAINEL DE ESTATÍSTICAS HISTÓRICAS (LOTOFÁCIL)   -->
+        <!-- ============================================= -->
+        <div class="painel-estatisticas" id="painelEstatisticasLF">
+            <h3 style="text-align:center; color:var(--cor-lotofacil);">📊 Estatísticas dos Concursos Pesquisados</h3>
+            <p class="info-concursos-pesquisados" id="infoConcursosPesquisadosLF">📋 Nenhum concurso pesquisado ainda nesta sessão. Use "Buscar" ou "Conferência em Massa" para gerar estatísticas.</p>
+            <div class="sub-secao-estat">
+                <h4>📊 Números mais sorteados nos concursos pesquisados</h4>
+                <div id="contagemSorteadosLF" class="grid-numeros-sorteados"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <h4>⏳ Dezenas mais atrasadas</h4>
+                <div id="atrasoNumerosLF" class="lista-chips"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <button class="btn-gerar-substituicao" onclick="abrirModalOpcoesSubstituicao('lotofacil')">🔄 Gerar Jogos por Substituição (baseado na frequência)</button>
+            </div>
+            <p class="aviso-estatistica">ℹ️ Estas estatísticas são apenas uma análise histórica dos concursos que você pesquisou nesta sessão. A Lotofácil é um sorteio aleatório e independente — números "atrasados" ou "frequentes" não têm mais nem menos chance de sair no próximo concurso.</p>
+        </div>
+
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a conferência de jogos da LotoFácil e da Mega-Sena. Pode ocorre eventuais inconsistências nos resultados apresentados. <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b> Os jogos gerados neste site/aplicativo <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. O aplicativo não possui vínculo com a Caixa Econômica Federal.<br><br>
             <b>🔞 APOSTAR É PROIBIDO PARA MENORES DE 18 ANOS</b>
@@ -1215,6 +1478,27 @@
 	<div>
 	<div id="caixaAvisoMS" class="caixa-aviso"></div>
         </div>
+
+        <!-- ============================================= -->
+        <!-- PAINEL DE ESTATÍSTICAS HISTÓRICAS (MEGA-SENA)   -->
+        <!-- ============================================= -->
+        <div class="painel-estatisticas" id="painelEstatisticasMS">
+            <h3 style="text-align:center; color:var(--cor-megasena);">📊 Estatísticas dos Concursos Pesquisados</h3>
+            <p class="info-concursos-pesquisados" id="infoConcursosPesquisadosMS">📋 Nenhum concurso pesquisado ainda nesta sessão. Use "Buscar" ou "Conferência em Massa" para gerar estatísticas.</p>
+            <div class="sub-secao-estat">
+                <h4>📊 Números mais sorteados nos concursos pesquisados</h4>
+                <div id="contagemSorteadosMS" class="grid-numeros-sorteados"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <h4>⏳ Dezenas mais atrasadas</h4>
+                <div id="atrasoNumerosMS" class="lista-chips"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <button class="btn-gerar-substituicao" onclick="abrirModalOpcoesSubstituicao('megasena')">🔄 Gerar Jogos por Substituição (baseado na frequência)</button>
+            </div>
+            <p class="aviso-estatistica">ℹ️ Estas estatísticas são apenas uma análise histórica dos concursos que você pesquisou nesta sessão. A Mega-Sena é um sorteio aleatório e independente — números "atrasados" ou "frequentes" não têm mais nem menos chance de sair no próximo concurso.</p>
+        </div>
+
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a conferência de jogos da LotoFácil e da Mega-Sena. Pode ocorre eventuais inconsistências nos resultados apresentados. <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b> Os jogos gerados neste site/aplicativo <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. O aplicativo não possui vínculo com a Caixa Econômica Federal. <br><br>
             <b>🔞 APOSTAR É PROIBIDO PARA MENORES DE 18 ANOS</b>
@@ -1238,15 +1522,15 @@
         // RESULTADO MANUAL (FALLBACK) - Usado quando a API está fora do ar
         const RESULTADO_MANUAL = {
             lotofacil: {
-                concurso: 3733,
-                dezenas: [01,02,03,05,07,10,11,12,13,14,16,17,19,22,25],
-                data: "11/07/2026",
+                concurso: 3730,
+                dezenas: [02,03,05,06,08,11,12,13,14,15,16,19,20,21,24],
+                data: "08/07/2026",
              //   valorAumulado: "BOA SORTE"
             },
             megasena: {
-                concurso: 3030,
-                dezenas: [06,11,25,45,48,58],
-                data: "11/07/2026",
+                concurso: 3026,
+                dezenas: [14,19,42,45,48,54],
+                data: "02/07/2026",
              //   valorAcumulado: "Boa sorte"
             }
         };
@@ -1649,7 +1933,7 @@
 //Espero que esteja gostando do aplicativo. Aproveite para testá-lo bem e ver como seus jogos se comportam. Assim, você pode manter ou montar uma nova estratégia
 		
    // =============================================
-    // CAIXA DE AVISO/MENSAGEM (CONFIGURÁVEL) 💰 🍀 📢 📣 📌 ⚠️ 💙 ✨ 🇧🇷 Boa sorte!
+    // CAIXA DE AVISO/MENSAGEM (CONFIGURÁVEL) 💰 🍀 📢 📣 💙 ✨ 🇧🇷 Boa sorte!
     // =============================================
     // Configure aqui as mensagens que deseja exibir
 
@@ -1728,7 +2012,7 @@ function exibirCaixaAviso(tipo) {
     const elemento = document.getElementById(caixaId);
     if (elemento && mensagem) {
         elemento.style.display = 'block';
-        elemento.innerHTML = `📌 ${mensagem}`;
+        elemento.innerHTML = `📣 ${mensagem}`;
     }
 }
 
@@ -1773,18 +2057,67 @@ function exibirCaixaAviso(tipo) {
         
         let abortarConsultaMassa = false;
         
+        // =============================================
+        // IDENTIFICADOR DE JOGOS (NOVO)
+        // Cada jogo recebe uma letra fixa (A, B, C... Z, AA, AB...) na hora em que é
+        // criado. Essa letra acompanha o jogo mesmo quando a lista é reordenada após
+        // uma conferência, servindo apenas para identificação - não altera nenhuma
+        // regra de ordenação já existente.
+        // =============================================
+        function numeroParaLetras(n) {
+            let letras = '';
+            n = n + 1;
+            while (n > 0) {
+                const resto = (n - 1) % 26;
+                letras = String.fromCharCode(65 + resto) + letras;
+                n = Math.floor((n - 1) / 26);
+            }
+            return letras;
+        }
+        
+        function proximoIdentificadorLivre(usados) {
+            let n = 0, letra;
+            do {
+                letra = numeroParaLetras(n);
+                n++;
+            } while (usados.has(letra));
+            return letra;
+        }
+        
+        function gerarProximoIdentificador(tipo) {
+            const usados = new Set(dados[tipo].meusJogos.map(j => j.identificador).filter(Boolean));
+            return proximoIdentificadorLivre(usados);
+        }
+        
         function carregarJogos(tipo) {
             let storage = JSON.parse(localStorage.getItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS')) || [];
-            return storage.map(j => {
-                if (Array.isArray(j)) return { numeros: j, vitorias: 0, vitorias12: 0, vitorias13: 0, vitorias11: 0, ganhoAcumulado: 0, concursosVistos: [] };
-                if (!j.vitorias) j.vitorias = 0;
-                if (!j.vitorias12) j.vitorias12 = 0;
-                if (!j.vitorias13) j.vitorias13 = 0;
-                if (!j.vitorias11) j.vitorias11 = 0;
-                if (!j.ganhoAcumulado) j.ganhoAcumulado = 0;
-                if (!j.concursosVistos) j.concursosVistos = [];
-                return j;
+            let usados = new Set();
+            const jogos = storage.map(j => {
+                let obj;
+                if (Array.isArray(j)) {
+                    obj = { numeros: j, vitorias: 0, vitorias12: 0, vitorias13: 0, vitorias11: 0, ganhoAcumulado: 0, concursosVistos: [] };
+                } else {
+                    if (!j.vitorias) j.vitorias = 0;
+                    if (!j.vitorias12) j.vitorias12 = 0;
+                    if (!j.vitorias13) j.vitorias13 = 0;
+                    if (!j.vitorias11) j.vitorias11 = 0;
+                    if (!j.ganhoAcumulado) j.ganhoAcumulado = 0;
+                    if (!j.concursosVistos) j.concursosVistos = [];
+                    obj = j;
+                }
+                return obj;
             });
+            // Atribui identificador (Jogo A, B, C...) a jogos antigos que ainda não têm um
+            jogos.forEach(obj => {
+                if (obj.identificador) usados.add(obj.identificador);
+            });
+            jogos.forEach(obj => {
+                if (!obj.identificador) {
+                    obj.identificador = proximoIdentificadorLivre(usados);
+                    usados.add(obj.identificador);
+                }
+            });
+            return jogos;
         }
         
         let dados = {
@@ -1800,6 +2133,18 @@ function exibirCaixaAviso(tipo) {
         let contagemElite = {
             lotofacil: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] },
             megasena: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] }
+        };
+        
+        // =============================================
+        // ESTATÍSTICAS HISTÓRICAS DOS CONCURSOS PESQUISADOS (NOVO)
+        // Guarda, por tipo, um mapa { numeroDoConcurso: [dezenas sorteadas] }
+        // referente apenas aos concursos que o usuário já pesquisou na sessão atual
+        // (via "Buscar", navegação +/- ou "Conferência em Massa").
+        // Serve apenas para análise histórica - NÃO altera a probabilidade real de acerto.
+        // =============================================
+        let contagemNumerosSorteados = {
+            lotofacil: {},
+            megasena: {}
         };
         
         // =============================================
@@ -2027,6 +2372,13 @@ function exibirCaixaAviso(tipo) {
                     }
                     financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
                     contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+                    let usadosSlot = new Set(dadosSlot.map(j => j.identificador).filter(Boolean));
+                    dadosSlot.forEach(j => {
+                        if (!j.identificador) {
+                            j.identificador = proximoIdentificadorLivre(usadosSlot);
+                            usadosSlot.add(j.identificador);
+                        }
+                    });
                     dados[tipo].meusJogos = dadosSlot;
                     salvarNoLocalStorage(tipo);
                     renderizar(tipo);
@@ -2171,7 +2523,7 @@ function exibirCaixaAviso(tipo) {
         function limparEstatisticasJogos(tipo) {
             dados[tipo].meusJogos = dados[tipo].meusJogos.map(j => {
                 return {
-                    numeros: j.numeros,
+                    ...j,
                     vitorias: 0,
                     vitorias12: 0,
                     vitorias13: 0,
@@ -2299,7 +2651,8 @@ function exibirCaixaAviso(tipo) {
                 vitorias13: 0,
                 vitorias11: 0,
                 ganhoAcumulado: 0,
-                concursosVistos: []
+                concursosVistos: [],
+                identificador: gerarProximoIdentificador(tipo)
             });
             salvarNoLocalStorage(tipo);
             renderizar(tipo);
@@ -2394,7 +2747,8 @@ function exibirCaixaAviso(tipo) {
                 vitorias13: 0,
                 vitorias11: 0,
                 ganhoAcumulado: 0,
-                concursosVistos: []
+                concursosVistos: [],
+                identificador: gerarProximoIdentificador(tipoSelecaoAtual)
             });
             salvarNoLocalStorage(tipoSelecaoAtual);
             renderizar(tipoSelecaoAtual);
@@ -2427,7 +2781,8 @@ function exibirCaixaAviso(tipo) {
                 vitorias13: 0,
                 vitorias11: 0,
                 ganhoAcumulado: 0,
-                concursosVistos: []
+                concursosVistos: [],
+                identificador: gerarProximoIdentificador(tipo)
             });
             salvarNoLocalStorage(tipo);
             input.value = '';
@@ -2493,6 +2848,13 @@ function exibirCaixaAviso(tipo) {
         }
         
         function renderizar(tipo) {
+            // Registra as dezenas do concurso atual para as estatísticas históricas
+            // (frequência, atraso, pares/ímpares, co-ocorrência). Não afeta a probabilidade real.
+            if (dados[tipo].concursoAtual && dados[tipo].ganhadores && dados[tipo].ganhadores.length > 0) {
+                contagemNumerosSorteados[tipo][dados[tipo].concursoAtual] = [...dados[tipo].ganhadores];
+            }
+            atualizarPainelEstatisticas(tipo);
+            
             const lista = document.getElementById(tipo === 'lotofacil' ? 'listaLF' : 'listaMS');
             const resumo = document.getElementById(tipo === 'lotofacil' ? 'resumoLF' : 'resumoMS');
             const classeAcerto = tipo === 'lotofacil' ? 'num-acertado-lf' : 'num-acertado-ms';
@@ -2570,14 +2932,17 @@ function exibirCaixaAviso(tipo) {
                 const htmlJogo = jogo.numeros.map(n => (dados[tipo].ganhadores.includes(n)) ? `<span class="${classeAcerto}">${n.toString().padStart(2, '0')}</span>` : n.toString().padStart(2, '0')).join(' ');
                 lista.innerHTML += `
                     <div class="card-jogo ${ganhou ? 'premiado' : ''}">
+                        <span class="badge-identificador">Jogo ${jogo.identificador || '?'}</span>
                         <button class="remove-btn" onclick="confirmarRemover('${tipo}', ${idx})">X</button>
-                        <div style="font-family: monospace; font-size: 1.1em; margin-bottom:5px;">${htmlJogo}</div>
+                        <div style="font-family: monospace; font-size: 1.1em; margin-bottom:5px; margin-top:6px;">${htmlJogo}</div>
                         <small><b>${acertos} ACERTOS</b></small>
                         ${jogo.vitorias > 0 ? `<span class="badge-vitorias">🏆 ${jogo.vitorias}x Premiado</span>` : ''}
                         ${tipo === 'lotofacil' && jogo.vitorias11 > 0 ? `<span class="badge-onze">⭐ 11 pts: ${jogo.vitorias11}x</span>` : ''}
                         ${tipo === 'lotofacil' && jogo.vitorias12 > 0 ? `<span class="badge-doze">✨ 12 pts: ${jogo.vitorias12}x</span>` : ''}
                         ${tipo === 'lotofacil' && jogo.vitorias13 > 0 ? `<span class="badge-treze">🔥 13 pts: ${jogo.vitorias13}x</span>` : ''}
                         ${jogo.ganhoAcumulado > 0 ? `<span class="badge-dinheiro">💰 Total: R$ ${jogo.ganhoAcumulado.toFixed(2)}</span>` : ''}
+                        ${jogo.geradoPorSubstituicao && jogo.origemIdentificador && jogo.origemIdentificador !== '?' ? `<br><span class="badge-origem-substituicao">🔄 Gerado do Jogo ${jogo.origemIdentificador} (substituiu ${jogo.substituicoesQuantidade || '?'} nº)</span>` : ''}
+                        <br><button class="btn-ver-contagem" onclick="abrirModalContagemJogo('${tipo}', ${idx})">📊 Ver contagem</button>
                     </div>`;
             });
             if (dados[tipo].ganhadores.length > 0) {
@@ -2603,6 +2968,272 @@ function exibirCaixaAviso(tipo) {
             document.getElementById(`count15${sufixo}`).innerHTML = `${label15}: <b>${contagemElite[tipo].c15}x</b> <small style="color:#666">${l15}</small>`;
         }
         
+        // =============================================
+        // PAINEL DE ESTATÍSTICAS HISTÓRICAS (NOVO)
+        // Frequência, atraso, pares/ímpares e co-ocorrência,
+        // calculados sobre os concursos pesquisados na sessão atual.
+        // =============================================
+        function calcularFrequenciaGeral(tipo) {
+            const concursos = Object.keys(contagemNumerosSorteados[tipo]).map(Number).sort((a, b) => a - b);
+            const range = dados[tipo].range;
+            let freq = {};
+            for (let i = 1; i <= range; i++) freq[i] = 0;
+            concursos.forEach(c => {
+                (contagemNumerosSorteados[tipo][c] || []).forEach(n => {
+                    if (freq.hasOwnProperty(n)) freq[n]++;
+                });
+            });
+            return { concursos, freq, range };
+        }
+        
+        function classificarIntensidade(valor, maxValor) {
+            if (valor === 0) return 'freq-zero';
+            const intensidade = valor / maxValor;
+            if (intensidade >= 0.75) return 'freq-alta';
+            if (intensidade >= 0.4) return 'freq-media';
+            return 'freq-baixa';
+        }
+        
+        function atualizarPainelEstatisticas(tipo) {
+            const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
+            const containerFreq = document.getElementById(`contagemSorteados${sufixo}`);
+            if (!containerFreq) return; // painel ainda não presente no DOM
+            
+            const { concursos, freq, range } = calcularFrequenciaGeral(tipo);
+            const infoEl = document.getElementById(`infoConcursosPesquisados${sufixo}`);
+            const atrasoEl = document.getElementById(`atrasoNumeros${sufixo}`);
+            
+            if (concursos.length === 0) {
+                if (infoEl) infoEl.innerHTML = '📋 Nenhum concurso pesquisado ainda nesta sessão. Use "Buscar" ou "Conferência em Massa" para gerar estatísticas.';
+                containerFreq.innerHTML = '';
+                if (atrasoEl) atrasoEl.innerHTML = '';
+                return;
+            }
+            
+            const min = concursos[0], max = concursos[concursos.length - 1];
+            if (infoEl) {
+                infoEl.innerHTML = concursos.length === 1
+                    ? `📋 Concurso pesquisado: <b>${min}</b> (1 concurso analisado)`
+                    : `📋 Concursos pesquisados: <b>${min} a ${max}</b> (${concursos.length} concursos analisados)`;
+            }
+            
+            // Frequência (ordenada da dezena mais sorteada para a menos sorteada)
+            const maxFreq = Math.max(...Object.values(freq), 1);
+            const numerosOrdenadosPorFreq = Object.keys(freq).map(Number).sort((a, b) => freq[b] - freq[a] || a - b);
+            containerFreq.innerHTML = numerosOrdenadosPorFreq.map(n => {
+                const classe = classificarIntensidade(freq[n], maxFreq);
+                return `<div class="numero-sorteado-item ${classe}" title="${freq[n]}x nos concursos pesquisados">
+                    <span class="num-valor">${n.toString().padStart(2, '0')}</span>
+                    <span class="num-contagem">${freq[n]}x</span>
+                </div>`;
+            }).join('');
+            
+            // =============================================
+            // Atraso: diferença REAL entre o número do concurso mais recente pesquisado
+            // e o número do concurso em que a dezena saiu pela última vez.
+            // (Corrigido: antes usava a posição na lista de concursos pesquisados,
+            // o que subestimava o atraso quando havia lacunas - ex: algum concurso
+            // que falhou ao buscar durante uma Conferência em Massa.)
+            // =============================================
+            let ultimaAparicaoConcurso = {};
+            for (let i = 1; i <= range; i++) ultimaAparicaoConcurso[i] = null;
+            concursos.forEach(c => {
+                (contagemNumerosSorteados[tipo][c] || []).forEach(n => {
+                    if (ultimaAparicaoConcurso.hasOwnProperty(n)) ultimaAparicaoConcurso[n] = c;
+                });
+            });
+            let atraso = {};
+            let nuncaSaiu = {};
+            for (let i = 1; i <= range; i++) {
+                if (ultimaAparicaoConcurso[i] === null) {
+                    // Nunca saiu em nenhum dos concursos pesquisados: o atraso real pode ser maior,
+                    // já que não sabemos o que aconteceu antes do primeiro concurso pesquisado.
+                    atraso[i] = max - min + 1;
+                    nuncaSaiu[i] = true;
+                } else {
+                    atraso[i] = max - ultimaAparicaoConcurso[i];
+                    nuncaSaiu[i] = false;
+                }
+            }
+            if (atrasoEl) {
+                const maisAtrasados = Object.keys(atraso).map(Number)
+                    .sort((a, b) => atraso[b] - atraso[a] || a - b)
+                    .slice(0, 10);
+                atrasoEl.innerHTML = maisAtrasados.map(n => {
+                    const rotulo = nuncaSaiu[n]
+                        ? `${atraso[n]}+ concurso(s) sem sair (não saiu em nenhum concurso pesquisado)`
+                        : `${atraso[n]} concurso(s) sem sair`;
+                    return `<div class="chip-atraso"><b>${n.toString().padStart(2, '0')}</b> — ${rotulo}</div>`;
+                }).join('');
+            }
+        }
+        
+        // =============================================
+        // MODAL DE CONTAGEM POR JOGO INDIVIDUAL (NOVO)
+        // =============================================
+        function abrirModalContagemJogo(tipo, idx) {
+            const jogo = dados[tipo].meusJogos[idx];
+            if (!jogo) return;
+            
+            const modal = document.getElementById('modalContagemJogo');
+            const titulo = document.getElementById('tituloModalContagem');
+            const info = document.getElementById('infoIntervaloModalContagem');
+            const grid = document.getElementById('gridContagemJogo');
+            
+            titulo.style.color = tipo === 'lotofacil' ? 'var(--cor-lotofacil)' : 'var(--cor-megasena)';
+            
+            const { concursos, freq } = calcularFrequenciaGeral(tipo);
+            
+            if (concursos.length === 0) {
+                info.innerHTML = 'Nenhum concurso foi pesquisado ainda nesta sessão. Use "Buscar" ou "Conferência em Massa" para gerar estatísticas.';
+                grid.innerHTML = '';
+                modal.style.display = 'flex';
+                return;
+            }
+            
+            const min = concursos[0], max = concursos[concursos.length - 1];
+            info.innerHTML = concursos.length === 1
+                ? `Baseado no concurso <b>${min}</b> (1 concurso pesquisado)`
+                : `Baseado nos concursos <b>${min} a ${max}</b> (${concursos.length} concursos pesquisados)`;
+            
+            const freqDoJogo = {};
+            jogo.numeros.forEach(n => { freqDoJogo[n] = freq[n] || 0; });
+            const maxFreqJogo = Math.max(...Object.values(freqDoJogo), 1);
+            const numerosOrdenados = [...jogo.numeros].sort((a, b) => freqDoJogo[b] - freqDoJogo[a] || a - b);
+            
+            grid.innerHTML = numerosOrdenados.map(n => {
+                const classe = classificarIntensidade(freqDoJogo[n], maxFreqJogo);
+                return `<div class="numero-sorteado-item ${classe}" title="${freqDoJogo[n]}x nos concursos pesquisados">
+                    <span class="num-valor">${n.toString().padStart(2, '0')}</span>
+                    <span class="num-contagem">${freqDoJogo[n]}x</span>
+                </div>`;
+            }).join('');
+            
+            modal.style.display = 'flex';
+        }
+        
+        function fecharModalContagemJogo() {
+            document.getElementById('modalContagemJogo').style.display = 'none';
+        }
+        
+        // =============================================
+        // GERAÇÃO DE JOGOS POR SUBSTITUIÇÃO (NOVO)
+        // Para cada jogo atualmente na tela, cria um novo jogo trocando os N números
+        // que MENOS saíram nos concursos pesquisados pelos números que MAIS saíram
+        // e que ainda não estão no jogo. O jogo gerado é sempre diferenciado do
+        // original (badge própria) e mostra de qual jogo ele veio.
+        // Baseia-se apenas no histórico já pesquisado - não é garantia de acerto.
+        // =============================================
+        function abrirModalOpcoesSubstituicao(tipo) {
+            if (dados[tipo].meusJogos.length === 0) {
+                exibirModal("Você precisa ter pelo menos um jogo salvo na tela para gerar jogos por substituição.", null, true);
+                return;
+            }
+            if (Object.keys(contagemNumerosSorteados[tipo] || {}).length === 0) {
+                exibirModal('Você precisa pesquisar pelo menos um concurso primeiro (use "Buscar" ou "Conferência em Massa") para ter dados de frequência.', null, true);
+                return;
+            }
+            
+            const modal = document.getElementById('modalCustom');
+            const msgEl = document.getElementById('modalMsg');
+            const containerBotoes = document.getElementById('modalContainerBotoes');
+            
+            msgEl.innerHTML = `<strong>🔄 Gerar Jogos por Substituição</strong><br><br>Para cada jogo salvo na tela será criado um novo jogo, trocando os números que <b>menos saíram</b> (nos concursos pesquisados) pelos que <b>mais saíram</b> e ainda não estão no jogo.<br><br>Quantos números substituir?`;
+            containerBotoes.innerHTML = '';
+            
+            const cores = ['#ff9800', '#f57c00', '#e65100'];
+            [1, 2, 3].forEach((qtd, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-modal btn-sim';
+                btn.style.cssText = `background:${cores[i]}; color:white;`;
+                btn.innerHTML = `${qtd} número${qtd > 1 ? 's' : ''}`;
+                btn.onclick = () => {
+                    modal.style.display = 'none';
+                    restaurarBotoesModal();
+                    executarSubstituicao(tipo, qtd);
+                };
+                containerBotoes.appendChild(btn);
+            });
+            
+            const btnCanc = document.createElement('button');
+            btnCanc.className = 'btn-modal btn-nao';
+            btnCanc.innerText = 'Cancelar';
+            btnCanc.onclick = () => {
+                modal.style.display = 'none';
+                restaurarBotoesModal();
+            };
+            containerBotoes.appendChild(btnCanc);
+            modal.style.display = 'flex';
+        }
+        
+        function gerarJogoPorSubstituicao(tipo, jogo, qtd) {
+            const { freq } = calcularFrequenciaGeral(tipo);
+            const range = dados[tipo].range;
+            
+            // Dezenas do próprio jogo, da menos sorteada para a mais sorteada
+            const ordenadosPorMenosFreq = [...jogo.numeros].sort((a, b) => (freq[a] || 0) - (freq[b] || 0));
+            const qtdReal = Math.min(qtd, jogo.numeros.length - 1); // nunca substitui o jogo inteiro
+            const paraSubstituir = new Set(ordenadosPorMenosFreq.slice(0, qtdReal));
+            const manter = jogo.numeros.filter(n => !paraSubstituir.has(n));
+            
+            // Candidatos de fora do jogo, do mais sorteado para o menos sorteado
+            let candidatos = [];
+            for (let i = 1; i <= range; i++) {
+                if (!jogo.numeros.includes(i)) candidatos.push(i);
+            }
+            candidatos.sort((a, b) => (freq[b] || 0) - (freq[a] || 0));
+            const novos = candidatos.slice(0, qtdReal);
+            
+            if (novos.length < qtdReal) return null; // não há candidatos suficientes
+            
+            return [...manter, ...novos].sort((a, b) => a - b);
+        }
+        
+        function executarSubstituicao(tipo, qtdSubstituicoes) {
+            const jogosBase = [...dados[tipo].meusJogos]; // snapshot dos jogos atualmente na tela
+            let jogosGerados = 0;
+            
+            jogosBase.forEach(jogo => {
+                // Salvaguarda: garante que o jogo de origem tenha um identificador válido
+                // antes de referenciá-lo (evita "Gerado do Jogo ?" ou "undefined")
+                if (!jogo.identificador) {
+                    jogo.identificador = gerarProximoIdentificador(tipo);
+                }
+                
+                const novosNumeros = gerarJogoPorSubstituicao(tipo, jogo, qtdSubstituicoes);
+                if (!novosNumeros) return;
+                
+                // Evita gerar um jogo idêntico a um que já existe na lista
+                const jaExiste = dados[tipo].meusJogos.some(j =>
+                    j.numeros.length === novosNumeros.length && j.numeros.every((n, i) => n === novosNumeros[i])
+                );
+                if (jaExiste) return;
+                
+                dados[tipo].meusJogos.push({
+                    numeros: novosNumeros,
+                    vitorias: 0,
+                    vitorias11: 0,
+                    vitorias12: 0,
+                    vitorias13: 0,
+                    ganhoAcumulado: 0,
+                    concursosVistos: [],
+                    identificador: gerarProximoIdentificador(tipo),
+                    geradoPorSubstituicao: true,
+                    origemIdentificador: jogo.identificador,
+                    substituicoesQuantidade: qtdSubstituicoes
+                });
+                jogosGerados++;
+            });
+            
+            if (jogosGerados > 0) {
+                salvarNoLocalStorage(tipo);
+                renderizar(tipo);
+                exibirModal(`✅ ${jogosGerados} novo(s) jogo(s) gerado(s) por substituição! Eles aparecem marcados com a origem na lista "Meus Jogos Salvos".`, null, true);
+            } else {
+                exibirModal('❌ Não foi possível gerar novos jogos (os jogos resultantes já existem na lista).', null, true);
+            }
+        }
+        
         function processarAcumulo(tipo, custo, premio) {
             const conc = dados[tipo].concursoAtual;
             if (conc && !financeiroH[tipo].concursos_vistos.includes(conc) && dados[tipo].ganhadores.length > 0) {
@@ -2625,7 +3256,9 @@ function exibirCaixaAviso(tipo) {
         
         function zerarFinanceiro(tipo) {
             financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
+            contagemNumerosSorteados[tipo] = {};
             atualizarPainelFinanceiro(tipo);
+            atualizarPainelEstatisticas(tipo);
         }
         
         function resetarEBuscar(tipo, conc) {
@@ -2988,7 +3621,7 @@ function exibirCaixaAviso(tipo) {
                 mostrarToastScanner(`➕ ${scannerJogosGerados.length} jogos adicionados (total: ${jogosAntes + scannerJogosGerados.length})`, 'sucesso', 'center');
             }
             scannerJogosGerados.forEach(jogo => {
-                dados['lotofacil'].meusJogos.push({ numeros: jogo, vitorias: 0, vitorias12: 0, vitorias13: 0, vitorias11: 0, ganhoAcumulado: 0, concursosVistos: [] });
+                dados['lotofacil'].meusJogos.push({ numeros: jogo, vitorias: 0, vitorias12: 0, vitorias13: 0, vitorias11: 0, ganhoAcumulado: 0, concursosVistos: [], identificador: gerarProximoIdentificador('lotofacil') });
             });
             salvarNoLocalStorage('lotofacil');
             renderizar('lotofacil');
