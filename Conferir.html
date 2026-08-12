@@ -371,20 +371,23 @@
             z-index: 13000;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            padding: 12px;
+            box-sizing: border-box;
         }
         .modal-regras-content {
             background: white;
             border-radius: 15px;
-            max-width: 420px;
+            max-width: 340px;
             width: 100%;
             max-height: 85vh;
             overflow-y: auto;
+            overflow-x: hidden;
             box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             position: relative;
+            box-sizing: border-box;
         }
         .modal-regras-header {
-            padding: 18px 45px 14px 20px;
+            padding: 18px 40px 14px 18px;
             border-radius: 15px 15px 0 0;
             color: white;
             position: relative;
@@ -1393,8 +1396,6 @@
             ← Voltar para o aplicativo
         </button>
         
-        <div class="restaurar-link" id="restaurarCompra" style="margin-top: 5px;">Já sou assinante? Restaurar compra</div>
-        
         <div style="margin-top: 15px; font-size: 10px; color: #999;">
             Ao assinar, você concorda com os termos de uso<br>
             Assinatura renovada automaticamente
@@ -1448,7 +1449,7 @@
 
     <nav id="sidebarModalidades">
         <div class="sidebar-header">
-            <h3>🍀 __    Menu</h3>
+            <h3>🍀 __     Menu</h3>
             <button class="sidebar-fechar" onclick="fecharSidebar()">✕</button>
         </div>
         <ul class="sidebar-lista" id="sidebarLista">
@@ -2057,17 +2058,6 @@
             }
         }
                 
-        function restaurarCompras() {
-            console.log('🔄 Restaurando compras...');
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
-                AndroidBridge.restorePurchases();
-            } else {
-                verificarStatusPremium();
-                if (usuarioPremium) alert("✅ Assinatura restaurada com sucesso!");
-                else alert("ℹ️ Nenhuma assinatura ativa encontrada.");
-            }
-        }
-        
         window.onPurchaseSuccess = function() {
             console.log('✅ Compra realizada com sucesso!');
             usuarioPremium = true;
@@ -2616,6 +2606,9 @@ function exibirCaixaAviso(tipo) {
             if (tipo === 'lotofacil' || tipo === 'megasena') {
                 document.body.className = `${tipo === 'lotofacil' ? 'lf' : 'ms'}-theme`;
             }
+            // Volta o topo da página - sem isso, ao trocar de modalidade estando
+            // rolado mais pra baixo, parece que nada mudou na tela.
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
         // =============================================
@@ -2627,11 +2620,14 @@ function exibirCaixaAviso(tipo) {
             { id: 'quina',      nome: 'Quina',          cor: '#1a3fa0', disponivel: false },
             { id: 'lotomania',  nome: 'Lotomania',      cor: '#f78100', disponivel: false },
             { id: 'duplasena',  nome: 'Dupla Sena',     cor: '#a90267', disponivel: false },
-            { id: 'timemania',  nome: 'Timemania',      cor: '#00a651', disponivel: false },
             { id: 'diadesorte', nome: 'Dia de Sorte',   cor: '#cb8d00', disponivel: false },
-            { id: 'milionaria', nome: '+Milionária',    cor: '#3d1a7a', disponivel: false },
-            { id: 'supersete',  nome: 'Super Sete',     cor: '#7cb342', disponivel: false },
-            { id: 'loteca',     nome: 'Loteca',         cor: '#0a6b3d', disponivel: false }
+            { id: 'milionaria', nome: '+Milionária',    cor: '#3d1a7a', disponivel: false }
+            // Timemania, Super Sete e Loteca removidas do menu por enquanto (a pedido).
+            // As telas e regras delas continuam no código, prontas para voltar ao
+            // menu quando formos implementá-las - é só devolver estas 3 linhas aqui:
+            // { id: 'timemania',  nome: 'Timemania',      cor: '#00a651', disponivel: false },
+            // { id: 'supersete',  nome: 'Super Sete',     cor: '#7cb342', disponivel: false },
+            // { id: 'loteca',     nome: 'Loteca',         cor: '#0a6b3d', disponivel: false }
         ];
         
         const REGRAS_MODALIDADES = {
@@ -3179,7 +3175,7 @@ function exibirCaixaAviso(tipo) {
             });
             texto += `\nGerado pelo LotoFácil Scanner 🍀`;
             copyToClipboard(texto);
-            exibirModal(`✅ ${dados[tipo].meusJogos.length} jogo(s) copiado(s) para a área de transferência!\n\nAgora é só colar no WhatsApp, Bloco de Notas ou onde quiser.`, null, true);
+            exibirModal(`✅ ${dados[tipo].meusJogos.length} jogo(s) copiado(s) para a área de transferência!\n\nAgora é só colar no WhatsApp, Bloco de Notas ou em outro local de sua escolha.".`, null, true);
         }
         
         function calcularPercentual(saldo, totalGasto) {
@@ -4146,8 +4142,6 @@ function iniciarAssinaturaPaywall() {
                 if (btnPaywall) {
             btnPaywall.onclick = () => { iniciarAssinaturaPaywall(); };
             }
-            
-            document.getElementById('restaurarCompra').onclick = () => { restaurarCompras(); };
             
             document.querySelectorAll('.plano-item').forEach(el => {
                 el.onclick = () => {
