@@ -15,6 +15,9 @@
         :root {
             --cor-lotofacil: #8b008b;
             --cor-megasena: #209869;
+            --cor-quina: #1a3fa0;
+            --cor-lotomania: #f78100;
+            --cor-duplasena: #a90267;
             --bg-body: #f0f2f5;
         }
         
@@ -178,6 +181,18 @@
             background: var(--cor-megasena);
             color: white;
         }
+        .qn-theme .btn-sim {
+            background: var(--cor-quina);
+            color: white;
+        }
+        .lm-theme .btn-sim {
+            background: var(--cor-lotomania);
+            color: white;
+        }
+        .ds-theme .btn-sim {
+            background: var(--cor-duplasena);
+            color: white;
+        }
         .btn-nao {
             background: #eee;
             color: #333;
@@ -212,6 +227,15 @@
         }
         .aba-megasena {
             background-color: var(--cor-megasena);
+        }
+        .aba-quina {
+            background-color: var(--cor-quina);
+        }
+        .aba-lotomania {
+            background-color: var(--cor-lotomania);
+        }
+        .aba-duplasena {
+            background-color: var(--cor-duplasena);
         }
         
         /* ============================================= */
@@ -538,6 +562,24 @@
         .ms-theme .bolas-container {
             background: #f0f8f4;
         }
+        .qn-theme .bola {
+            background: var(--cor-quina);
+        }
+        .qn-theme .bolas-container {
+            background: #eef1fb;
+        }
+        .lm-theme .bola {
+            background: var(--cor-lotomania);
+        }
+        .lm-theme .bolas-container {
+            background: #fff3e6;
+        }
+        .ds-theme .bola {
+            background: var(--cor-duplasena);
+        }
+        .ds-theme .bolas-container {
+            background: #fbe6f0;
+        }
         .resumo-geral {
             border-radius: 8px;
             padding: 12px;
@@ -555,6 +597,21 @@
             background: #e6fffa;
             border: 1px solid #b2f5ea;
             color: #234e52;
+        }
+        .qn-theme .resumo-geral {
+            background: #e8ecfb;
+            border: 1px solid #b7c2ec;
+            color: #1a3fa0;
+        }
+        .lm-theme .resumo-geral {
+            background: #fff2e2;
+            border: 1px solid #ffd3a1;
+            color: #a35800;
+        }
+        .ds-theme .resumo-geral {
+            background: #fce4ef;
+            border: 1px solid #f3b8d3;
+            color: #7a014a;
         }
         .caixa-acerto {
             background: rgba(255, 255, 255, 0.9);
@@ -596,6 +653,18 @@
         }
         .btn-add-ms {
             background: var(--cor-megasena);
+            color: white;
+        }
+        .btn-add-qn {
+            background: var(--cor-quina);
+            color: white;
+        }
+        .btn-add-lm {
+            background: var(--cor-lotomania);
+            color: white;
+        }
+        .btn-add-ds {
+            background: var(--cor-duplasena);
             color: white;
         }
         .btn-random {
@@ -815,6 +884,24 @@
             font-weight: bold;
             background: #f0fdf4;
             border-bottom: 2px solid var(--cor-megasena);
+        }
+        .num-acertado-qn {
+            color: var(--cor-quina);
+            font-weight: bold;
+            background: #eef1fb;
+            border-bottom: 2px solid var(--cor-quina);
+        }
+        .num-acertado-lm {
+            color: var(--cor-lotomania);
+            font-weight: bold;
+            background: #fff3e6;
+            border-bottom: 2px solid var(--cor-lotomania);
+        }
+        .num-acertado-ds {
+            color: var(--cor-duplasena);
+            font-weight: bold;
+            background: #fbe6f0;
+            border-bottom: 2px solid var(--cor-duplasena);
         }
         .progress-container {
             width: 100%;
@@ -1116,6 +1203,21 @@
             color: #234e52;
             border: 1px solid #b2f5ea;
         }
+        .qn-theme .info-concursos-pesquisados {
+            background: #e8ecfb;
+            color: #1a3fa0;
+            border: 1px solid #b7c2ec;
+        }
+        .lm-theme .info-concursos-pesquisados {
+            background: #fff2e2;
+            color: #a35800;
+            border: 1px solid #ffd3a1;
+        }
+        .ds-theme .info-concursos-pesquisados {
+            background: #fce4ef;
+            color: #7a014a;
+            border: 1px solid #f3b8d3;
+        }
         .sub-secao-estat {
             margin-bottom: 12px;
         }
@@ -1247,6 +1349,15 @@
         .ms-theme .badge-identificador {
             background: var(--cor-megasena);
         }
+        .qn-theme .badge-identificador {
+            background: var(--cor-quina);
+        }
+        .lm-theme .badge-identificador {
+            background: var(--cor-lotomania);
+        }
+        .ds-theme .badge-identificador {
+            background: var(--cor-duplasena);
+        }
         .badge-origem-substituicao {
             display: inline-block;
             background: #fff3e0;
@@ -1263,6 +1374,15 @@
         }
         .ms-theme .btn-ver-contagem {
             background: var(--cor-megasena);
+        }
+        .qn-theme .btn-ver-contagem {
+            background: var(--cor-quina);
+        }
+        .lm-theme .btn-ver-contagem {
+            background: var(--cor-lotomania);
+        }
+        .ds-theme .btn-ver-contagem {
+            background: var(--cor-duplasena);
         }
 
         /* MODAL DE CONTAGEM POR JOGO */
@@ -1640,33 +1760,246 @@
     <!-- estatísticas, financeiro) chega nas próximas fases. Por -->
     <!-- enquanto, cada uma já mostra as regras oficiais.         -->
     <!-- ============================================= -->
-    <div id="cont-quina" class="container">
-        <h2 style="color:#1a3fa0">
-            <span class="titulo-modalidade" onclick="abrirRegras('quina')">Quina <span class="icone-regras">?</span></span>
+    <div id="cont-quina" class="container qn-theme">
+        <h2 style="color:var(--cor-quina)">
+            <span class="titulo-modalidade" onclick="abrirRegras('quina')">
+                Quina <span class="icone-regras">?</span>
+            </span>
         </h2>
-        <div class="placeholder-modalidade">
-            <div class="placeholder-icone">🍀</div>
-            <p><b>Em construção!</b><br>A Quina ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.<br><br>As próximas atualizações vão trazer aqui as mesmas ferramentas que já existem na Lotofácil e Mega-Sena: conferência de jogos, estatísticas de números mais/menos sorteados, controle financeiro e mais.</p>
+        <div class="busca-concurso">
+            <button class="btn-nav aba-quina" onclick="navegarConcurso('quina', -1)">-</button>
+            <input type="number" id="numQN" placeholder="Nº" value="">
+            <button class="btn-nav aba-quina" onclick="navegarConcurso('quina', 1)">+</button>
+            <button class="btn-busca" onclick="resetarEBuscar('quina', document.getElementById('numQN').value)">Buscar</button>
+            <button class="btn-atualizar" onclick="atualizarPaginaSemPerderAba()" title="Atualizar página">↺</button>
+        </div>
+        <p id="infoQN" class="concurso-info">Carregando...</p>
+        <div id="bolasQN" class="bolas-container"></div>
+        <div id="resumoQN" class="resumo-geral">Aguardando...</div>
+        <div class="add-jogo-section">
+            <label><b>Cadastrar Jogo:</b></label>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="inputQN" placeholder="Digite de 5 a 15 números" style="flex: 1;">
+                <button onclick="abrirSelecionadorNumeros('quina')" style="background: var(--cor-quina); color: white; border: none; border-radius: 5px; width: 40px; cursor: pointer; font-weight: bold; font-size: 18px;">🎯</button>
+            </div>
+            <button class="btn btn-add-qn" onclick="adicionarJogo('quina')">Salvar Jogo na Lista</button>
+            <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('quina')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
+        </div>
+        <div class="secao-memoria">
+            <button class="btn-guardar" onclick="prepararSalvamentoSlot('quina')">💾 Guardar Lista Atual em um Slot</button>
+            <div class="grid-memoria">
+                <button class="btn-memoria btn-memoria-qn-A" onclick="carregarSlot('quina', 'A')">Grupo A</button>
+                <button class="btn-memoria btn-memoria-qn-B" onclick="carregarSlot('quina', 'B')">Grupo B</button>
+                <button class="btn-memoria btn-memoria-qn-C" onclick="carregarSlot('quina', 'C')">Grupo C</button>
+                <button class="btn-memoria btn-memoria-qn-D" onclick="carregarSlot('quina', 'D')">Grupo D</button>
+                <button class="btn-memoria btn-memoria-qn-E" onclick="carregarSlot('quina', 'E')">Grupo E</button>
+            </div>
+        </div>
+        <div id="listaQN"></div>
+        <button class="btn btn-copiar" onclick="copiarJogosParaTexto('quina')">📋 Copiar Jogos para WhatsApp ou Bloco de Notas</button>
+        <button class="btn btn-limpar" onclick="confirmarLimpar('quina')">Apagar Tudo</button>
+        <div class="painel-financeiro" id="finQN">
+            <div class="financeiro-item"><span>Total Gasto:</span> <span id="valInvestidoQN">R$ 0,00</span></div>
+            <div class="financeiro-item"><span>Total de Ganhos:</span> <span id="valGanhoQN">R$ 0,00</span></div>
+            <div class="financeiro-total" id="statusQN">Saldo: R$ 0,00</div>
+            <div class="percentual-status" id="percentualQN"></div>
+        </div>
+        <div id="contagemEspecialQN" class="contagem-especial">
+            <strong>🏆 Prêmios de Elite Acumulados:</strong>
+            <div id="count14QN">Quadra: 0x</div>
+            <div id="count15QN">Quina: 0x</div>
+            <div id="valorAcumuladoQN" class="valor-acumulado" style="display:none;"></div>
+        </div>
+        <!-- ============================================= -->
+        <!-- PAINEL DE ESTATÍSTICAS HISTÓRICAS (QUINA)   -->
+        <!-- ============================================= -->
+        <div class="painel-estatisticas" id="painelEstatisticasQN">
+            <h3 style="text-align:center; color:var(--cor-quina);">📊 Estatísticas dos Concursos Pesquisados</h3>
+            <p class="info-concursos-pesquisados" id="infoConcursosPesquisadosQN">📋 Nenhum concurso pesquisado ainda nesta sessão. Use "Buscar" ou "Conferência em Massa" para gerar estatísticas.</p>
+            <div class="sub-secao-estat">
+                <h4>📊 Números mais sorteados nos concursos pesquisados</h4>
+                <div id="contagemSorteadosQN" class="grid-numeros-sorteados"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <h4>⏳ Dezenas mais atrasadas</h4>
+                <div id="atrasoNumerosQN" class="lista-chips"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <button class="btn-gerar-substituicao" onclick="abrirModalOpcoesSubstituicao('quina')">🔄 Gerar Jogos por Substituição (baseado na frequência)</button>
+            </div>
+            <p class="aviso-estatistica">ℹ️ Estas estatísticas são apenas uma análise histórica dos concursos que você pesquisou nesta sessão. A Quina é um sorteio aleatório e independente — números "atrasados" ou "frequentes" não têm mais nem menos chance de sair no próximo concurso.</p>
+        </div>
+
+	<div>
+	<div id="caixaAvisoQN" class="caixa-aviso"></div>
+        </div>
+
+        <div class="aviso-legal">
+            ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a conferência de jogos de diversas loterias da Caixa, incluindo a Quina. Pode ocorre eventuais inconsistências nos resultados apresentados. <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b> Os jogos gerados neste site/aplicativo <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. O aplicativo não possui vínculo com a Caixa Econômica Federal. <br><br>
+            <b>🔞 APOSTAR É PROIBIDO PARA MENORES DE 18 ANOS</b>
         </div>
     </div>
 
-    <div id="cont-lotomania" class="container">
-        <h2 style="color:#f78100">
-            <span class="titulo-modalidade" onclick="abrirRegras('lotomania')">Lotomania <span class="icone-regras">?</span></span>
+    <div id="cont-lotomania" class="container lm-theme">
+        <h2 style="color:var(--cor-lotomania)">
+            <span class="titulo-modalidade" onclick="abrirRegras('lotomania')">
+                Lotomania <span class="icone-regras">?</span>
+            </span>
         </h2>
-        <div class="placeholder-modalidade">
-            <div class="placeholder-icone">🍀</div>
-            <p><b>Em construção!</b><br>A Lotomania ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.</p>
+        <div class="busca-concurso">
+            <button class="btn-nav aba-lotomania" onclick="navegarConcurso('lotomania', -1)">-</button>
+            <input type="number" id="numLM" placeholder="Nº" value="">
+            <button class="btn-nav aba-lotomania" onclick="navegarConcurso('lotomania', 1)">+</button>
+            <button class="btn-busca" onclick="resetarEBuscar('lotomania', document.getElementById('numLM').value)">Buscar</button>
+            <button class="btn-atualizar" onclick="atualizarPaginaSemPerderAba()" title="Atualizar página">↺</button>
+        </div>
+        <p id="infoLM" class="concurso-info">Carregando...</p>
+        <div id="bolasLM" class="bolas-container"></div>
+        <div id="resumoLM" class="resumo-geral">Aguardando...</div>
+        <div class="add-jogo-section">
+            <label><b>Cadastrar Jogo:</b></label>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="inputLM" placeholder="Digite exatamente 50 números" style="flex: 1;">
+                <button onclick="abrirSelecionadorNumeros('lotomania')" style="background: var(--cor-lotomania); color: white; border: none; border-radius: 5px; width: 40px; cursor: pointer; font-weight: bold; font-size: 18px;">🎯</button>
+            </div>
+            <button class="btn btn-add-lm" onclick="adicionarJogo('lotomania')">Salvar Jogo na Lista</button>
+            <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('lotomania')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
+        </div>
+        <div class="secao-memoria">
+            <button class="btn-guardar" onclick="prepararSalvamentoSlot('lotomania')">💾 Guardar Lista Atual em um Slot</button>
+            <div class="grid-memoria">
+                <button class="btn-memoria btn-memoria-lm-A" onclick="carregarSlot('lotomania', 'A')">Grupo A</button>
+                <button class="btn-memoria btn-memoria-lm-B" onclick="carregarSlot('lotomania', 'B')">Grupo B</button>
+                <button class="btn-memoria btn-memoria-lm-C" onclick="carregarSlot('lotomania', 'C')">Grupo C</button>
+                <button class="btn-memoria btn-memoria-lm-D" onclick="carregarSlot('lotomania', 'D')">Grupo D</button>
+                <button class="btn-memoria btn-memoria-lm-E" onclick="carregarSlot('lotomania', 'E')">Grupo E</button>
+            </div>
+        </div>
+        <div id="listaLM"></div>
+        <button class="btn btn-copiar" onclick="copiarJogosParaTexto('lotomania')">📋 Copiar Jogos para WhatsApp ou Bloco de Notas</button>
+        <button class="btn btn-limpar" onclick="confirmarLimpar('lotomania')">Apagar Tudo</button>
+        <div class="painel-financeiro" id="finLM">
+            <div class="financeiro-item"><span>Total Gasto:</span> <span id="valInvestidoLM">R$ 0,00</span></div>
+            <div class="financeiro-item"><span>Total de Ganhos:</span> <span id="valGanhoLM">R$ 0,00</span></div>
+            <div class="financeiro-total" id="statusLM">Saldo: R$ 0,00</div>
+            <div class="percentual-status" id="percentualLM"></div>
+        </div>
+        <div id="contagemEspecialLM" class="contagem-especial">
+            <strong>🏆 Prêmios de Elite Acumulados:</strong>
+            <div id="count14LM">19 Acertos: 0x</div>
+            <div id="count15LM">20 Acertos: 0x</div>
+            <div id="valorAcumuladoLM" class="valor-acumulado" style="display:none;"></div>
+        </div>
+        <!-- ============================================= -->
+        <!-- PAINEL DE ESTATÍSTICAS HISTÓRICAS (LOTOMANIA)   -->
+        <!-- ============================================= -->
+        <div class="painel-estatisticas" id="painelEstatisticasLM">
+            <h3 style="text-align:center; color:var(--cor-lotomania);">📊 Estatísticas dos Concursos Pesquisados</h3>
+            <p class="info-concursos-pesquisados" id="infoConcursosPesquisadosLM">📋 Nenhum concurso pesquisado ainda nesta sessão. Use "Buscar" ou "Conferência em Massa" para gerar estatísticas.</p>
+            <div class="sub-secao-estat">
+                <h4>📊 Números mais sorteados nos concursos pesquisados</h4>
+                <div id="contagemSorteadosLM" class="grid-numeros-sorteados"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <h4>⏳ Dezenas mais atrasadas</h4>
+                <div id="atrasoNumerosLM" class="lista-chips"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <button class="btn-gerar-substituicao" onclick="abrirModalOpcoesSubstituicao('lotomania')">🔄 Gerar Jogos por Substituição (baseado na frequência)</button>
+            </div>
+            <p class="aviso-estatistica">ℹ️ Estas estatísticas são apenas uma análise histórica dos concursos que você pesquisou nesta sessão. A Lotomania é um sorteio aleatório e independente — números "atrasados" ou "frequentes" não têm mais nem menos chance de sair no próximo concurso.</p>
+        </div>
+
+	<div>
+	<div id="caixaAvisoLM" class="caixa-aviso"></div>
+        </div>
+
+        <div class="aviso-legal">
+            ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a conferência de jogos de diversas loterias da Caixa, incluindo a Lotomania. Pode ocorre eventuais inconsistências nos resultados apresentados. <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b> Os jogos gerados neste site/aplicativo <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. O aplicativo não possui vínculo com a Caixa Econômica Federal. <br><br>
+            <b>🔞 APOSTAR É PROIBIDO PARA MENORES DE 18 ANOS</b>
         </div>
     </div>
 
-    <div id="cont-duplasena" class="container">
-        <h2 style="color:#a90267">
-            <span class="titulo-modalidade" onclick="abrirRegras('duplasena')">Dupla Sena <span class="icone-regras">?</span></span>
+    <div id="cont-duplasena" class="container ds-theme">
+        <h2 style="color:var(--cor-duplasena)">
+            <span class="titulo-modalidade" onclick="abrirRegras('duplasena')">
+                Dupla Sena <span class="icone-regras">?</span>
+            </span>
         </h2>
-        <div class="placeholder-modalidade">
-            <div class="placeholder-icone">🍀</div>
-            <p><b>Em construção!</b><br>A Dupla Sena ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.</p>
+        <div class="busca-concurso">
+            <button class="btn-nav aba-duplasena" onclick="navegarConcurso('duplasena', -1)">-</button>
+            <input type="number" id="numDS" placeholder="Nº" value="">
+            <button class="btn-nav aba-duplasena" onclick="navegarConcurso('duplasena', 1)">+</button>
+            <button class="btn-busca" onclick="resetarEBuscar('duplasena', document.getElementById('numDS').value)">Buscar</button>
+            <button class="btn-atualizar" onclick="atualizarPaginaSemPerderAba()" title="Atualizar página">↺</button>
+        </div>
+        <p id="infoDS" class="concurso-info">Carregando...</p>
+        <p style="text-align:center; font-size:12px; font-weight:bold; color:var(--cor-duplasena); margin: 6px 0 2px 0;">1º Sorteio</p>
+        <div id="bolasDS" class="bolas-container"></div>
+        <p style="text-align:center; font-size:12px; font-weight:bold; color:var(--cor-duplasena); margin: 6px 0 2px 0;">2º Sorteio</p>
+        <div id="bolasDSB" class="bolas-container"></div>
+        <div id="resumoDS" class="resumo-geral">Aguardando...</div>
+        <div class="add-jogo-section">
+            <label><b>Cadastrar Jogo:</b></label>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="inputDS" placeholder="Digite de 6 a 15 números" style="flex: 1;">
+                <button onclick="abrirSelecionadorNumeros('duplasena')" style="background: var(--cor-duplasena); color: white; border: none; border-radius: 5px; width: 40px; cursor: pointer; font-weight: bold; font-size: 18px;">🎯</button>
+            </div>
+            <button class="btn btn-add-ds" onclick="adicionarJogo('duplasena')">Salvar Jogo na Lista</button>
+            <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('duplasena')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
+        </div>
+        <div class="secao-memoria">
+            <button class="btn-guardar" onclick="prepararSalvamentoSlot('duplasena')">💾 Guardar Lista Atual em um Slot</button>
+            <div class="grid-memoria">
+                <button class="btn-memoria btn-memoria-ds-A" onclick="carregarSlot('duplasena', 'A')">Grupo A</button>
+                <button class="btn-memoria btn-memoria-ds-B" onclick="carregarSlot('duplasena', 'B')">Grupo B</button>
+                <button class="btn-memoria btn-memoria-ds-C" onclick="carregarSlot('duplasena', 'C')">Grupo C</button>
+                <button class="btn-memoria btn-memoria-ds-D" onclick="carregarSlot('duplasena', 'D')">Grupo D</button>
+                <button class="btn-memoria btn-memoria-ds-E" onclick="carregarSlot('duplasena', 'E')">Grupo E</button>
+            </div>
+        </div>
+        <div id="listaDS"></div>
+        <button class="btn btn-copiar" onclick="copiarJogosParaTexto('duplasena')">📋 Copiar Jogos para WhatsApp ou Bloco de Notas</button>
+        <button class="btn btn-limpar" onclick="confirmarLimpar('duplasena')">Apagar Tudo</button>
+        <div class="painel-financeiro" id="finDS">
+            <div class="financeiro-item"><span>Total Gasto:</span> <span id="valInvestidoDS">R$ 0,00</span></div>
+            <div class="financeiro-item"><span>Total de Ganhos:</span> <span id="valGanhoDS">R$ 0,00</span></div>
+            <div class="financeiro-total" id="statusDS">Saldo: R$ 0,00</div>
+            <div class="percentual-status" id="percentualDS"></div>
+        </div>
+        <div id="contagemEspecialDS" class="contagem-especial">
+            <strong>🏆 Prêmios de Elite Acumulados:</strong>
+            <div id="count14DS">Quina (5 pts): 0x</div>
+            <div id="count15DS">Sena (6 pts): 0x</div>
+            <div id="valorAcumuladoDS" class="valor-acumulado" style="display:none;"></div>
+        </div>
+        <!-- ============================================= -->
+        <!-- PAINEL DE ESTATÍSTICAS HISTÓRICAS (DUPLA SENA)   -->
+        <!-- ============================================= -->
+        <div class="painel-estatisticas" id="painelEstatisticasDS">
+            <h3 style="text-align:center; color:var(--cor-duplasena);">📊 Estatísticas dos Concursos Pesquisados</h3>
+            <p class="info-concursos-pesquisados" id="infoConcursosPesquisadosDS">📋 Nenhum concurso pesquisado ainda nesta sessão. Use "Buscar" ou "Conferência em Massa" para gerar estatísticas.</p>
+            <div class="sub-secao-estat">
+                <h4>📊 Números mais sorteados nos concursos pesquisados</h4>
+                <div id="contagemSorteadosDS" class="grid-numeros-sorteados"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <h4>⏳ Dezenas mais atrasadas</h4>
+                <div id="atrasoNumerosDS" class="lista-chips"></div>
+            </div>
+            <div class="sub-secao-estat">
+                <button class="btn-gerar-substituicao" onclick="abrirModalOpcoesSubstituicao('duplasena')">🔄 Gerar Jogos por Substituição (baseado na frequência)</button>
+            </div>
+            <p class="aviso-estatistica">ℹ️ Estas estatísticas são apenas uma análise histórica dos concursos que você pesquisou nesta sessão. A Dupla Sena é um sorteio aleatório e independente — números "atrasados" ou "frequentes" não têm mais nem menos chance de sair no próximo concurso.</p>
+        </div>
+
+	<div>
+	<div id="caixaAvisoDS" class="caixa-aviso"></div>
+        </div>
+
+        <div class="aviso-legal">
+            ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a conferência de jogos de diversas loterias da Caixa, incluindo a Dupla Sena. Pode ocorre eventuais inconsistências nos resultados apresentados. <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b> Os jogos gerados neste site/aplicativo <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. O aplicativo não possui vínculo com a Caixa Econômica Federal. <br><br>
+            <b>🔞 APOSTAR É PROIBIDO PARA MENORES DE 18 ANOS</b>
         </div>
     </div>
 
@@ -1721,6 +2054,59 @@
     </div>
 
     <script>
+        // =============================================
+        // CONFIGURAÇÃO CENTRAL POR MODALIDADE (FASE 2)
+        // Antes, várias funções decidiam tudo com "tipo === 'lotofacil' ? X : Y",
+        // o que só funcionava para 2 modalidades. Esta tabela centraliza:
+        // - sufixo dos IDs no HTML (info+sufixo, bolas+sufixo, lista+sufixo etc.)
+        // - prefixo dos slots de memória (Grupo A-E)
+        // - faixa de acertos que ganha prêmio, e os dois "prêmios de elite" mostrados
+        // - prêmios com valor fixo conhecido (só a Lotofácil tem hoje)
+        // - se acertar ZERO números também ganha (caso único da Lotomania)
+        // Precisa ficar bem no início do script porque é usada já na primeira
+        // linha que monta o objeto "dados" logo abaixo.
+        // =============================================
+        const CONFIG_MODALIDADE = {
+            lotofacil: {
+                sufixo: 'LF', prefixoSlot: 'lf',
+                minAcerto: 11, maxAcerto: 15, faixaMenor: 14, faixaMaior: 15,
+                labelMenor: '14 Acertos', labelMaior: '15 Acertos',
+                premiosFixos: { 11: 7.00, 12: 14.00, 13: 35.00 },
+                zeroGanha: false
+            },
+            megasena: {
+                sufixo: 'MS', prefixoSlot: 'ms',
+                minAcerto: 4, maxAcerto: 6, faixaMenor: 5, faixaMaior: 6,
+                labelMenor: 'Quina', labelMaior: 'Sena',
+                premiosFixos: {},
+                zeroGanha: false
+            },
+            quina: {
+                sufixo: 'QN', prefixoSlot: 'qn',
+                minAcerto: 2, maxAcerto: 5, faixaMenor: 4, faixaMaior: 5,
+                labelMenor: 'Quadra', labelMaior: 'Quina',
+                premiosFixos: {},
+                zeroGanha: false
+            },
+            lotomania: {
+                sufixo: 'LM', prefixoSlot: 'lm',
+                minAcerto: 15, maxAcerto: 20, faixaMenor: 19, faixaMaior: 20,
+                labelMenor: '19 Acertos', labelMaior: '20 Acertos',
+                premiosFixos: {},
+                zeroGanha: true
+            },
+            duplasena: {
+                sufixo: 'DS', prefixoSlot: 'ds',
+                minAcerto: 3, maxAcerto: 6, faixaMenor: 5, faixaMaior: 6,
+                labelMenor: 'Quina (5 pts)', labelMaior: 'Sena (6 pts)',
+                premiosFixos: {},
+                zeroGanha: false,
+                // Único caso com DOIS sorteios de 6 dezenas no mesmo concurso -
+                // o jogo é conferido contra os dois separadamente e pode ganhar nos dois.
+                duploSorteio: true
+            }
+        };
+        
         // =============================================
         // PAYWALL E ASSINATURA - COMUNICAÇÃO COM ANDROID
         // =============================================
@@ -1784,7 +2170,7 @@
         }
         
         function atualizarValorAcumulado(tipo, valor, dataProximoConcurso) {
-            const elementoId = tipo === 'lotofacil' ? 'valorAcumuladoLF' : 'valorAcumuladoMS';
+            const elementoId = `valorAcumulado${CONFIG_MODALIDADE[tipo].sufixo}`;
             const elemento = document.getElementById(elementoId);
             if (elemento && valor) {
                 elemento.style.display = 'block';
@@ -2105,26 +2491,24 @@
         };
         
         function atualizarPaginaSemPerderAba() {
-            const abaAtiva = document.querySelector('.container.active').id === 'cont-lotofacil' ? 'lotofacil' : 'megasena';
+            const abaAtiva = document.querySelector('.container.active').id.replace('cont-', '');
             sessionStorage.setItem('abaAtiva', abaAtiva);
-            const concursoLF = document.getElementById('numLF').value;
-            const concursoMS = document.getElementById('numMS').value;
-            sessionStorage.setItem('concursoLF', concursoLF);
-            sessionStorage.setItem('concursoMS', concursoMS);
+            Object.keys(CONFIG_MODALIDADE).forEach(t => {
+                const sufixo = CONFIG_MODALIDADE[t].sufixo;
+                const input = document.getElementById(`num${sufixo}`);
+                if (input) sessionStorage.setItem(`concurso${sufixo}`, input.value);
+            });
             location.reload();
         }
         
         function restaurarAbaAposRecarregar() {
             const abaSalva = sessionStorage.getItem('abaAtiva');
-            const concursoLFSalvo = sessionStorage.getItem('concursoLF');
-            const concursoMSSalvo = sessionStorage.getItem('concursoMS');
-            if (abaSalva) {
+            if (abaSalva && CONFIG_MODALIDADE[abaSalva]) {
                 switchTab(abaSalva);
-                if (abaSalva === 'lotofacil' && concursoLFSalvo) {
-                    document.getElementById('numLF').value = concursoLFSalvo;
-                } else if (abaSalva === 'megasena' && concursoMSSalvo) {
-                    document.getElementById('numMS').value = concursoMSSalvo;
-                }
+                const sufixo = CONFIG_MODALIDADE[abaSalva].sufixo;
+                const concursoSalvo = sessionStorage.getItem(`concurso${sufixo}`);
+                const input = document.getElementById(`num${sufixo}`);
+                if (input && concursoSalvo) input.value = concursoSalvo;
                 sessionStorage.removeItem('abaAtiva');
             }
         }
@@ -2270,7 +2654,7 @@ function exibirCaixaAviso(tipo) {
         }
         
         function carregarJogos(tipo) {
-            let storage = JSON.parse(localStorage.getItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS')) || [];
+            let storage = JSON.parse(localStorage.getItem(`jogos_${CONFIG_MODALIDADE[tipo].sufixo}`)) || [];
             let usados = new Set();
             const jogos = storage.map(j => {
                 let obj;
@@ -2301,18 +2685,27 @@ function exibirCaixaAviso(tipo) {
         }
         
         let dados = {
-            lotofacil: { ganhadores: [], meusJogos: carregarJogos('lotofacil'), api: 'lotofacil', min: 15, max: 20, max_bolas: 15, range: 25, custo: 3.50, concursoAtual: null },
-            megasena: { ganhadores: [], meusJogos: carregarJogos('megasena'), api: 'megasena', min: 6, max: 20, max_bolas: 6, range: 60, custo: 6.00, concursoAtual: null }
+            lotofacil: { ganhadores: [], meusJogos: carregarJogos('lotofacil'), api: 'lotofacil', min: 15, max: 20, max_bolas: 15, range: 25, inicio: 1, custo: 3.50, concursoAtual: null },
+            megasena: { ganhadores: [], meusJogos: carregarJogos('megasena'), api: 'megasena', min: 6, max: 20, max_bolas: 6, range: 60, inicio: 1, custo: 6.00, concursoAtual: null },
+            quina: { ganhadores: [], meusJogos: carregarJogos('quina'), api: 'quina', min: 5, max: 15, max_bolas: 5, range: 80, inicio: 1, custo: 3.00, concursoAtual: null },
+            lotomania: { ganhadores: [], meusJogos: carregarJogos('lotomania'), api: 'lotomania', min: 50, max: 50, max_bolas: 20, range: 100, inicio: 0, custo: 3.00, concursoAtual: null },
+            duplasena: { ganhadores: [], ganhadores2: [], meusJogos: carregarJogos('duplasena'), api: 'duplasena', min: 6, max: 15, max_bolas: 6, range: 50, inicio: 1, custo: 3.00, concursoAtual: null }
         };
         
         let financeiroH = {
             lotofacil: { investido: 0, ganho: 0, concursos_vistos: [] },
-            megasena: { investido: 0, ganho: 0, concursos_vistos: [] }
+            megasena: { investido: 0, ganho: 0, concursos_vistos: [] },
+            quina: { investido: 0, ganho: 0, concursos_vistos: [] },
+            lotomania: { investido: 0, ganho: 0, concursos_vistos: [] },
+            duplasena: { investido: 0, ganho: 0, concursos_vistos: [] }
         };
         
         let contagemElite = {
             lotofacil: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] },
-            megasena: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] }
+            megasena: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] },
+            quina: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] },
+            lotomania: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] },
+            duplasena: { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] }
         };
         
         // =============================================
@@ -2324,7 +2717,10 @@ function exibirCaixaAviso(tipo) {
         // =============================================
         let contagemNumerosSorteados = {
             lotofacil: {},
-            megasena: {}
+            megasena: {},
+            quina: {},
+            lotomania: {},
+            duplasena: {}
         };
         
         // =============================================
@@ -2507,7 +2903,7 @@ function exibirCaixaAviso(tipo) {
         }
         
         function atualizarBotoesSlot(tipo) {
-            const prefixo = tipo === 'lotofacil' ? 'lf' : 'ms';
+            const prefixo = CONFIG_MODALIDADE[tipo].prefixoSlot;
             ['A', 'B', 'C', 'D', 'E'].forEach(slot => {
                 const btn = document.querySelector(`.btn-memoria-${prefixo}-${slot}`);
                 if (btn) {
@@ -2562,7 +2958,7 @@ function exibirCaixaAviso(tipo) {
                     dados[tipo].meusJogos = dadosSlot;
                     salvarNoLocalStorage(tipo);
                     renderizar(tipo);
-                    const prefixo = tipo === 'lotofacil' ? 'lf' : 'ms';
+                    const prefixo = CONFIG_MODALIDADE[tipo].prefixoSlot;
                     document.querySelectorAll(`.btn-memoria`).forEach(btn => {
                         if(btn.className.includes(`btn-memoria-${prefixo}`)) btn.classList.remove('slot-active');
                     });
@@ -2600,11 +2996,12 @@ function exibirCaixaAviso(tipo) {
             document.querySelectorAll('.container').forEach(el => el.classList.remove('active'));
             const alvo = document.getElementById(`cont-${tipo}`);
             if (alvo) alvo.classList.add('active');
-            // O tema visual (cores de fundo das bolinhas etc.) por enquanto só existe
-            // para Lotofácil e Mega-Sena. As novas modalidades usam cor própria via
-            // estilo inline enquanto suas telas completas não chegam (fases seguintes).
-            if (tipo === 'lotofacil' || tipo === 'megasena') {
-                document.body.className = `${tipo === 'lotofacil' ? 'lf' : 'ms'}-theme`;
+            // O tema visual (cores de fundo das bolinhas etc.) já existe para
+            // Lotofácil, Mega-Sena, Quina e Lotomania. As modalidades que ainda
+            // estão "em construção" não têm tema próprio ainda.
+            const TIPOS_COM_TEMA = ['lotofacil', 'megasena', 'quina', 'lotomania', 'duplasena'];
+            if (TIPOS_COM_TEMA.includes(tipo)) {
+                document.body.className = `${CONFIG_MODALIDADE[tipo].prefixoSlot}-theme`;
             }
             // Volta o topo da página - sem isso, ao trocar de modalidade estando
             // rolado mais pra baixo, parece que nada mudou na tela.
@@ -2617,9 +3014,9 @@ function exibirCaixaAviso(tipo) {
         const MODALIDADES = [
             { id: 'lotofacil',  nome: 'Lotofácil',    cor: '#8b008b', disponivel: true },
             { id: 'megasena',   nome: 'Mega-Sena',     cor: '#209869', disponivel: true },
-            { id: 'quina',      nome: 'Quina',          cor: '#1a3fa0', disponivel: false },
-            { id: 'lotomania',  nome: 'Lotomania',      cor: '#f78100', disponivel: false },
-            { id: 'duplasena',  nome: 'Dupla Sena',     cor: '#a90267', disponivel: false },
+            { id: 'quina',      nome: 'Quina',          cor: '#1a3fa0', disponivel: true },
+            { id: 'lotomania',  nome: 'Lotomania',      cor: '#f78100', disponivel: true },
+            { id: 'duplasena',  nome: 'Dupla Sena',     cor: '#a90267', disponivel: true },
             { id: 'diadesorte', nome: 'Dia de Sorte',   cor: '#cb8d00', disponivel: false },
             { id: 'milionaria', nome: '+Milionária',    cor: '#3d1a7a', disponivel: false }
             // Timemania, Super Sete e Loteca removidas do menu por enquanto (a pedido).
@@ -2762,8 +3159,14 @@ function exibirCaixaAviso(tipo) {
         // em qualquer um dos formatos usados pelas diferentes APIs. Se uma fonte
         // responder OK mas com um formato inesperado/incompleto, ela é descartada
         // e a próxima fonte da lista é tentada - assim nunca exibimos um resultado quebrado.
-        function respostaTemDezenas(json) {
-            return !!(json && (json.dezenas || json.numeros || json.numeros_sorteados || json.listaDezenas));
+        // Para modalidades de sorteio duplo (Dupla Sena), também exige o segundo sorteio.
+        function respostaTemDezenas(json, tipo) {
+            const temPrimeiro = !!(json && (json.dezenas || json.numeros || json.numeros_sorteados || json.listaDezenas));
+            if (!temPrimeiro) return false;
+            if (tipo && CONFIG_MODALIDADE[tipo] && CONFIG_MODALIDADE[tipo].duploSorteio) {
+                return extrairDezenasSegundoSorteio(json).length > 0;
+            }
+            return true;
         }
         
         function extrairDezenas(json) {
@@ -2774,22 +3177,37 @@ function exibirCaixaAviso(tipo) {
             return [];
         }
         
+        // Segundo sorteio da Dupla Sena - diferentes nomes de campo dependendo da fonte.
+        function extrairDezenasSegundoSorteio(json) {
+            if (json.dezenas2) return json.dezenas2.map(Number);
+            if (json.dezenasSegundoSorteio) return json.dezenasSegundoSorteio.map(Number);
+            if (json.listaDezenasSegundoSorteio) return json.listaDezenasSegundoSorteio.map(Number);
+            if (json.numeros2) return json.numeros2.map(Number);
+            if (json.numerosSegundoSorteio) return json.numerosSegundoSorteio.map(Number);
+            return [];
+        }
+        
         async function buscar(tipo, concurso = 'latest') {
-            const idInfo = tipo === 'lotofacil' ? 'infoLF' : 'infoMS';
-            const idInput = tipo === 'lotofacil' ? 'numLF' : 'numMS';
-            const idBolas = tipo === 'lotofacil' ? 'bolasLF' : 'bolasMS';
+            const sufixo = CONFIG_MODALIDADE[tipo].sufixo;
+            const idInfo = `info${sufixo}`;
+            const idInput = `num${sufixo}`;
+            const idBolas = `bolas${sufixo}`;
             const bolasEl = document.getElementById(idBolas);
             const termo = (concurso === '' || concurso === null) ? 'latest' : concurso;
             
-            const concursoManual = RESULTADO_MANUAL[tipo].concurso;
-            if (termo === 'latest' || parseInt(termo) > concursoManual) {
+            // Nem toda modalidade tem um resultado manual de reserva configurado
+            // (por enquanto só Lotofácil e Mega-Sena têm). Sem essa proteção, buscar
+            // resultados de Quina/Lotomania quebrava com um erro fatal aqui.
+            const manualDisponivel = !!RESULTADO_MANUAL[tipo];
+            const concursoManual = manualDisponivel ? RESULTADO_MANUAL[tipo].concurso : -1;
+            if (manualDisponivel && (termo === 'latest' || parseInt(termo) > concursoManual)) {
                 const ultimoConcursoAPI = await buscarUltimoConcursoAPI(tipo);
                 if (!ultimoConcursoAPI || ultimoConcursoAPI < concursoManual) {
                     console.log(`API retornou concurso ${ultimoConcursoAPI}, usando manual ${concursoManual}`);
                     carregarResultadoManual(tipo);
                     return concursoManual;
                 }
-            } else if (parseInt(termo) === concursoManual) {
+            } else if (manualDisponivel && parseInt(termo) === concursoManual) {
                 console.log(`Concurso solicitado ${termo} é o manual configurado`);
                 carregarResultadoManual(tipo);
                 return concursoManual;
@@ -2805,7 +3223,7 @@ function exibirCaixaAviso(tipo) {
                     const response = await fetchComTimeout(apiUrl, 8000);
                     if (!response.ok) throw new Error(`API ${apiUrl} falhou com status ${response.status}`);
                     const json = await response.json();
-                    if (!respostaTemDezenas(json)) throw new Error(`API ${apiUrl} respondeu em formato inesperado`);
+                    if (!respostaTemDezenas(json, tipo)) throw new Error(`API ${apiUrl} respondeu em formato inesperado`);
                     data = json;
                     console.log(`Sucesso com API: ${apiUrl}`);
                     break;
@@ -2822,6 +3240,18 @@ function exibirCaixaAviso(tipo) {
                 let dezenas = extrairDezenas(data);
                 
                 dados[tipo].ganhadores = dezenas;
+                
+                // Modalidades de sorteio duplo (Dupla Sena) têm um segundo conjunto
+                // de dezenas sorteadas no mesmo concurso.
+                const cfg = CONFIG_MODALIDADE[tipo];
+                if (cfg.duploSorteio) {
+                    dados[tipo].ganhadores2 = extrairDezenasSegundoSorteio(data);
+                    const bolasEl2 = document.getElementById(`bolas${sufixo}B`);
+                    if (bolasEl2) {
+                        bolasEl2.innerHTML = '';
+                        dados[tipo].ganhadores2.forEach(num => { bolasEl2.innerHTML += `<div class="bola">${num}</div>`; });
+                    }
+                }
                 
                 let valorAcumulado = null;
                 const candidatoValor = data.valorEstimadoProximoConcurso ?? data.acumuladaProxConcurso ?? data.valorAcumuladoProxConcurso ?? data.valorAcumuladoProximoConcurso ?? data.valor_acumulado ?? (data.premiacao && data.premiacao.acumulada);
@@ -2849,6 +3279,11 @@ function exibirCaixaAviso(tipo) {
                 bolasEl.innerHTML = '';
                 for(let i=0; i < dados[tipo].max_bolas; i++) bolasEl.innerHTML += `<div class="bola" style="background:#ccc; color:#666">- -</div>`;
                 dados[tipo].ganhadores = [];
+                if (CONFIG_MODALIDADE[tipo].duploSorteio) {
+                    dados[tipo].ganhadores2 = [];
+                    const bolasEl2 = document.getElementById(`bolas${sufixo}B`);
+                    if (bolasEl2) bolasEl2.innerHTML = '';
+                }
                 renderizar(tipo);
                 return null;
             }
@@ -2948,7 +3383,7 @@ function exibirCaixaAviso(tipo) {
         }
         
         function navegarConcurso(tipo, direcao) {
-            const id = tipo === 'lotofacil' ? 'numLF' : 'numMS';
+            const id = `num${CONFIG_MODALIDADE[tipo].sufixo}`;
             let val = parseInt(document.getElementById(id).value);
             if(!isNaN(val)) buscar(tipo, val + direcao);
         }
@@ -2990,7 +3425,7 @@ function exibirCaixaAviso(tipo) {
         function gerarSurpresinha(tipo) {
             let numeros = [];
             while(numeros.length < dados[tipo].min) {
-                let n = Math.floor(Math.random() * dados[tipo].range) + 1;
+                let n = Math.floor(Math.random() * dados[tipo].range) + dados[tipo].inicio;
                 if(!numeros.includes(n)) numeros.push(n);
             }
             numeros.sort((a,b) => a - b);
@@ -3018,15 +3453,18 @@ function exibirCaixaAviso(tipo) {
             const grid = document.getElementById('numerosGrid');
             const contador = document.getElementById('contadorSelecionados');
             const titulo = modal.querySelector('h3');
-            titulo.style.color = tipo === 'lotofacil' ? 'var(--cor-lotofacil)' : 'var(--cor-megasena)';
-            titulo.innerText = `Selecione os Números (${tipo === 'lotofacil' ? '15-20 números' : '6-20 números'})`;
             const min = dados[tipo].min;
             const max = dados[tipo].max;
+            titulo.style.color = `var(--cor-${tipo})`;
+            titulo.innerText = min === max
+                ? `Selecione os Números (${min} números)`
+                : `Selecione os Números (${min}-${max} números)`;
             contador.innerText = `Selecionados: 0/${min}-${max}`;
             contador.style.color = '#333';
             grid.innerHTML = '';
-            const range = dados[tipo].range;
-            for (let i = 1; i <= range; i++) {
+            const inicio = dados[tipo].inicio;
+            const fim = inicio + dados[tipo].range - 1;
+            for (let i = inicio; i <= fim; i++) {
                 const numItem = document.createElement('div');
                 numItem.className = 'numero-item';
                 numItem.innerText = i.toString().padStart(2, '0');
@@ -3035,7 +3473,7 @@ function exibirCaixaAviso(tipo) {
                 grid.appendChild(numItem);
             }
             const btnConfirmar = modal.querySelector('.btn-confirmar-numeros');
-            btnConfirmar.style.backgroundColor = tipo === 'lotofacil' ? 'var(--cor-lotofacil)' : 'var(--cor-megasena)';
+            btnConfirmar.style.backgroundColor = `var(--cor-${tipo})`;
             btnConfirmar.disabled = true;
             modal.style.display = 'flex';
         }
@@ -3051,9 +3489,13 @@ function exibirCaixaAviso(tipo) {
                 }
                 numerosSelecionados.push(numero);
                 elemento.classList.add('selecionado');
+                elemento.style.background = `var(--cor-${tipoSelecaoAtual})`;
+                elemento.style.borderColor = `var(--cor-${tipoSelecaoAtual})`;
             } else {
                 numerosSelecionados.splice(index, 1);
                 elemento.classList.remove('selecionado');
+                elemento.style.background = '';
+                elemento.style.borderColor = '';
             }
             const contador = document.getElementById('contadorSelecionados');
             const selecionados = numerosSelecionados.length;
@@ -3068,7 +3510,7 @@ function exibirCaixaAviso(tipo) {
         function limparSelecaoNumeros() {
             numerosSelecionados = [];
             const elementos = document.querySelectorAll('.numero-item');
-            elementos.forEach(el => el.classList.remove('selecionado'));
+            elementos.forEach(el => { el.classList.remove('selecionado'); el.style.background = ''; el.style.borderColor = ''; });
             const min = dados[tipoSelecaoAtual].min;
             const max = dados[tipoSelecaoAtual].max;
             const contador = document.getElementById('contadorSelecionados');
@@ -3107,11 +3549,12 @@ function exibirCaixaAviso(tipo) {
         }
         
         function adicionarJogo(tipo) {
-            const input = document.getElementById(tipo === 'lotofacil' ? 'inputLF' : 'inputMS');
+            const input = document.getElementById(`input${CONFIG_MODALIDADE[tipo].sufixo}`);
             let nums = input.value.split(/[\s,]+/).filter(n => n !== "").map(Number);
-            const limiteMaximo = dados[tipo].range;
-            if (nums.filter(n => n < 1 || n > limiteMaximo).length > 0) {
-                exibirModal(`⚠️ Números fora do intervalo (01 a ${limiteMaximo})`, null, true);
+            const limiteMinimo = dados[tipo].inicio;
+            const limiteMaximo = dados[tipo].inicio + dados[tipo].range - 1;
+            if (nums.filter(n => n < limiteMinimo || n > limiteMaximo).length > 0) {
+                exibirModal(`⚠️ Números fora do intervalo (${limiteMinimo.toString().padStart(2,'0')} a ${limiteMaximo})`, null, true);
                 return;
             }
             let unicos = [...new Set(nums)];
@@ -3140,7 +3583,7 @@ function exibirCaixaAviso(tipo) {
         }
         
         function salvarNoLocalStorage(tipo) {
-            localStorage.setItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS', JSON.stringify(dados[tipo].meusJogos));
+            localStorage.setItem(`jogos_${CONFIG_MODALIDADE[tipo].sufixo}`, JSON.stringify(dados[tipo].meusJogos));
         }
         
         function confirmarRemover(tipo, index) {
@@ -3154,7 +3597,7 @@ function exibirCaixaAviso(tipo) {
         function confirmarLimpar(tipo) {
             exibirModal(`Deseja apagar todos os jogos de ${tipo}?`, () => {
                 dados[tipo].meusJogos = [];
-                localStorage.removeItem(tipo === 'lotofacil' ? 'jogos_LF' : 'jogos_MS');
+                localStorage.removeItem(`jogos_${CONFIG_MODALIDADE[tipo].sufixo}`);
                 financeiroH[tipo] = { investido: 0, ganho: 0, concursos_vistos: [] };
                 contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
                 renderizar(tipo);
@@ -3166,7 +3609,7 @@ function exibirCaixaAviso(tipo) {
                 exibirModal("Não há jogos salvos para copiar.", null, true);
                 return;
             }
-            const nomeLoteria = tipo === 'lotofacil' ? 'Lotofácil' : 'Mega-Sena';
+            const nomeLoteria = (MODALIDADES.find(m => m.id === tipo) || {}).nome || tipo;
             const concurso = dados[tipo].concursoAtual;
             let texto = `🍀 Meus jogos da ${nomeLoteria}` + `\n\n`;
             dados[tipo].meusJogos.forEach(jogo => {
@@ -3188,7 +3631,7 @@ function exibirCaixaAviso(tipo) {
         }
         
         function atualizarPercentual(tipo) {
-            const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
+            const sufixo = CONFIG_MODALIDADE[tipo].sufixo;
             const valInvestidoElement = document.getElementById(`valInvestido${sufixo}`);
             const valGanhoElement = document.getElementById(`valGanho${sufixo}`);
             const percentualElement = document.getElementById(`percentual${sufixo}`);
@@ -3215,16 +3658,22 @@ function exibirCaixaAviso(tipo) {
         }
         
         function renderizar(tipo) {
+            const cfg = CONFIG_MODALIDADE[tipo];
             // Registra as dezenas do concurso atual para as estatísticas históricas
             // (frequência, atraso, pares/ímpares, co-ocorrência). Não afeta a probabilidade real.
+            // Em modalidades de sorteio duplo (Dupla Sena), as dezenas dos dois sorteios
+            // entram juntas na contagem de frequência (cada sorteio é uma extração independente).
             if (dados[tipo].concursoAtual && dados[tipo].ganhadores && dados[tipo].ganhadores.length > 0) {
-                contagemNumerosSorteados[tipo][dados[tipo].concursoAtual] = [...dados[tipo].ganhadores];
+                const dezenasParaEstatistica = cfg.duploSorteio
+                    ? [...dados[tipo].ganhadores, ...(dados[tipo].ganhadores2 || [])]
+                    : [...dados[tipo].ganhadores];
+                contagemNumerosSorteados[tipo][dados[tipo].concursoAtual] = dezenasParaEstatistica;
             }
             atualizarPainelEstatisticas(tipo);
             
-            const lista = document.getElementById(tipo === 'lotofacil' ? 'listaLF' : 'listaMS');
-            const resumo = document.getElementById(tipo === 'lotofacil' ? 'resumoLF' : 'resumoMS');
-            const classeAcerto = tipo === 'lotofacil' ? 'num-acertado-lf' : 'num-acertado-ms';
+            const lista = document.getElementById(`lista${cfg.sufixo}`);
+            const resumo = document.getElementById(`resumo${cfg.sufixo}`);
+            const classeAcerto = `num-acertado-${cfg.prefixoSlot}`;
             if (dados[tipo].meusJogos.length === 0) {
                 lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
                 resumo.innerHTML = "Nenhum jogo salvo.";
@@ -3235,54 +3684,59 @@ function exibirCaixaAviso(tipo) {
             }
             const concursoAtual = dados[tipo].concursoAtual;
             const maskSorteio = dezenasParaMask(dados[tipo].ganhadores);
+            const maskSorteio2 = cfg.duploSorteio ? dezenasParaMask(dados[tipo].ganhadores2 || []) : null;
+            const houveSorteio = dados[tipo].ganhadores.length > 0;
+            // Para destacar em negrito as dezenas do jogo que saíram em QUALQUER um
+            // dos dois sorteios (Dupla Sena) - ou só no sorteio único das demais.
+            const todasDezenasSorteadas = cfg.duploSorteio
+                ? [...dados[tipo].ganhadores, ...(dados[tipo].ganhadores2 || [])]
+                : dados[tipo].ganhadores;
             let totalInvestidoConcurso = dados[tipo].meusJogos.length * dados[tipo].custo;
             let totalGanhoConcurso = 0;
             let totalPremiados = 0;
             let stats = {};
-            let acertoElite14 = false;
-            let acertoElite15 = false;
+            let acertoEliteMenor = false;
+            let acertoEliteMaior = false;
             dados[tipo].meusJogos.forEach(jogo => {
                 const maskJogo = dezenasParaMask(jogo.numeros);
                 const acertos = conferirVeloz(maskJogo, maskSorteio);
-                const minimoParaGanhar = (tipo === 'lotofacil' ? 11 : 4);
-                const ganhou = acertos >= minimoParaGanhar && dados[tipo].ganhadores.length > 0;
-                if (dados[tipo].ganhadores.length > 0) {
-                    if (tipo === 'lotofacil') {
-                        if (acertos === 14) acertoElite14 = true;
-                        if (acertos === 15) acertoElite15 = true;
-                    } else {
-                        if (acertos === 5) acertoElite14 = true;
-                        if (acertos === 6) acertoElite15 = true;
-                    }
+                const acertos2 = cfg.duploSorteio ? conferirVeloz(maskJogo, maskSorteio2) : null;
+                const ganhouSorteio1 = houveSorteio && (acertos >= cfg.minAcerto || (cfg.zeroGanha && acertos === 0));
+                const ganhouSorteio2 = cfg.duploSorteio && houveSorteio && (acertos2 >= cfg.minAcerto || (cfg.zeroGanha && acertos2 === 0));
+                const ganhou = ganhouSorteio1 || ganhouSorteio2;
+                if (houveSorteio) {
+                    if (acertos === cfg.faixaMenor || acertos2 === cfg.faixaMenor) acertoEliteMenor = true;
+                    if (acertos === cfg.faixaMaior || acertos2 === cfg.faixaMaior) acertoEliteMaior = true;
                 }
                 let valorGanhoNeste = 0;
-                if(ganhou && tipo === 'lotofacil') {
-                    if(acertos === 11) valorGanhoNeste = 7.00;
-                    if(acertos === 12) valorGanhoNeste = 14.00;
-                    if(acertos === 13) valorGanhoNeste = 35.00;
-                }
+                if (ganhouSorteio1 && cfg.premiosFixos[acertos]) valorGanhoNeste += cfg.premiosFixos[acertos];
+                if (ganhouSorteio2 && cfg.premiosFixos[acertos2]) valorGanhoNeste += cfg.premiosFixos[acertos2];
                 if (ganhou) {
                     if (concursoAtual && !jogo.concursosVistos.includes(concursoAtual)) {
-                        jogo.vitorias = (jogo.vitorias || 0) + 1;
-                        if(tipo === 'lotofacil' && acertos === 11) jogo.vitorias11 = (jogo.vitorias11 || 0) + 1;
-                        if(tipo === 'lotofacil' && acertos === 12) jogo.vitorias12 = (jogo.vitorias12 || 0) + 1;
-                        if(tipo === 'lotofacil' && acertos === 13) jogo.vitorias13 = (jogo.vitorias13 || 0) + 1;
+                        // Na Dupla Sena, ganhar nos dois sorteios do mesmo concurso conta como 2 vitórias.
+                        const vitoriasNesteConcurso = (ganhouSorteio1 ? 1 : 0) + (ganhouSorteio2 ? 1 : 0);
+                        jogo.vitorias = (jogo.vitorias || 0) + vitoriasNesteConcurso;
+                        if (tipo === 'lotofacil' && acertos === 11) jogo.vitorias11 = (jogo.vitorias11 || 0) + 1;
+                        if (tipo === 'lotofacil' && acertos === 12) jogo.vitorias12 = (jogo.vitorias12 || 0) + 1;
+                        if (tipo === 'lotofacil' && acertos === 13) jogo.vitorias13 = (jogo.vitorias13 || 0) + 1;
                         jogo.ganhoAcumulado = (jogo.ganhoAcumulado || 0) + valorGanhoNeste;
                         jogo.concursosVistos.push(concursoAtual);
                     }
                     totalPremiados++;
-                    stats[acertos] = (stats[acertos] || 0) + 1;
+                    if (ganhouSorteio1) stats[acertos] = (stats[acertos] || 0) + 1;
+                    if (ganhouSorteio2) stats[acertos2] = (stats[acertos2] || 0) + 1;
                     totalGanhoConcurso += valorGanhoNeste;
                 }
                 jogo.ultimoAcertoTemp = acertos;
+                jogo.ultimoAcertoTemp2 = acertos2;
             });
-            if (concursoAtual && !contagemElite[tipo].concursos_processados.includes(concursoAtual) && dados[tipo].ganhadores.length > 0) {
-                if (acertoElite14) {
+            if (concursoAtual && !contagemElite[tipo].concursos_processados.includes(concursoAtual) && houveSorteio) {
+                if (acertoEliteMenor) {
                     contagemElite[tipo].c14++;
                     contagemElite[tipo].lista14.push(concursoAtual);
                     tocarAlertaElite();
                 }
-                if (acertoElite15) {
+                if (acertoEliteMaior) {
                     contagemElite[tipo].c15++;
                     contagemElite[tipo].lista15.push(concursoAtual);
                     tocarAlertaElite();
@@ -3295,14 +3749,20 @@ function exibirCaixaAviso(tipo) {
             lista.innerHTML = '<h3>Meus Jogos Salvos:</h3>';
             dados[tipo].meusJogos.forEach((jogo, idx) => {
                 const acertos = jogo.ultimoAcertoTemp;
-                const ganhou = acertos >= (tipo === 'lotofacil' ? 11 : 4) && dados[tipo].ganhadores.length > 0;
-                const htmlJogo = jogo.numeros.map(n => (dados[tipo].ganhadores.includes(n)) ? `<span class="${classeAcerto}">${n.toString().padStart(2, '0')}</span>` : n.toString().padStart(2, '0')).join(' ');
+                const acertos2 = jogo.ultimoAcertoTemp2;
+                const ganhouSorteio1 = houveSorteio && (acertos >= cfg.minAcerto || (cfg.zeroGanha && acertos === 0));
+                const ganhouSorteio2 = cfg.duploSorteio && houveSorteio && (acertos2 >= cfg.minAcerto || (cfg.zeroGanha && acertos2 === 0));
+                const ganhou = ganhouSorteio1 || ganhouSorteio2;
+                const htmlJogo = jogo.numeros.map(n => (todasDezenasSorteadas.includes(n)) ? `<span class="${classeAcerto}">${n.toString().padStart(2, '0')}</span>` : n.toString().padStart(2, '0')).join(' ');
+                const textoAcertos = cfg.duploSorteio
+                    ? `${acertos} pts (1º sorteio) · ${acertos2} pts (2º sorteio)`
+                    : `${acertos} ACERTOS`;
                 lista.innerHTML += `
                     <div class="card-jogo ${ganhou ? 'premiado' : ''}">
                         <span class="badge-identificador">Jogo ${jogo.identificador || '?'}</span>
                         <button class="remove-btn" onclick="confirmarRemover('${tipo}', ${idx})">X</button>
                         <div style="font-family: monospace; font-size: 1.1em; margin-bottom:5px; margin-top:6px;">${htmlJogo}</div>
-                        <small><b>${acertos} ACERTOS</b></small>
+                        <small><b>${textoAcertos}</b></small>
                         ${jogo.vitorias > 0 ? `<span class="badge-vitorias">🏆 ${jogo.vitorias}x Premiado</span>` : ''}
                         ${tipo === 'lotofacil' && jogo.vitorias11 > 0 ? `<span class="badge-onze">⭐ 11 pts: ${jogo.vitorias11}x</span>` : ''}
                         ${tipo === 'lotofacil' && jogo.vitorias12 > 0 ? `<span class="badge-doze">✨ 12 pts: ${jogo.vitorias12}x</span>` : ''}
@@ -3315,7 +3775,10 @@ function exibirCaixaAviso(tipo) {
             if (dados[tipo].ganhadores.length > 0) {
                 if (totalPremiados > 0) {
                     let resumoHtml = `<strong>🎉 PARABÉNS! ${totalPremiados} jogo(s) premiado(s)!</strong><br>`;
-                    [15,14,13,12,11,6,5,4].forEach(f => {
+                    let faixasOrdenadas = [];
+                    for (let f = cfg.maxAcerto; f >= cfg.minAcerto; f--) faixasOrdenadas.push(f);
+                    if (cfg.zeroGanha) faixasOrdenadas.push(0);
+                    faixasOrdenadas.forEach(f => {
                         if (stats[f]) resumoHtml += `<div class="caixa-acerto">${stats[f]} jogo(s) de <b>${f} acertos</b></div><br>`;
                     });
                     resumo.innerHTML = resumoHtml;
@@ -3326,13 +3789,11 @@ function exibirCaixaAviso(tipo) {
         }
         
         function atualizarPainelElite(tipo) {
-            const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
-            const label14 = tipo === 'lotofacil' ? '14 Acertos' : 'Quina';
-            const label15 = tipo === 'lotofacil' ? '15 Acertos' : 'Sena';
+            const cfg = CONFIG_MODALIDADE[tipo];
             const l14 = contagemElite[tipo].lista14.length > 0 ? " - " + contagemElite[tipo].lista14.join(", ") : "";
             const l15 = contagemElite[tipo].lista15.length > 0 ? " - " + contagemElite[tipo].lista15.join(", ") : "";
-            document.getElementById(`count14${sufixo}`).innerHTML = `${label14}: <b>${contagemElite[tipo].c14}x</b> <small style="color:#666">${l14}</small>`;
-            document.getElementById(`count15${sufixo}`).innerHTML = `${label15}: <b>${contagemElite[tipo].c15}x</b> <small style="color:#666">${l15}</small>`;
+            document.getElementById(`count14${cfg.sufixo}`).innerHTML = `${cfg.labelMenor}: <b>${contagemElite[tipo].c14}x</b> <small style="color:#666">${l14}</small>`;
+            document.getElementById(`count15${cfg.sufixo}`).innerHTML = `${cfg.labelMaior}: <b>${contagemElite[tipo].c15}x</b> <small style="color:#666">${l15}</small>`;
         }
         
         // =============================================
@@ -3343,14 +3804,16 @@ function exibirCaixaAviso(tipo) {
         function calcularFrequenciaGeral(tipo) {
             const concursos = Object.keys(contagemNumerosSorteados[tipo]).map(Number).sort((a, b) => a - b);
             const range = dados[tipo].range;
+            const inicio = dados[tipo].inicio;
+            const fim = inicio + range - 1;
             let freq = {};
-            for (let i = 1; i <= range; i++) freq[i] = 0;
+            for (let i = inicio; i <= fim; i++) freq[i] = 0;
             concursos.forEach(c => {
                 (contagemNumerosSorteados[tipo][c] || []).forEach(n => {
                     if (freq.hasOwnProperty(n)) freq[n]++;
                 });
             });
-            return { concursos, freq, range };
+            return { concursos, freq, range, inicio, fim };
         }
         
         function classificarIntensidade(valor, maxValor) {
@@ -3362,11 +3825,11 @@ function exibirCaixaAviso(tipo) {
         }
         
         function atualizarPainelEstatisticas(tipo) {
-            const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
+            const sufixo = CONFIG_MODALIDADE[tipo].sufixo;
             const containerFreq = document.getElementById(`contagemSorteados${sufixo}`);
             if (!containerFreq) return; // painel ainda não presente no DOM
             
-            const { concursos, freq, range } = calcularFrequenciaGeral(tipo);
+            const { concursos, freq, range, inicio, fim } = calcularFrequenciaGeral(tipo);
             const infoEl = document.getElementById(`infoConcursosPesquisados${sufixo}`);
             const atrasoEl = document.getElementById(`atrasoNumeros${sufixo}`);
             
@@ -3403,7 +3866,7 @@ function exibirCaixaAviso(tipo) {
             // que falhou ao buscar durante uma Conferência em Massa.)
             // =============================================
             let ultimaAparicaoConcurso = {};
-            for (let i = 1; i <= range; i++) ultimaAparicaoConcurso[i] = null;
+            for (let i = inicio; i <= fim; i++) ultimaAparicaoConcurso[i] = null;
             concursos.forEach(c => {
                 (contagemNumerosSorteados[tipo][c] || []).forEach(n => {
                     if (ultimaAparicaoConcurso.hasOwnProperty(n)) ultimaAparicaoConcurso[n] = c;
@@ -3411,7 +3874,7 @@ function exibirCaixaAviso(tipo) {
             });
             let atraso = {};
             let nuncaSaiu = {};
-            for (let i = 1; i <= range; i++) {
+            for (let i = inicio; i <= fim; i++) {
                 if (ultimaAparicaoConcurso[i] === null) {
                     // Nunca saiu em nenhum dos concursos pesquisados: o atraso real pode ser maior,
                     // já que não sabemos o que aconteceu antes do primeiro concurso pesquisado.
@@ -3447,7 +3910,7 @@ function exibirCaixaAviso(tipo) {
             const info = document.getElementById('infoIntervaloModalContagem');
             const grid = document.getElementById('gridContagemJogo');
             
-            titulo.style.color = tipo === 'lotofacil' ? 'var(--cor-lotofacil)' : 'var(--cor-megasena)';
+            titulo.style.color = `var(--cor-${tipo})`;
             
             const { concursos, freq } = calcularFrequenciaGeral(tipo);
             
@@ -3535,7 +3998,8 @@ function exibirCaixaAviso(tipo) {
         
         function gerarJogoPorSubstituicao(tipo, jogo, qtd) {
             const { freq } = calcularFrequenciaGeral(tipo);
-            const range = dados[tipo].range;
+            const inicio = dados[tipo].inicio;
+            const fim = inicio + dados[tipo].range - 1;
             
             // Dezenas do próprio jogo, da menos sorteada para a mais sorteada
             const ordenadosPorMenosFreq = [...jogo.numeros].sort((a, b) => (freq[a] || 0) - (freq[b] || 0));
@@ -3545,7 +4009,7 @@ function exibirCaixaAviso(tipo) {
             
             // Candidatos de fora do jogo, do mais sorteado para o menos sorteado
             let candidatos = [];
-            for (let i = 1; i <= range; i++) {
+            for (let i = inicio; i <= fim; i++) {
                 if (!jogo.numeros.includes(i)) candidatos.push(i);
             }
             candidatos.sort((a, b) => (freq[b] || 0) - (freq[a] || 0));
@@ -3611,7 +4075,7 @@ function exibirCaixaAviso(tipo) {
         }
         
         function atualizarPainelFinanceiro(tipo) {
-            const sufixo = tipo === 'lotofacil' ? 'LF' : 'MS';
+            const sufixo = CONFIG_MODALIDADE[tipo].sufixo;
             const saldo = financeiroH[tipo].ganho - financeiroH[tipo].investido;
             document.getElementById(`valInvestido${sufixo}`).innerText = `R$ ${financeiroH[tipo].investido.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
             document.getElementById(`valGanho${sufixo}`).innerText = `R$ ${financeiroH[tipo].ganho.toLocaleString('pt-br', {minimumFractionDigits: 2})}`;
@@ -3636,7 +4100,7 @@ function exibirCaixaAviso(tipo) {
         }
         
         function unificarNovosBotoes() {
-            ['lotofacil', 'megasena'].forEach(tipo => {
+            ['lotofacil', 'megasena', 'quina', 'lotomania', 'duplasena'].forEach(tipo => {
                 const container = document.querySelector(`#cont-${tipo} .add-jogo-section`);
                 if (container) {
                     const hr = document.createElement('hr');
@@ -4120,15 +4584,30 @@ function iniciarAssinaturaPaywall() {
             montarSidebar();
             zerarFinanceiro('lotofacil');
             zerarFinanceiro('megasena');
+            zerarFinanceiro('quina');
+            zerarFinanceiro('lotomania');
+            zerarFinanceiro('duplasena');
             contagemElite['lotofacil'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
             contagemElite['megasena'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+            contagemElite['quina'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+            contagemElite['lotomania'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+            contagemElite['duplasena'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
             limparEstatisticasJogos('lotofacil');
             limparEstatisticasJogos('megasena');
+            limparEstatisticasJogos('quina');
+            limparEstatisticasJogos('lotomania');
+            limparEstatisticasJogos('duplasena');
             buscar('lotofacil', 'latest');
             buscar('megasena', 'latest');
+            buscar('quina', 'latest');
+            buscar('lotomania', 'latest');
+            buscar('duplasena', 'latest');
             unificarNovosBotoes();
             atualizarBotoesSlot('lotofacil');
             atualizarBotoesSlot('megasena');
+            atualizarBotoesSlot('quina');
+            atualizarBotoesSlot('lotomania');
+            atualizarBotoesSlot('duplasena');
             restaurarAbaAposRecarregar();
 
 	   
