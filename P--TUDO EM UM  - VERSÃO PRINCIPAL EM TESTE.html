@@ -213,6 +213,226 @@
         .aba-megasena {
             background-color: var(--cor-megasena);
         }
+        
+        /* ============================================= */
+        /* MENU LATERAL (HAMBÚRGUER) - NOVO               */
+        /* ============================================= */
+        #btnHamburguer {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 12000;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: #2c2c2c;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #overlaySidebar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 11000;
+        }
+        #overlaySidebar.aberto {
+            display: block;
+        }
+        #sidebarModalidades {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            max-width: 82vw;
+            height: 100%;
+            background: #fff;
+            z-index: 11500;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.25);
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        #sidebarModalidades.aberto {
+            left: 0;
+        }
+        .sidebar-header {
+            padding: 18px 16px 14px 16px;
+            background: #2c2c2c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+        .sidebar-fechar {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px 8px;
+        }
+        .sidebar-lista {
+            list-style: none;
+            margin: 0;
+            padding: 8px 0;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        .sidebar-item:hover, .sidebar-item:active {
+            background: #f7f7f7;
+        }
+        .sidebar-item.indisponivel {
+            opacity: 0.55;
+        }
+        .sidebar-clover {
+            font-size: 20px;
+            width: 26px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .sidebar-nome-wrap {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+        .sidebar-nome {
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+        .sidebar-tag-em-breve {
+            font-size: 10px;
+            color: #999;
+            font-style: italic;
+        }
+        .sidebar-scanner-item {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            margin: 10px 12px;
+            border-radius: 10px;
+            border-bottom: none;
+        }
+        .sidebar-scanner-item .sidebar-nome {
+            color: white;
+        }
+        
+        /* Título clicável de cada modalidade (abre o balão de regras) */
+        .titulo-modalidade {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .titulo-modalidade .icone-regras {
+            font-size: 14px;
+            opacity: 0.65;
+            border: 1.5px solid currentColor;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Balão/modal de regras de cada modalidade */
+        #modalRegras {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 13000;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+        .modal-regras-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 340px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            position: relative;
+            box-sizing: border-box;
+        }
+        .modal-regras-header {
+            padding: 18px 40px 14px 18px;
+            border-radius: 15px 15px 0 0;
+            color: white;
+            position: relative;
+        }
+        .modal-regras-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .modal-regras-fechar {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255,255,255,0.25);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-regras-corpo {
+            padding: 18px 20px;
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+        }
+        
+        /* Tela "em construção" das modalidades ainda não implementadas */
+        .placeholder-modalidade {
+            text-align: center;
+            padding: 30px 15px;
+        }
+        .placeholder-modalidade .placeholder-icone {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .placeholder-modalidade p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
         .container {
             background: white;
             padding: 25px;
@@ -1176,8 +1396,6 @@
             ← Voltar para o aplicativo
         </button>
         
-        <div class="restaurar-link" id="restaurarCompra" style="margin-top: 5px;">Já sou assinante? Restaurar compra</div>
-        
         <div style="margin-top: 15px; font-size: 10px; color: #999;">
             Ao assinar, você concorda com os termos de uso<br>
             Assinatura renovada automaticamente
@@ -1225,14 +1443,43 @@
         </div>
     </div>
 
-    <div class="menu-loterias">
-        <button class="btn-aba aba-lotofacil active" onclick="switchTab('lotofacil')">Lotofácil</button>
-        <button class="btn-aba aba-megasena" onclick="switchTab('megasena')">Mega-Sena</button>
-        <button class="btn-aba" onclick="abrirScannerAltaPerformance()" style="background: linear-gradient(45deg, #ff6b6b, #ee5a24); flex: 1.2;">🚀 Gerar jogos baseados em concursos anteriores</button>
+    <button id="btnHamburguer" onclick="toggleSidebar()" title="Menu de modalidades">☰</button>
+
+    <div id="overlaySidebar" onclick="fecharSidebar()"></div>
+
+    <nav id="sidebarModalidades">
+        <div class="sidebar-header">
+            <h3>🍀 __     Menu</h3>
+            <button class="sidebar-fechar" onclick="fecharSidebar()">✕</button>
+        </div>
+        <ul class="sidebar-lista" id="sidebarLista">
+            <!-- Preenchido via JavaScript a partir de MODALIDADES -->
+        </ul>
+        <div class="sidebar-scanner-item sidebar-item" onclick="irParaScanner()">
+            <span class="sidebar-clover">🚀</span>
+            <div class="sidebar-nome-wrap">
+                <span class="sidebar-nome">Gerar Jogos da LotoFácil (Concursos Anteriores)</span>
+            </div>
+        </div>
+    </nav>
+
+    <div id="modalRegras">
+        <div class="modal-regras-content">
+            <div class="modal-regras-header" id="modalRegrasHeader">
+                <h3 id="modalRegrasTitulo">Regras</h3>
+                <button class="modal-regras-fechar" onclick="fecharRegras()">✕</button>
+            </div>
+            <div class="modal-regras-corpo" id="modalRegrasCorpo"></div>
+        </div>
     </div>
 
     <div id="cont-lotofacil" class="container active lf-theme">
-        <h2 style="color:var(--cor-lotofacil)">Lotofácil</h2>
+        <h2 style="color:var(--cor-lotofacil)">
+            <span class="titulo-modalidade" onclick="abrirRegras('lotofacil')">
+                Lotofácil <span class="icone-regras">?</span>
+            </span>
+        </h2>
+
         <div class="busca-concurso">
             <button class="btn-nav aba-lotofacil" onclick="navegarConcurso('lotofacil', -1)">-</button>
             <input type="number" id="numLF" placeholder="Nº" value="3657">
@@ -1308,7 +1555,11 @@
     </div>
 
     <div id="cont-megasena" class="container ms-theme">
-        <h2 style="color:var(--cor-megasena)">Mega-Sena</h2>
+        <h2 style="color:var(--cor-megasena)">
+            <span class="titulo-modalidade" onclick="abrirRegras('megasena')">
+                Mega-Sena <span class="icone-regras">?</span>
+            </span>
+        </h2>
         <div class="busca-concurso">
             <button class="btn-nav aba-megasena" onclick="navegarConcurso('megasena', -1)">-</button>
             <input type="number" id="numMS" placeholder="Nº" value="2994">
@@ -1380,6 +1631,92 @@
         <div class="aviso-legal">
             ⚠️ <b>Aviso:</b> Este site/aplicativo é uma ferramenta independente para facilitar a conferência de jogos da LotoFácil e da Mega-Sena. Pode ocorre eventuais inconsistências nos resultados apresentados. <b>Sempre confira seu bilhete no site oficial das Lotérias Caixa.</b> Os jogos gerados neste site/aplicativo <b>não garante ganhos reais ou prêmios nos concursos futuros</b>. O aplicativo não possui vínculo com a Caixa Econômica Federal. <br><br>
             <b>🔞 APOSTAR É PROIBIDO PARA MENORES DE 18 ANOS</b>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- TELAS "EM CONSTRUÇÃO" DAS NOVAS MODALIDADES (FASE 1) -->
+    <!-- A funcionalidade completa (buscar concurso, salvar jogos, -->
+    <!-- estatísticas, financeiro) chega nas próximas fases. Por -->
+    <!-- enquanto, cada uma já mostra as regras oficiais.         -->
+    <!-- ============================================= -->
+    <div id="cont-quina" class="container">
+        <h2 style="color:#1a3fa0">
+            <span class="titulo-modalidade" onclick="abrirRegras('quina')">Quina <span class="icone-regras">?</span></span>
+        </h2>
+        <div class="placeholder-modalidade">
+            <div class="placeholder-icone">🍀</div>
+            <p><b>Em construção!</b><br>A Quina ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.<br><br>As próximas atualizações vão trazer aqui as mesmas ferramentas que já existem na Lotofácil e Mega-Sena: conferência de jogos, estatísticas de números mais/menos sorteados, controle financeiro e mais.</p>
+        </div>
+    </div>
+
+    <div id="cont-lotomania" class="container">
+        <h2 style="color:#f78100">
+            <span class="titulo-modalidade" onclick="abrirRegras('lotomania')">Lotomania <span class="icone-regras">?</span></span>
+        </h2>
+        <div class="placeholder-modalidade">
+            <div class="placeholder-icone">🍀</div>
+            <p><b>Em construção!</b><br>A Lotomania ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.</p>
+        </div>
+    </div>
+
+    <div id="cont-duplasena" class="container">
+        <h2 style="color:#a90267">
+            <span class="titulo-modalidade" onclick="abrirRegras('duplasena')">Dupla Sena <span class="icone-regras">?</span></span>
+        </h2>
+        <div class="placeholder-modalidade">
+            <div class="placeholder-icone">🍀</div>
+            <p><b>Em construção!</b><br>A Dupla Sena ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.</p>
+        </div>
+    </div>
+
+    <div id="cont-timemania" class="container">
+        <h2 style="color:#00a651">
+            <span class="titulo-modalidade" onclick="abrirRegras('timemania')">Timemania <span class="icone-regras">?</span></span>
+        </h2>
+        <div class="placeholder-modalidade">
+            <div class="placeholder-icone">🍀</div>
+            <p><b>Em construção!</b><br>A Timemania ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.</p>
+        </div>
+    </div>
+
+    <div id="cont-diadesorte" class="container">
+        <h2 style="color:#cb8d00">
+            <span class="titulo-modalidade" onclick="abrirRegras('diadesorte')">Dia de Sorte <span class="icone-regras">?</span></span>
+        </h2>
+        <div class="placeholder-modalidade">
+            <div class="placeholder-icone">🍀</div>
+            <p><b>Em construção!</b><br>O Dia de Sorte ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.</p>
+        </div>
+    </div>
+
+    <div id="cont-milionaria" class="container">
+        <h2 style="color:#3d1a7a">
+            <span class="titulo-modalidade" onclick="abrirRegras('milionaria')">+Milionária <span class="icone-regras">?</span></span>
+        </h2>
+        <div class="placeholder-modalidade">
+            <div class="placeholder-icone">🍀</div>
+            <p><b>Em construção!</b><br>A +Milionária ainda não tem a tela completa de conferência, mas você já pode ver as regras clicando no nome acima.</p>
+        </div>
+    </div>
+
+    <div id="cont-supersete" class="container">
+        <h2 style="color:#7cb342">
+            <span class="titulo-modalidade" onclick="abrirRegras('supersete')">Super Sete <span class="icone-regras">?</span></span>
+        </h2>
+        <div class="placeholder-modalidade">
+            <div class="placeholder-icone">🍀</div>
+            <p><b>Em construção!</b><br>O Super Sete funciona por colunas (não por escolha de números dentro de um intervalo), então vai ganhar uma tela própria nas próximas atualizações. Já dá pra ver as regras clicando no nome acima.</p>
+        </div>
+    </div>
+
+    <div id="cont-loteca" class="container">
+        <h2 style="color:#0a6b3d">
+            <span class="titulo-modalidade" onclick="abrirRegras('loteca')">Loteca <span class="icone-regras">?</span></span>
+        </h2>
+        <div class="placeholder-modalidade">
+            <div class="placeholder-icone">🍀</div>
+            <p><b>Em construção!</b><br>A Loteca é sobre resultados de jogos de futebol, não números — por isso não faz sentido aplicar estatística de "números mais sorteados" aqui. Vai ganhar uma tela própria nas próximas atualizações. Já dá pra ver as regras clicando no nome acima.</p>
         </div>
     </div>
 
@@ -1721,17 +2058,6 @@
             }
         }
                 
-        function restaurarCompras() {
-            console.log('🔄 Restaurando compras...');
-            if (typeof AndroidBridge !== 'undefined' && AndroidBridge.restorePurchases) {
-                AndroidBridge.restorePurchases();
-            } else {
-                verificarStatusPremium();
-                if (usuarioPremium) alert("✅ Assinatura restaurada com sucesso!");
-                else alert("ℹ️ Nenhuma assinatura ativa encontrada.");
-            }
-        }
-        
         window.onPurchaseSuccess = function() {
             console.log('✅ Compra realizada com sucesso!');
             usuarioPremium = true;
@@ -2271,10 +2597,135 @@ function exibirCaixaAviso(tipo) {
         }
         
         function switchTab(tipo) {
-            document.querySelectorAll('.container, .btn-aba').forEach(el => el.classList.remove('active'));
-            document.getElementById(`cont-${tipo}`).classList.add('active');
-            document.querySelector(`.aba-${tipo}`).classList.add('active');
-            document.body.className = `${tipo === 'lotofacil' ? 'lf' : 'ms'}-theme`;
+            document.querySelectorAll('.container').forEach(el => el.classList.remove('active'));
+            const alvo = document.getElementById(`cont-${tipo}`);
+            if (alvo) alvo.classList.add('active');
+            // O tema visual (cores de fundo das bolinhas etc.) por enquanto só existe
+            // para Lotofácil e Mega-Sena. As novas modalidades usam cor própria via
+            // estilo inline enquanto suas telas completas não chegam (fases seguintes).
+            if (tipo === 'lotofacil' || tipo === 'megasena') {
+                document.body.className = `${tipo === 'lotofacil' ? 'lf' : 'ms'}-theme`;
+            }
+            // Volta o topo da página - sem isso, ao trocar de modalidade estando
+            // rolado mais pra baixo, parece que nada mudou na tela.
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // =============================================
+        // MENU LATERAL DE MODALIDADES (NOVO)
+        // =============================================
+        const MODALIDADES = [
+            { id: 'lotofacil',  nome: 'Lotofácil',    cor: '#8b008b', disponivel: true },
+            { id: 'megasena',   nome: 'Mega-Sena',     cor: '#209869', disponivel: true },
+            { id: 'quina',      nome: 'Quina',          cor: '#1a3fa0', disponivel: false },
+            { id: 'lotomania',  nome: 'Lotomania',      cor: '#f78100', disponivel: false },
+            { id: 'duplasena',  nome: 'Dupla Sena',     cor: '#a90267', disponivel: false },
+            { id: 'diadesorte', nome: 'Dia de Sorte',   cor: '#cb8d00', disponivel: false },
+            { id: 'milionaria', nome: '+Milionária',    cor: '#3d1a7a', disponivel: false }
+            // Timemania, Super Sete e Loteca removidas do menu por enquanto (a pedido).
+            // As telas e regras delas continuam no código, prontas para voltar ao
+            // menu quando formos implementá-las - é só devolver estas 3 linhas aqui:
+            // { id: 'timemania',  nome: 'Timemania',      cor: '#00a651', disponivel: false },
+            // { id: 'supersete',  nome: 'Super Sete',     cor: '#7cb342', disponivel: false },
+            // { id: 'loteca',     nome: 'Loteca',         cor: '#0a6b3d', disponivel: false }
+        ];
+        
+        const REGRAS_MODALIDADES = {
+            lotofacil: {
+                cor: '#8b008b',
+                texto: 'Escolha de 15 a 20 números entre os 25 disponíveis (01 a 25). São sorteadas 15 dezenas. Ganha quem acertar 11, 12, 13, 14 ou 15 números. Sorteios de segunda a sábado.'
+            },
+            megasena: {
+                cor: '#209869',
+                texto: 'Escolha de 6 a 15 números entre os 60 disponíveis (01 a 60). São sorteadas 6 dezenas. Ganha quem acertar 4 (quadra), 5 (quina) ou 6 (sena) números. Sorteios às terças, quintas e sábados.'
+            },
+            quina: {
+                cor: '#1a3fa0',
+                texto: 'Escolha de 5 a 15 números entre os 80 disponíveis (01 a 80). São sorteadas 5 dezenas. Ganha quem acertar 2, 3, 4 ou 5 números. Sorteios de segunda a sábado.'
+            },
+            lotomania: {
+                cor: '#f78100',
+                texto: 'Escolha sempre 50 números entre os 100 disponíveis (00 a 99). São sorteadas 20 dezenas. Ganha quem acertar 15, 16, 17, 18, 19 ou 20 números — e também quem não acertar absolutamente nenhum (0 acertos)! Sorteios às segundas, quartas e sextas.'
+            },
+            duplasena: {
+                cor: '#a90267',
+                texto: 'Escolha de 6 a 15 números entre os 50 disponíveis (01 a 50). Em cada concurso são feitos DOIS sorteios de 6 dezenas cada. Ganha quem acertar 3, 4, 5 ou 6 números em qualquer um dos dois sorteios (ou nos dois). Sorteios às segundas, quartas e sextas.'
+            },
+            timemania: {
+                cor: '#00a651',
+                texto: 'Escolha de 10 a 15 números entre os 80 disponíveis (01 a 80) e indique um Time do Coração entre os times cadastrados. São sorteados 7 números e 1 time. Ganha quem acertar de 3 a 7 números e/ou quem acertar o time sorteado (prêmio à parte). Sorteios às terças, quintas e sábados.'
+            },
+            diadesorte: {
+                cor: '#cb8d00',
+                texto: 'Escolha de 7 a 15 números entre os 31 disponíveis (01 a 31) e indique um Mês da Sorte. São sorteados 7 números e 1 mês. Ganha quem acertar de 4 a 7 números e/ou quem acertar o mês sorteado. Sorteios às terças, quintas e sábados.'
+            },
+            milionaria: {
+                cor: '#3d1a7a',
+                texto: 'Escolha de 6 a 12 números entre os 50 disponíveis (01 a 50) e de 2 a 6 Trevos entre os 6 disponíveis (1 a 6). São sorteados 6 números e 2 trevos. O prêmio principal exige acertar os 6 números e os 2 trevos; existem faixas menores combinando acertos parciais de números e trevos. Sorteios às quartas e sábados.'
+            },
+            supersete: {
+                cor: '#7cb342',
+                texto: 'O volante tem 7 colunas, cada uma com dígitos de 0 a 9. Escolha pelo menos 1 número por coluna (no mínimo 7 números no total, no máximo 21, marcando até 3 por coluna). É sorteado 1 número por coluna. Ganha quem acertar de 3 a 7 colunas. Sorteios às segundas, quartas e sextas.'
+            },
+            loteca: {
+                cor: '#0a6b3d',
+                texto: 'Você palpita o resultado de 14 jogos de futebol reais: Coluna 1 (vitória do mandante), Coluna do Meio/X (empate) ou Coluna 2 (vitória do visitante) — dá pra marcar mais de uma opção por jogo (duplo/triplo). Ganha quem acertar 13 ou 14 jogos. Como o resultado depende de partidas de futebol e não de bolinhas numeradas, não existe estatística de "números mais sorteados" nessa modalidade.'
+            },
+            scanner: {
+                cor: '#ee5a24',
+                texto: 'Gera vários jogos automaticamente comparando o desempenho de cada combinação contra concursos anteriores, buscando o melhor retorno histórico e a melhor cobertura possível. Por enquanto disponível só para a Lotofácil.'
+            }
+        };
+        
+        function montarSidebar() {
+            const lista = document.getElementById('sidebarLista');
+            if (!lista) return;
+            lista.innerHTML = MODALIDADES.map(m => `
+                <li class="sidebar-item ${m.disponivel ? '' : 'indisponivel'}" onclick="irParaModalidade('${m.id}')">
+                    <span class="sidebar-clover" style="color:${m.cor}">🍀</span>
+                    <div class="sidebar-nome-wrap">
+                        <span class="sidebar-nome">${m.nome}</span>
+                        ${m.disponivel ? '' : '<span class="sidebar-tag-em-breve">em construção</span>'}
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebarModalidades');
+            const overlay = document.getElementById('overlaySidebar');
+            const abrindo = !sidebar.classList.contains('aberto');
+            sidebar.classList.toggle('aberto', abrindo);
+            overlay.classList.toggle('aberto', abrindo);
+        }
+        
+        function fecharSidebar() {
+            document.getElementById('sidebarModalidades').classList.remove('aberto');
+            document.getElementById('overlaySidebar').classList.remove('aberto');
+        }
+        
+        function irParaModalidade(id) {
+            switchTab(id);
+            fecharSidebar();
+        }
+        
+        function irParaScanner() {
+            fecharSidebar();
+            abrirScannerAltaPerformance();
+        }
+        
+        function abrirRegras(id) {
+            const info = REGRAS_MODALIDADES[id];
+            if (!info) return;
+            const nomeExibicao = (MODALIDADES.find(m => m.id === id) || {}).nome || (id === 'scanner' ? 'Gerar Jogos' : id);
+            document.getElementById('modalRegrasTitulo').innerText = `🍀 ${nomeExibicao}`;
+            document.getElementById('modalRegrasHeader').style.background = info.cor;
+            document.getElementById('modalRegrasCorpo').innerText = info.texto;
+            document.getElementById('modalRegras').style.display = 'flex';
+        }
+        
+        function fecharRegras() {
+            document.getElementById('modalRegras').style.display = 'none';
         }
         
         // =============================================
@@ -2724,7 +3175,7 @@ function exibirCaixaAviso(tipo) {
             });
             texto += `\nGerado pelo LotoFácil Scanner 🍀`;
             copyToClipboard(texto);
-            exibirModal(`✅ ${dados[tipo].meusJogos.length} jogo(s) copiado(s) para a área de transferência!\n\nAgora é só colar no WhatsApp, Bloco de Notas ou onde quiser.`, null, true);
+            exibirModal(`✅ ${dados[tipo].meusJogos.length} jogo(s) copiado(s) para a área de transferência!\n\nAgora é só colar no WhatsApp, Bloco de Notas ou em outro local de sua escolha.".`, null, true);
         }
         
         function calcularPercentual(saldo, totalGasto) {
@@ -3666,6 +4117,7 @@ function iniciarAssinaturaPaywall() {
         // INICIALIZAÇÃO
         window.onload = () => {
             verificarStatusPremium();
+            montarSidebar();
             zerarFinanceiro('lotofacil');
             zerarFinanceiro('megasena');
             contagemElite['lotofacil'] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
@@ -3690,8 +4142,6 @@ function iniciarAssinaturaPaywall() {
                 if (btnPaywall) {
             btnPaywall.onclick = () => { iniciarAssinaturaPaywall(); };
             }
-            
-            document.getElementById('restaurarCompra').onclick = () => { restaurarCompras(); };
             
             document.querySelectorAll('.plano-item').forEach(el => {
                 el.onclick = () => {
