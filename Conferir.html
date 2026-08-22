@@ -733,6 +733,152 @@
             font-size: 0.85em;
             margin-top: 5px;
         }
+        .btn-ler-bilhete {
+            background: linear-gradient(45deg, #2c3e50, #4a6785);
+            color: white;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+        #modalLeitorBilhete {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 14000;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .modal-leitor-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 420px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .modal-leitor-header {
+            padding: 16px 45px 12px 18px;
+            border-radius: 15px 15px 0 0;
+            background: #2c3e50;
+            color: white;
+            position: relative;
+        }
+        .modal-leitor-header h3 {
+            margin: 0;
+            font-size: 17px;
+        }
+        .modal-leitor-fechar {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255,255,255,0.25);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .modal-leitor-corpo {
+            padding: 18px;
+        }
+        .leitor-instrucoes {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+        .btn-tirar-foto {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .leitor-preview {
+            width: 100%;
+            max-height: 180px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 12px;
+            display: none;
+            border: 1px solid #ddd;
+        }
+        .leitor-status {
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+        }
+        .leitor-aviso-concurso {
+            background: #fff3cd;
+            border: 1px solid #ffe08a;
+            color: #7a5c00;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 12.5px;
+            margin-top: 12px;
+            display: none;
+        }
+        .leitor-jogo-linha {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-top: 8px;
+        }
+        .leitor-jogo-linha input[type="text"] {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .leitor-jogo-linha input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .leitor-jogos-titulo {
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 16px;
+            margin-bottom: 4px;
+            display: none;
+        }
+        .btn-confirmar-leitura {
+            width: 100%;
+            padding: 12px;
+            background: #209869;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+            font-size: 15px;
+            display: none;
+        }
         .trevos-picker {
             display: flex;
             gap: 6px;
@@ -1603,8 +1749,8 @@
             <div id="checkMensal" style="position: absolute; top: 10px; right: 12px; font-size: 20px; color: #9b2a92;">✓</div>
         </div>
         
-        <!-- ===== PLANO ANUAL ===== -->
-        <div class="plano-paywall plano-anual" id="planoAnual" onclick="selecionarPlanoPaywall('anual')" style="background: white; border: 2px solid #e0c3fc; border-radius: 15px; padding: 15px; margin: 10px 0; cursor: pointer; text-align: left; transition: all 0.3s ease; position: relative;">
+        <!-- ===== PLANO ANUAL (desativado a pedido - só vendendo o mensal por enquanto) ===== -->
+        <div class="plano-paywall plano-anual" id="planoAnual" onclick="selecionarPlanoPaywall('anual')" style="display: none; background: white; border: 2px solid #e0c3fc; border-radius: 15px; padding: 15px; margin: 10px 0; cursor: pointer; text-align: left; transition: all 0.3s ease; position: relative;">
             <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff9800, #f57c00); color: white; padding: 3px 12px; border-radius: 20px; font-size: 9px; font-weight: bold; white-space: nowrap;">
                 ⭐ MELHOR OFERTA
             </div>
@@ -1667,6 +1813,33 @@
 
     <div id="modalScanner">
         <div class="modal-scanner-content" id="scannerContent"></div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- LEITOR DE BILHETE POR FOTO (OCR) - NOVO          -->
+    <!-- Lê os números IMPRESSOS no bilhete via reconhecimento de texto (OCR),
+         direto no aparelho, sem depender de QR Code nem de servidor da Caixa
+         (o QR Code do bilhete não guarda os números - só um código que só o
+         sistema interno da Caixa sabe interpretar). -->
+    <!-- ============================================= -->
+    <div id="modalLeitorBilhete">
+        <div class="modal-leitor-content">
+            <div class="modal-leitor-header">
+                <h3 id="modalLeitorTitulo">📷 Ler Bilhete (Foto)</h3>
+                <button class="modal-leitor-fechar" onclick="fecharLeitorBilhete()">✕</button>
+            </div>
+            <div class="modal-leitor-corpo">
+                <p class="leitor-instrucoes">Tire uma foto (ou escolha da galeria) da parte do bilhete onde aparecem os números do seu jogo, bem enquadrada e com boa luz. Isso lê os números <b>impressos no papel</b> - não o QR Code.</p>
+                <input type="file" id="inputFotoBilhete" accept="image/*" capture="environment" style="display:none;" onchange="processarFotoBilhete(event)">
+                <button class="btn-tirar-foto" onclick="document.getElementById('inputFotoBilhete').click()">📷 Tirar Foto / Escolher Imagem</button>
+                <img id="leitorPreview" class="leitor-preview">
+                <p id="leitorStatus" class="leitor-status">Lendo o bilhete...</p>
+                <p id="leitorAvisoConcurso" class="leitor-aviso-concurso"></p>
+                <p class="leitor-jogos-titulo" id="leitorJogosTitulo">Números encontrados (confira e corrija se precisar):</p>
+                <div id="leitorJogosContainer"></div>
+                <button class="btn-confirmar-leitura" id="btnConfirmarLeitura" onclick="confirmarJogosLidos()">✅ Adicionar Jogo(s) à Lista</button>
+            </div>
+        </div>
     </div>
 
     <div id="modalNumeros">
@@ -1735,8 +1908,6 @@
             <div class="modal-regras-corpo" id="corpoAvisosGerais">
                 <p>Esperamos que você esteja aproveitando o aplicativo!</p>
                 <p>Lembre-se: nenhum sistema pode prever os números que serão sorteados, pois a loteria é um jogo baseado na aleatoriedade. Nosso objetivo é ajudar você a conferir seus jogos de forma prática, acompanhar seus resultados, analisar combinações e utilizar o histórico dos concursos para criar novas estratégias.</p>
-		<p>Com essas informações, você pode ajustar suas apostas, testar novas combinações e buscar uma forma mais organizada de jogar. Isso pode ajudar na escolha das dezenas e no acompanhamento do desempenho dos seus jogos.</p>
-        	<p>Use o aplicativo, experimente diferentes estratégias e divirta-se. Boa sorte e bons jogos! 🍀</p>
             </div>
         </div>
     </div>
@@ -1776,6 +1947,7 @@
             </div>
             <button class="btn btn-add-lf" onclick="adicionarJogo('lotofacil')">Salvar Jogo na Lista</button>
             <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('lotofacil')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
+            <button class="btn btn-ler-bilhete" onclick="abrirLeitorBilhete('lotofacil')">📷 Ler Bilhete (Foto)</button>
         </div>
         <div class="secao-memoria">
             <button class="btn-guardar" onclick="prepararSalvamentoSlot('lotofacil')">💾 Guardar Lista Atual em um Slot</button>
@@ -1856,6 +2028,7 @@
             </div>
             <button class="btn btn-add-ms" onclick="adicionarJogo('megasena')">Salvar Jogo na Lista</button>
             <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('megasena')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
+            <button class="btn btn-ler-bilhete" onclick="abrirLeitorBilhete('megasena')">📷 Ler Bilhete (Foto)</button>
         </div>
         <div class="secao-memoria">
             <button class="btn-guardar" onclick="prepararSalvamentoSlot('megasena')">💾 Guardar Lista Atual em um Slot</button>
@@ -1942,6 +2115,7 @@
             </div>
             <button class="btn btn-add-qn" onclick="adicionarJogo('quina')">Salvar Jogo na Lista</button>
             <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('quina')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
+            <button class="btn btn-ler-bilhete" onclick="abrirLeitorBilhete('quina')">📷 Ler Bilhete (Foto)</button>
         </div>
         <div class="secao-memoria">
             <button class="btn-guardar" onclick="prepararSalvamentoSlot('quina')">💾 Guardar Lista Atual em um Slot</button>
@@ -2022,6 +2196,7 @@
             </div>
             <button class="btn btn-add-lm" onclick="adicionarJogo('lotomania')">Salvar Jogo na Lista</button>
             <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('lotomania')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
+            <button class="btn btn-ler-bilhete" onclick="abrirLeitorBilhete('lotomania')">📷 Ler Bilhete (Foto)</button>
         </div>
         <div class="secao-memoria">
             <button class="btn-guardar" onclick="prepararSalvamentoSlot('lotomania')">💾 Guardar Lista Atual em um Slot</button>
@@ -2105,6 +2280,7 @@
             </div>
             <button class="btn btn-add-ds" onclick="adicionarJogo('duplasena')">Salvar Jogo na Lista</button>
             <button class="btn btn-random" onclick="abrirModalOpcoesSurpresinha('duplasena')">🎲 Gerar Surpresinhas (Múltiplas opções)</button>
+            <button class="btn btn-ler-bilhete" onclick="abrirLeitorBilhete('duplasena')">📷 Ler Bilhete (Foto)</button>
         </div>
         <div class="secao-memoria">
             <button class="btn-guardar" onclick="prepararSalvamentoSlot('duplasena')">💾 Guardar Lista Atual em um Slot</button>
@@ -3974,6 +4150,220 @@ function exibirCaixaAviso(tipo) {
             });
             salvarNoLocalStorage(tipo);
             renderizar(tipo);
+        }
+        
+        // =============================================
+        // LEITOR DE BILHETE POR FOTO (OCR) - NOVO
+        // Lê os números IMPRESSOS no papel do bilhete via reconhecimento de texto
+        // (Tesseract.js), rodando inteiramente no aparelho. NÃO usa o QR Code do
+        // bilhete (ele não guarda os números - só um código interno que só o
+        // sistema da Caixa sabe interpretar) nem depende de nenhum servidor.
+        // Como é OCR, não é 100% perfeito - por isso os números aparecem editáveis
+        // antes de confirmar a adição dos jogos.
+        // =============================================
+        let tipoLeitorAtual = null;
+        let jogosDetectadosLeitor = [];
+        let tesseractCarregando = false;
+        
+        function carregarTesseract() {
+            return new Promise((resolve, reject) => {
+                if (typeof Tesseract !== 'undefined') { resolve(); return; }
+                if (tesseractCarregando) {
+                    const verificar = setInterval(() => {
+                        if (typeof Tesseract !== 'undefined') { clearInterval(verificar); resolve(); }
+                    }, 200);
+                    return;
+                }
+                tesseractCarregando = true;
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error('Não foi possível carregar o leitor de texto. Verifique sua conexão com a internet.'));
+                document.head.appendChild(script);
+            });
+        }
+        
+        function abrirLeitorBilhete(tipo) {
+            tipoLeitorAtual = tipo;
+            jogosDetectadosLeitor = [];
+            document.getElementById('inputFotoBilhete').value = '';
+            document.getElementById('leitorPreview').style.display = 'none';
+            document.getElementById('leitorStatus').style.display = 'none';
+            document.getElementById('leitorAvisoConcurso').style.display = 'none';
+            document.getElementById('leitorJogosTitulo').style.display = 'none';
+            document.getElementById('leitorJogosContainer').innerHTML = '';
+            document.getElementById('btnConfirmarLeitura').style.display = 'none';
+            document.getElementById('modalLeitorBilhete').style.display = 'flex';
+        }
+        
+        function fecharLeitorBilhete() {
+            document.getElementById('modalLeitorBilhete').style.display = 'none';
+        }
+        
+        async function processarFotoBilhete(event) {
+            const arquivo = event.target.files[0];
+            if (!arquivo) return;
+            
+            const preview = document.getElementById('leitorPreview');
+            const status = document.getElementById('leitorStatus');
+            const leitor = new FileReader();
+            leitor.onload = async (e) => {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                status.style.display = 'block';
+                status.style.color = '#666';
+                status.innerText = 'Carregando leitor de texto...';
+                document.getElementById('leitorJogosContainer').innerHTML = '';
+                document.getElementById('leitorJogosTitulo').style.display = 'none';
+                document.getElementById('btnConfirmarLeitura').style.display = 'none';
+                document.getElementById('leitorAvisoConcurso').style.display = 'none';
+                
+                try {
+                    await carregarTesseract();
+                    status.innerText = 'Lendo o bilhete... isso pode levar alguns segundos.';
+                    const resultado = await Tesseract.recognize(e.target.result, 'por');
+                    const texto = resultado.data.text || '';
+                    status.style.display = 'none';
+                    
+                    const { concurso, modalidadeDetectada } = detectarConcursoEModalidade(texto);
+                    const avisoEl = document.getElementById('leitorAvisoConcurso');
+                    let avisoPartes = [];
+                    if (concurso) avisoPartes.push(`📋 Concurso identificado no bilhete: <b>${concurso}</b> - confira se é o mesmo que você está conferindo.`);
+                    if (modalidadeDetectada && modalidadeDetectada !== tipoLeitorAtual) {
+                        const nomeAtual = (MODALIDADES.find(m => m.id === tipoLeitorAtual) || {}).nome || tipoLeitorAtual;
+                        const nomeDetectado = (MODALIDADES.find(m => m.id === modalidadeDetectada) || {}).nome || modalidadeDetectada;
+                        avisoPartes.push(`⚠️ Este bilhete parece ser de <b>${nomeDetectado}</b>, mas você está lendo para <b>${nomeAtual}</b>. Confira antes de confirmar.`);
+                    }
+                    if (avisoPartes.length > 0) {
+                        avisoEl.innerHTML = avisoPartes.join('<br>');
+                        avisoEl.style.display = 'block';
+                    }
+                    
+                    jogosDetectadosLeitor = extrairJogosDoTexto(texto, tipoLeitorAtual);
+                    renderizarResultadosLeitura();
+                } catch (erro) {
+                    status.style.display = 'block';
+                    status.style.color = '#d93025';
+                    status.innerText = '❌ ' + (erro && erro.message ? erro.message : 'Não foi possível ler o bilhete. Tente uma foto mais nítida, ou digite os números manualmente na tela principal.');
+                }
+            };
+            leitor.readAsDataURL(arquivo);
+        }
+        
+        // Procura, linha por linha do texto reconhecido, sequências de números
+        // compatíveis com a quantidade mínima/máxima da modalidade atual.
+        function extrairJogosDoTexto(textoOCR, tipo) {
+            const linhas = textoOCR.split(/\n+/);
+            const jogosEncontrados = [];
+            const limiteMinimo = dados[tipo].inicio;
+            const limiteMaximo = dados[tipo].inicio + dados[tipo].range - 1;
+            linhas.forEach(linha => {
+                const numerosDaLinha = (linha.match(/\b\d{1,2}\b/g) || []).map(Number);
+                if (numerosDaLinha.length < dados[tipo].min) return;
+                const numerosValidos = numerosDaLinha.filter(n => n >= limiteMinimo && n <= limiteMaximo);
+                const semRepetidos = [...new Set(numerosValidos)];
+                if (semRepetidos.length >= dados[tipo].min) {
+                    const cortados = semRepetidos.slice(0, dados[tipo].max).sort((a, b) => a - b);
+                    jogosEncontrados.push(cortados);
+                }
+            });
+            return jogosEncontrados;
+        }
+        
+        // Tentativa best-effort de achar o número do concurso e a modalidade
+        // mencionados no texto do bilhete - só para avisar o usuário, não bloqueia nada.
+        function detectarConcursoEModalidade(textoOCR) {
+            const upper = textoOCR.toUpperCase();
+            let concurso = null;
+            const mConc = upper.match(/CONC[A-Z]*\s*[:.]?\s*(\d{3,5})/);
+            if (mConc) concurso = mConc[1];
+            const nomesModalidade = {
+                lotofacil: ['LOTOFACIL', 'LOTOFÁCIL'],
+                megasena: ['MEGA-SENA', 'MEGASENA', 'MEGA SENA', 'MEGA DA VIRADA'],
+                quina: ['QUINA'],
+                lotomania: ['LOTOMANIA'],
+                duplasena: ['DUPLA SENA', 'DUPLASENA']
+            };
+            let modalidadeDetectada = null;
+            for (const chave in nomesModalidade) {
+                if (nomesModalidade[chave].some(n => upper.includes(n))) { modalidadeDetectada = chave; break; }
+            }
+            return { concurso, modalidadeDetectada };
+        }
+        
+        function renderizarResultadosLeitura() {
+            const container = document.getElementById('leitorJogosContainer');
+            const titulo = document.getElementById('leitorJogosTitulo');
+            const btnConfirmar = document.getElementById('btnConfirmarLeitura');
+            container.innerHTML = '';
+            
+            if (jogosDetectadosLeitor.length === 0) {
+                titulo.style.display = 'block';
+                titulo.innerText = 'Não consegui reconhecer nenhum jogo automaticamente nessa foto. Tente uma foto mais nítida e bem enquadrada (só a parte dos números), ou digite os números manualmente na tela principal.';
+                btnConfirmar.style.display = 'none';
+                return;
+            }
+            
+            titulo.style.display = 'block';
+            titulo.innerText = 'Números encontrados (confira e corrija se precisar):';
+            
+            jogosDetectadosLeitor.forEach((numeros, idx) => {
+                const linha = document.createElement('div');
+                linha.className = 'leitor-jogo-linha';
+                linha.innerHTML = `
+                    <input type="checkbox" id="leitorCheck${idx}" checked>
+                    <input type="text" id="leitorTexto${idx}" value="${numeros.map(n => n.toString().padStart(2, '0')).join(' ')}">
+                `;
+                container.appendChild(linha);
+            });
+            
+            btnConfirmar.style.display = 'block';
+        }
+        
+        function confirmarJogosLidos() {
+            const tipo = tipoLeitorAtual;
+            const limiteMinimo = dados[tipo].inicio;
+            const limiteMaximo = dados[tipo].inicio + dados[tipo].range - 1;
+            let adicionados = 0;
+            let erros = [];
+            jogosDetectadosLeitor.forEach((_, idx) => {
+                const check = document.getElementById(`leitorCheck${idx}`);
+                const texto = document.getElementById(`leitorTexto${idx}`);
+                if (!check || !check.checked || !texto) return;
+                const nums = texto.value.split(/[\s,]+/).filter(n => n !== '').map(Number);
+                const unicos = [...new Set(nums)];
+                const foraDeIntervalo = unicos.some(n => isNaN(n) || n < limiteMinimo || n > limiteMaximo);
+                if (foraDeIntervalo || unicos.length !== nums.length || unicos.length < dados[tipo].min || unicos.length > dados[tipo].max) {
+                    erros.push(idx + 1);
+                    return;
+                }
+                unicos.sort((a, b) => a - b);
+                dados[tipo].meusJogos.push({
+                    numeros: unicos,
+                    vitorias: 0,
+                    vitorias12: 0,
+                    vitorias13: 0,
+                    vitorias11: 0,
+                    ganhoAcumulado: 0,
+                    concursosVistos: [],
+                    identificador: gerarProximoIdentificador(tipo)
+                });
+                adicionados++;
+            });
+            
+            if (adicionados > 0) {
+                salvarNoLocalStorage(tipo);
+                renderizar(tipo);
+            }
+            fecharLeitorBilhete();
+            
+            if (adicionados > 0 && erros.length === 0) {
+                exibirModal(`✅ ${adicionados} jogo(s) adicionado(s) a partir da foto do bilhete!`, null, true);
+            } else if (adicionados > 0 && erros.length > 0) {
+                exibirModal(`✅ ${adicionados} jogo(s) adicionado(s). O(s) jogo(s) na(s) linha(s) ${erros.join(', ')} não puderam ser adicionados (quantidade ou números fora do permitido) - confira e digite manualmente se precisar.`, null, true);
+            } else {
+                exibirModal('Nenhum jogo válido para adicionar. Confira as quantidades e tente novamente, ou digite manualmente.', null, true);
+            }
         }
         
         let numerosSelecionados = [];
