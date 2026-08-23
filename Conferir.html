@@ -3952,6 +3952,7 @@ function exibirCaixaAviso(tipo) {
         
         async function conferirMassa(tipo) {
             const inputMassa = document.getElementById(`massa_${tipo}`);
+            const inputMassaFim = document.getElementById(`massaFim_${tipo}`);
             const btnMassa = document.getElementById(`btnMassa_${tipo}`);
             const progContainer = document.getElementById(`progContainer_${tipo}`);
             const progBar = document.getElementById(`progBar_${tipo}`);
@@ -3964,12 +3965,31 @@ function exibirCaixaAviso(tipo) {
                 exibirModal("Digite um concurso inicial válido.", null, true);
                 return;
             }
+            // Campo "Conc. Final" é opcional - se vazio, vai até o último concurso
+            // existente (comportamento de sempre). Se preenchido, para nesse concurso.
+            let fimDesejado = null;
+            const valorFim = inputMassaFim ? inputMassaFim.value.trim() : '';
+            if (valorFim !== '') {
+                fimDesejado = parseInt(valorFim);
+                if (isNaN(fimDesejado) || fimDesejado <= 0) {
+                    exibirModal("Digite um concurso final válido, ou deixe o campo vazio para ir até o último.", null, true);
+                    return;
+                }
+            }
             const originalText = "🔍 Conferir até o Fim";
             try {
                 const ultimoConcursoData = await buscar(tipo, 'latest');
-                const fim = dados[tipo].concursoAtual;
+                const ultimoConcursoReal = dados[tipo].concursoAtual;
+                let fim = ultimoConcursoReal;
+                if (fimDesejado !== null) {
+                    if (fimDesejado > ultimoConcursoReal) {
+                        exibirModal(`O concurso final informado (${fimDesejado}) é maior que o último concurso existente (${ultimoConcursoReal}). Vou conferir até o ${ultimoConcursoReal}.`, null, true);
+                    } else {
+                        fim = fimDesejado;
+                    }
+                }
                 if (inicio > fim) {
-                    exibirModal("Concurso inicial maior que o atual.", null, true);
+                    exibirModal("Concurso inicial maior que o concurso final.", null, true);
                     return;
                 }
                 const total = fim - inicio + 1;
@@ -5091,8 +5111,9 @@ function exibirCaixaAviso(tipo) {
                         <label style="font-size:12px"><b>Conferência em Massa:</b></label>
                         <div style="display:flex; gap:5px; margin-top:5px">
                             <input type="number" id="massa_${tipo}" placeholder="Conc. Inicial" style="flex:1; padding:8px; font-size:12px">
-                            <button id="btnMassa_${tipo}" class="btn" data-status="parado" style="flex:1; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button>
+                            <input type="number" id="massaFim_${tipo}" placeholder="Conc. Final (Opc.)" style="flex:1; padding:8px; font-size:12px">
                         </div>
+                        <button id="btnMassa_${tipo}" class="btn" data-status="parado" style="width:100%; margin-top:5px; background:#f39c12; color:white; font-size:12px" onclick="conferirMassa('${tipo}')">🔍 Conferir até o Fim</button>
                         <div id="progContainer_${tipo}" class="progress-container"><div id="progBar_${tipo}" class="progress-bar"></div></div>
                     `;
                     container.appendChild(divMassa);
