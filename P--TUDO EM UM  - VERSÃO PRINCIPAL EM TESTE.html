@@ -378,6 +378,24 @@
         .sidebar-scanner-item .sidebar-nome {
             color: white;
         }
+        .aviso-badge-novo {
+            position: absolute;
+            top: -6px;
+            right: 8px;
+            background: #ff4444;
+            color: white;
+            font-size: 9px;
+            font-weight: 900;
+            padding: 2px 7px;
+            border-radius: 10px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+            animation: pulsarAvisoNovo 1.5s ease-in-out infinite;
+        }
+        @keyframes pulsarAvisoNovo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
         
         /* Título clicável de cada modalidade (abre o balão de regras) */
         .titulo-modalidade {
@@ -1710,14 +1728,15 @@
         <div class="sidebar-scanner-item sidebar-item" onclick="irParaScanner()">
             <span class="sidebar-clover">🚀</span>
             <div class="sidebar-nome-wrap">
-                <span class="sidebar-nome">Gerar Jogos (Concursos Anteriores)</span>
+                <span class="sidebar-nome">Gerar Jogos (Concursos Anteriores LotoFácil)</span>
             </div>
         </div>
-        <div class="sidebar-item" style="margin: 6px 12px; border-radius: 10px; background: #667eea; border-bottom: none;" onclick="fecharSidebar(); abrirAvisos();">
+        <div class="sidebar-item" style="margin: 6px 12px; border-radius: 10px; background: #667eea; border-bottom: none; position: relative;" onclick="fecharSidebar(); abrirAvisos();">
             <span class="sidebar-clover">📢</span>
             <div class="sidebar-nome-wrap">
                 <span class="sidebar-nome" style="color: white;">Avisos</span>
             </div>
+            <span id="avisoBadgeNovo" class="aviso-badge-novo" style="display:none;">NOVO</span>
         </div>
     </nav>
 
@@ -1725,6 +1744,10 @@
     <!-- MODAL DE AVISOS GERAIS (NOVO)                    -->
     <!-- Mensagem editável diretamente aqui no HTML. Para trocar o aviso, basta -->
     <!-- editar o texto dentro de #corpoAvisosGerais abaixo.                     -->
+    <!-- ⚠️ Depois de mudar o texto, procure "VERSAO_AVISO" no bloco de JavaScript -->
+    <!-- lá embaixo -->
+    <!-- e aumente esse número em 1 - é isso que faz a bolinha "NOVO" aparecer     -->
+    <!-- de novo pra quem já tinha visto o aviso anterior.                        -->
     <!-- ============================================= -->
     <div id="modalAvisosGerais">
         <div class="modal-regras-content">
@@ -1732,14 +1755,11 @@
                 <h3>📢 Avisos</h3>
                 <button class="modal-regras-fechar" onclick="fecharAvisos()">✕</button>
             </div>
-			<!-- <p> 💰 🍀 📢 📣 💙 ✨ 🏆 </p> -->
             <div class="modal-regras-corpo" id="corpoAvisosGerais">
-                <p><b>🍀 Lotofácil da independência</b></p>
-                <p>R$ 300.000.000,00 (R$300 Milhões) 💰
-				<p>300 Milhões de reais</p> 
-				<p>Prêmio estimado do concurso 3780 
-				<p>Sorteio Terça-Feira
-				<b>15/09/2026</b> às 11h00</p> 				
+                <p>Esperamos que você esteja aproveitando o aplicativo!</p>
+                <p>Lembre-se: nenhum sistema pode prever os números que serão sorteados, pois a loteria é um jogo baseado na aleatoriedade. Nosso objetivo é ajudar você a conferir seus jogos de forma prática, acompanhar seus resultados, analisar combinações e utilizar o histórico dos concursos para criar novas estratégias.</p>
+                <p>Com essas informações, você pode ajustar suas apostas, testar novas combinações e buscar uma forma mais organizada de jogar. Isso pode ajudar na escolha das dezenas e no acompanhamento do desempenho dos seus jogos.</p>
+        	<p>Use o aplicativo, experimente diferentes estratégias e divirta-se. Boa sorte e bons jogos! 🍀</p>
 	  </div>
         </div>
     </div>
@@ -3488,9 +3508,27 @@ function exibirCaixaAviso(tipo) {
         // =============================================
         // MODAL DE AVISOS GERAIS (NOVO)
         // O conteúdo é editado diretamente no HTML, dentro de #corpoAvisosGerais.
+        //
+        // ⚠️ IMPORTANTE: toda vez que o TEXTO da mensagem dentro de
+        // #corpoAvisosGerais for alterado, aumente o número de VERSAO_AVISO abaixo
+        // em 1. É esse número que faz a bolinha "NOVO" aparecer de novo pra todo
+        // mundo, avisando que a mensagem mudou. Se só corrigir um errinho de
+        // digitação sem mudar o conteúdo de verdade, não precisa aumentar.
         // =============================================
+        const VERSAO_AVISO = 1;
+        
+        function verificarAvisoNovo() {
+            const versaoVista = localStorage.getItem('aviso_versao_vista');
+            const badge = document.getElementById('avisoBadgeNovo');
+            if (!badge) return;
+            badge.style.display = (versaoVista !== String(VERSAO_AVISO)) ? 'block' : 'none';
+        }
+        
         function abrirAvisos() {
             document.getElementById('modalAvisosGerais').style.display = 'flex';
+            localStorage.setItem('aviso_versao_vista', String(VERSAO_AVISO));
+            const badge = document.getElementById('avisoBadgeNovo');
+            if (badge) badge.style.display = 'none';
         }
         
         function fecharAvisos() {
@@ -3758,6 +3796,73 @@ function exibirCaixaAviso(tipo) {
                 }
                 renderizar(tipo);
                 return null;
+            }
+        }
+        
+        // =============================================
+        // SONDAGEM DO PRÓXIMO CONCURSO (NOVO)
+        // Ao abrir o app, além de buscar "o último resultado", continua tentando
+        // buscar o concurso seguinte (como se tivesse apertado o "+" repetidas
+        // vezes) enquanto for encontrando resultado novo - às vezes a fonte que
+        // informa "qual é o último concurso" demora um pouco mais pra atualizar do
+        // que a busca direta por um número específico, e se o app ficar alguns
+        // dias sem ser aberto pode haver mais de um concurso novo pendente. Assim
+        // que encontrar um concurso que ainda não existe, para e volta
+        // silenciosamente pro último resultado válido que já tínhamos.
+        // =============================================
+        async function verificarProximoConcursoDisponivel(tipo) {
+            const sufixo = CONFIG_MODALIDADE[tipo].sufixo;
+            const idInfo = `info${sufixo}`;
+            const idBolas = `bolas${sufixo}`;
+            const idInput = `num${sufixo}`;
+            const LIMITE_TENTATIVAS = 10; // segurança - nunca devia chegar perto disso
+            let avancou = false;
+            
+            for (let tentativa = 0; tentativa < LIMITE_TENTATIVAS; tentativa++) {
+                const concursoBase = dados[tipo].concursoAtual;
+                if (!concursoBase) break;
+                
+                // Guarda uma cópia do estado bom atual, pra restaurar sem precisar de
+                // nova requisição caso o próximo concurso ainda não exista.
+                const snapshot = {
+                    concursoAtual: dados[tipo].concursoAtual,
+                    ganhadores: [...dados[tipo].ganhadores],
+                    ganhadores2: dados[tipo].ganhadores2 ? [...dados[tipo].ganhadores2] : undefined,
+                    htmlInfo: document.getElementById(idInfo).innerHTML,
+                    htmlBolas: document.getElementById(idBolas).innerHTML
+                };
+                
+                await buscar(tipo, concursoBase + 1);
+                
+                const encontrouProximo = dados[tipo].concursoAtual === concursoBase + 1 && dados[tipo].ganhadores.length > 0;
+                if (!encontrouProximo) {
+                    dados[tipo].concursoAtual = snapshot.concursoAtual;
+                    dados[tipo].ganhadores = snapshot.ganhadores;
+                    if (snapshot.ganhadores2 !== undefined) dados[tipo].ganhadores2 = snapshot.ganhadores2;
+                    document.getElementById(idInfo).innerHTML = snapshot.htmlInfo;
+                    document.getElementById(idBolas).innerHTML = snapshot.htmlBolas;
+                    const inputEl = document.getElementById(idInput);
+                    if (inputEl) inputEl.value = snapshot.concursoAtual;
+                    renderizar(tipo);
+                    break; // achou o limite real - encerra a sondagem
+                }
+                avancou = true;
+                // Encontrou um concurso novo - continua tentando o próximo, caso
+                // exista mais de um pendente.
+            }
+            
+            if (avancou) {
+                // A sondagem passou por 1 ou mais concursos intermediários, e cada
+                // "buscar" ao longo do caminho somou aquele concurso no painel
+                // financeiro e nas estatísticas por baixo dos panos (ex: pesquisou
+                // "3774 a 3775" quando devia mostrar só o concurso final). Zera tudo
+                // pra esta modalidade e refaz a busca UMA única vez, limpa, só no
+                // concurso final - assim o painel reflete apenas esse concurso.
+                const concursoFinal = dados[tipo].concursoAtual;
+                zerarFinanceiro(tipo);
+                contagemElite[tipo] = { c14: 0, c15: 0, lista14: [], lista15: [], concursos_processados: [] };
+                limparEstatisticasJogos(tipo);
+                await buscar(tipo, concursoFinal);
             }
         }
         
@@ -5174,6 +5279,7 @@ function iniciarAssinaturaPaywall() {
         window.onload = () => {
             verificarStatusPremium();
             montarSidebar();
+            verificarAvisoNovo();
             zerarFinanceiro('lotofacil');
             zerarFinanceiro('megasena');
             zerarFinanceiro('quina');
@@ -5191,11 +5297,19 @@ function iniciarAssinaturaPaywall() {
             limparEstatisticasJogos('quina');
             limparEstatisticasJogos('lotomania');
             limparEstatisticasJogos('duplasena');
-            buscar('lotofacil', 'latest');
-            buscar('megasena', 'latest');
-            buscar('quina', 'latest');
-            buscar('lotomania', 'latest');
-            buscar('duplasena', 'latest');
+            // Busca o último resultado e, em seguida, sonda mais um concurso à
+            // frente (como o botão "+") pra garantir que não fica preso num
+            // resultado levemente desatualizado. Cada modalidade roda sua própria
+            // sequência, mas todas em paralelo entre si (não faz uma esperar a outra).
+            async function inicializarModalidade(t) {
+                await buscar(t, 'latest');
+                await verificarProximoConcursoDisponivel(t);
+            }
+            inicializarModalidade('lotofacil');
+            inicializarModalidade('megasena');
+            inicializarModalidade('quina');
+            inicializarModalidade('lotomania');
+            inicializarModalidade('duplasena');
             // buscar('diadesorte', 'latest');  // desativado - fora do menu por enquanto
             // buscar('milionaria', 'latest');  // desativado - fora do menu por enquanto
             unificarNovosBotoes();
