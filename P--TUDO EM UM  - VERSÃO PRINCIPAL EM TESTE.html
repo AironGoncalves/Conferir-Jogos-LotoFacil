@@ -3411,39 +3411,43 @@ function exibirCaixaAviso(tipo) {
         const REGRAS_MODALIDADES = {
             lotofacil: {
                 cor: '#8b008b',
-                texto: 'Escolha de 15 a 20 números entre os 25 disponíveis (01 a 25). São sorteadas 15 dezenas. Ganha quem acertar 11, 12, 13, 14 ou 15 números. Sorteios de segunda a sábado.'
+                texto: 'Escolha de 15 a 20 números entre os 25 disponíveis (01 a 25). São sorteadas 15 dezenas. Ganha quem acertar 11, 12, 13, 14 ou 15 números. Sorteios Segundas, terças, quartas, quintas e sextas-feiras, a partir das 21 horas; e domingos, a partir das 11 horas..'
             },
             megasena: {
                 cor: '#209869',
-                texto: 'Escolha de 6 a 15 números entre os 60 disponíveis (01 a 60). São sorteadas 6 dezenas. Ganha quem acertar 4 (quadra), 5 (quina) ou 6 (sena) números. Sorteios às terças, quintas e sábados.'
+                texto: 'Escolha de 6 a 15 números entre os 60 disponíveis (01 a 60). São sorteadas 6 dezenas. Ganha quem acertar 4 (quadra), 5 (quina) ou 6 (sena) números. Sorteios às terças e quintas-feiras, a partir das 21h, e aos domingos, a partir das 11h.
+
+.'
             },
             quina: {
                 cor: '#1a3fa0',
-                texto: 'Escolha de 5 a 15 números entre os 80 disponíveis (01 a 80). São sorteadas 5 dezenas. Ganha quem acertar 2, 3, 4 ou 5 números. Sorteios de segunda a sábado.'
+                texto: 'Escolha de 5 a 15 números entre os 80 disponíveis (01 a 80). São sorteadas 5 dezenas. Ganha quem acertar 2, 3, 4 ou 5 números. Sorteios de segunda a sexta-feira, a partir das 21h, e aos domingos, a partir das 11h.'
             },
             lotomania: {
                 cor: '#f78100',
-                texto: 'Escolha sempre 50 números entre os 100 disponíveis (00 a 99). São sorteadas 20 dezenas. Ganha quem acertar 15, 16, 17, 18, 19 ou 20 números — e também quem não acertar absolutamente nenhum (0 acertos)! Sorteios às segundas, quartas e sextas.'
+                texto: 'Escolha sempre 50 números entre os 100 disponíveis (00 a 99). São sorteadas 20 dezenas. Ganha quem acertar 15, 16, 17, 18, 19 ou 20 números — e também quem não acertar absolutamente nenhum (0 acertos)! Sorteios às Segundas, quartas e sextas, a partir das 21 horas.'
             },
             duplasena: {
                 cor: '#a90267',
-                texto: 'Escolha de 6 a 15 números entre os 50 disponíveis (01 a 50). Em cada concurso são feitos DOIS sorteios de 6 dezenas cada. Ganha quem acertar 3, 4, 5 ou 6 números em qualquer um dos dois sorteios (ou nos dois). Sorteios às segundas, quartas e sextas.'
+                texto: 'Escolha de 6 a 15 números entre os 50 disponíveis (01 a 50). Em cada concurso são feitos DOIS sorteios de 6 dezenas cada. Ganha quem acertar 3, 4, 5 ou 6 números em qualquer um dos dois sorteios (ou nos dois). Sorteios às Segundas, quartas e sextas-feiras, a partir das 21 horas.'
             },
             timemania: {
                 cor: '#00a651',
-                texto: 'Escolha de 10 a 15 números entre os 80 disponíveis (01 a 80) e indique um Time do Coração entre os times cadastrados. São sorteados 7 números e 1 time. Ganha quem acertar de 3 a 7 números e/ou quem acertar o time sorteado (prêmio à parte). Sorteios às terças, quintas e sábados.'
+                texto: 'Escolha de 10 a 15 números entre os 80 disponíveis (01 a 80) e indique um Time do Coração entre os times cadastrados. São sorteados 7 números e 1 time. Ganha quem acertar de 3 a 7 números e/ou quem acertar o time sorteado (prêmio à parte). Sorteios às Terças e quintas-feiras, a partir das 21 horas; e domingos, a partir das 11 horas.'
             },
             diadesorte: {
                 cor: '#cb8d00',
-                texto: 'Escolha de 7 a 15 números entre os 31 disponíveis (01 a 31) e indique um Mês da Sorte. São sorteados 7 números e 1 mês. Ganha quem acertar de 4 a 7 números e/ou quem acertar o mês sorteado. Sorteios às terças, quintas e sábados.'
+                texto: 'Escolha de 7 a 15 números entre os 31 disponíveis (01 a 31) e indique um Mês da Sorte. São sorteados 7 números e 1 mês. Ganha quem acertar de 4 a 7 números e/ou quem acertar o mês sorteado. Sorteios às Segundas, terças, quartas, quintas e sextas-feiras, a partir das 21 horas; e domingos, a partir das 11 horas.
+
+.'
             },
             milionaria: {
                 cor: '#3d1a7a',
-                texto: 'Escolha de 6 a 12 números entre os 50 disponíveis (01 a 50) e de 2 a 6 Trevos entre os 6 disponíveis (1 a 6). São sorteados 6 números e 2 trevos. O prêmio principal exige acertar os 6 números e os 2 trevos; existem faixas menores combinando acertos parciais de números e trevos. Sorteios às quartas e sábados.'
+                texto: 'Escolha de 6 a 12 números entre os 50 disponíveis (01 a 50) e de 2 a 6 Trevos entre os 6 disponíveis (1 a 6). São sorteados 6 números e 2 trevos. O prêmio principal exige acertar os 6 números e os 2 trevos; existem faixas menores combinando acertos parciais de números e trevos. Sorteios às Quartas-feiras, a partir das 21 horas; e domingos, a partir das 11 horas.'
             },
             supersete: {
                 cor: '#7cb342',
-                texto: 'O volante tem 7 colunas, cada uma com dígitos de 0 a 9. Escolha pelo menos 1 número por coluna (no mínimo 7 números no total, no máximo 21, marcando até 3 por coluna). É sorteado 1 número por coluna. Ganha quem acertar de 3 a 7 colunas. Sorteios às segundas, quartas e sextas.'
+                texto: 'O volante tem 7 colunas, cada uma com dígitos de 0 a 9. Escolha pelo menos 1 número por coluna (no mínimo 7 números no total, no máximo 21, marcando até 3 por coluna). É sorteado 1 número por coluna. Ganha quem acertar de 3 a 7 colunas. Sorteios às Segundas, quartas e sextas, a partir das 21 horas..'
             },
             loteca: {
                 cor: '#0a6b3d',
