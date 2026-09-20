@@ -1747,7 +1747,7 @@
     <!-- ⚠️ Depois de mudar o texto, procure "VERSAO_AVISO" no bloco de JavaScript -->
     <!-- lá embaixo -->
     <!-- e aumente esse número em 1 - é isso que faz a bolinha "NOVO" aparecer     -->
-    <!-- de novo pra quem já tinha visto o aviso anterior.     💰 🍀 📢 📣 💙 ✨ 🇧🇷 -->
+    <!-- de novo pra quem já tinha visto o aviso anterior.     💰 🍀 📢 📣 💙 ✨ 🇧🇷 🤲 -->
     <!-- ============================================= -->
     <div id="modalAvisosGerais">
         <div class="modal-regras-content">
@@ -1756,9 +1756,10 @@
                 <button class="modal-regras-fechar" onclick="fecharAvisos()">✕</button>
             </div>
             <div class="modal-regras-corpo" id="corpoAvisosGerais">
-                <p>Está gostando do app?🍀</p>
+                <p>Está gostando do app? 🍀</p>
                 <p>Deixe 5 estrelas e ajude a gente a crescer!</p>
 		         <p>⭐⭐⭐⭐⭐</p>
+				 <p>É rapidão e muito importante pra gente 🤲</p>
 	        </div>
         </div>
     </div>
@@ -3828,7 +3829,7 @@ function exibirCaixaAviso(tipo) {
                     ganhadores: [...dados[tipo].ganhadores],
                     ganhadores2: dados[tipo].ganhadores2 ? [...dados[tipo].ganhadores2] : undefined,
                     htmlInfo: document.getElementById(idInfo).innerHTML,
-                    htmlBolas: document.getElementById(idBolas).innerHTML
+                    htmlBolas: document.getElementById(idBolas).innerHTML,
 					htmlBolasB: CONFIG_MODALIDADE[tipo].duploSorteio ? document.getElementById(`bolas${sufixo}B`).innerHTML : undefined
                 };
                 
