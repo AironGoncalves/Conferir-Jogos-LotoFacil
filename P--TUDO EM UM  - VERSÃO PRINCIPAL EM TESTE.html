@@ -1756,12 +1756,10 @@
                 <button class="modal-regras-fechar" onclick="fecharAvisos()">✕</button>
             </div>
             <div class="modal-regras-corpo" id="corpoAvisosGerais">
-                <p>Lotofácil da independência!🍀</p>
-                <p>R$ 300.000.000,00 💰</p>
-		<p>(R$300 Milhões)</p>
-                <p>Prêmio estimado do concurso 3780</p>
-        	<p>Sorteio <b>15/09/2026</b> Terça-Feira</p>
-	  </div>
+                <p>Está gostando do app?🍀</p>
+                <p>Deixe 5 estrelas e ajude a gente a crescer!</p>
+		         <p>⭐⭐⭐⭐⭐</p>
+	        </div>
         </div>
     </div>
 
@@ -3516,7 +3514,7 @@ function exibirCaixaAviso(tipo) {
         // mundo, avisando que a mensagem mudou. Se só corrigir um errinho de
         // digitação sem mudar o conteúdo de verdade, não precisa aumentar.
         // =============================================
-        const VERSAO_AVISO = 1;
+        const VERSAO_AVISO = 0;
         
         function verificarAvisoNovo() {
             const versaoVista = localStorage.getItem('aviso_versao_vista');
@@ -3831,22 +3829,26 @@ function exibirCaixaAviso(tipo) {
                     ganhadores2: dados[tipo].ganhadores2 ? [...dados[tipo].ganhadores2] : undefined,
                     htmlInfo: document.getElementById(idInfo).innerHTML,
                     htmlBolas: document.getElementById(idBolas).innerHTML
+					htmlBolasB: CONFIG_MODALIDADE[tipo].duploSorteio ? document.getElementById(`bolas${sufixo}B`).innerHTML : undefined
                 };
                 
                 await buscar(tipo, concursoBase + 1);
                 
                 const encontrouProximo = dados[tipo].concursoAtual === concursoBase + 1 && dados[tipo].ganhadores.length > 0;
-                if (!encontrouProximo) {
-                    dados[tipo].concursoAtual = snapshot.concursoAtual;
-                    dados[tipo].ganhadores = snapshot.ganhadores;
-                    if (snapshot.ganhadores2 !== undefined) dados[tipo].ganhadores2 = snapshot.ganhadores2;
-                    document.getElementById(idInfo).innerHTML = snapshot.htmlInfo;
-                    document.getElementById(idBolas).innerHTML = snapshot.htmlBolas;
-                    const inputEl = document.getElementById(idInput);
-                    if (inputEl) inputEl.value = snapshot.concursoAtual;
-                    renderizar(tipo);
-                    break; // achou o limite real - encerra a sondagem
-                }
+               if (!encontrouProximo) {
+    			 dados[tipo].concursoAtual = snapshot.concursoAtual;
+   				 dados[tipo].ganhadores = snapshot.ganhadores;
+   				 if (snapshot.ganhadores2 !== undefined) dados[tipo].ganhadores2 = snapshot.ganhadores2;
+			    document.getElementById(idInfo).innerHTML = snapshot.htmlInfo;
+			    document.getElementById(idBolas).innerHTML = snapshot.htmlBolas;
+			    if (CONFIG_MODALIDADE[tipo].duploSorteio && snapshot.htmlBolasB !== undefined) {          // ← NOVO
+		        document.getElementById(`bolas${sufixo}B`).innerHTML = snapshot.htmlBolasB;           // ← NOVO
+			    }                                                                                          // ← NOVO
+ 			   const inputEl = document.getElementById(idInput);
+			    if (inputEl) inputEl.value = snapshot.concursoAtual;
+			    renderizar(tipo);
+			    break; // achou o limite real - encerra a sondagem
+				}
                 avancou = true;
                 // Encontrou um concurso novo - continua tentando o próximo, caso
                 // exista mais de um pendente.
